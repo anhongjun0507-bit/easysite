@@ -1,39 +1,49 @@
 import Link from 'next/link'
 import { processSteps } from '@/config/process'
 
-// 각 단계에 대응하는 작은 UI 모킹
+// 각 단계 미니 UI 모킹 — Differentiators와 시각 차별 (P0-08)
+// Differentiators는 "가치/효과" 시각, HowItWorks는 "실제 진행" 화면
 function StepMock({ number }: { number: string }) {
   if (number === '01') {
-    // 위저드 question 카드
+    // 위저드 폼 카드 (실제 /wizard 페이지를 simulate)
     return (
-      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 text-left shadow-sm">
+      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 text-left shadow-xs">
         <div className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">
-          질문 1 / 5
+          1분 견적
         </div>
         <div className="mt-1.5 text-xs font-semibold text-gray-900">
           어떤 사이트가 필요하세요?
         </div>
         <div className="mt-2 space-y-1">
-          <div className="rounded border border-indigo-300 bg-indigo-50 px-2 py-1 text-[11px] font-semibold text-indigo-700">
-            ✓ 학원 홈페이지
-          </div>
           <div className="rounded border border-gray-200 px-2 py-1 text-[11px] text-gray-500">
-            쇼핑몰
+            예: 학원 홈페이지
           </div>
+          <div className="h-1 w-1/3 rounded-full bg-indigo-500" />
         </div>
       </div>
     )
   }
   if (number === '02') {
-    // 카톡 알림
+    // 카톡 알림 (이모지 제거, SVG 사용)
     return (
-      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
+      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 shadow-xs">
         <div className="flex items-start gap-2.5">
-          <div className="h-7 w-7 shrink-0 rounded-full bg-yellow-300" />
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow-300">
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="h-4 w-4 text-gray-800"
+              aria-hidden="true"
+            >
+              <path d="M12 3C6.48 3 2 6.58 2 11c0 2.6 1.55 4.91 3.95 6.4-.17 1.3-.85 3.1-1.45 4.1 1.8-.3 4.2-1.3 5.5-2.1.65.13 1.32.2 2 .2 5.52 0 10-3.58 10-8s-4.48-8.6-10-8.6z" />
+            </svg>
+          </div>
           <div className="flex-1 text-left">
-            <div className="text-[11px] font-semibold text-gray-900">EasySite</div>
-            <div className="mt-0.5 text-[11px] leading-snug text-gray-600">
-              사장님 사이트 시안이랑 견적 도착했어요 ✨
+            <div className="text-[11px] font-semibold text-gray-900">
+              EasySite
+            </div>
+            <div className="mt-0.5 text-[11px] leading-snug text-gray-700">
+              사장님 사이트 시안이랑 견적이 도착했어요. 메일도 같이 보내드렸어요.
             </div>
           </div>
         </div>
@@ -41,12 +51,13 @@ function StepMock({ number }: { number: string }) {
     )
   }
   if (number === '03') {
-    // 코멘트 오버레이
+    // 사이트 위 코멘트 핀
     return (
-      <div className="mt-5 relative rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
+      <div className="relative mt-5 rounded-lg border border-gray-200 bg-white p-3 shadow-xs">
         <div className="space-y-1.5">
           <div className="h-2 w-3/4 rounded-full bg-gray-100" />
           <div className="h-2 w-full rounded-full bg-gray-100" />
+          <div className="h-2 w-5/6 rounded-full bg-gray-100" />
         </div>
         <div className="absolute -right-1 -top-1 flex items-center gap-1.5">
           <div className="rounded-md bg-indigo-600 px-1.5 py-0.5 text-[10px] font-semibold text-white shadow">
@@ -66,17 +77,13 @@ export function HowItWorks() {
   return (
     <section id="how-it-works" className="py-24 sm:py-32">
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
-        {/* Eyebrow + Heading */}
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
             Process
           </p>
-          <h2 className="mt-3 text-4xl font-extrabold leading-[1.2] tracking-[-0.022em] text-gray-900 sm:text-5xl">
-            이렇게{' '}
-            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
-              3단계
-            </span>
-            로 만들어드려요
+          {/* h2 weight 700, 그라데이션 제거 */}
+          <h2 className="mt-3 text-4xl font-bold leading-[1.22] tracking-[-0.015em] text-gray-900 sm:text-5xl">
+            이렇게 3단계로 만들어드려요
           </h2>
           <p className="mt-6 text-base leading-relaxed text-gray-700 sm:text-lg">
             복잡한 거 없이, 1분 입력 → 다음 날 견적 → 본격 제작. 딱 이렇게
@@ -84,17 +91,16 @@ export function HowItWorks() {
           </p>
         </div>
 
-        {/* Steps */}
         <ol className="mx-auto mt-14 grid grid-cols-1 gap-4 sm:mt-16 md:grid-cols-3 md:gap-8">
           {processSteps.map((step, idx) => (
             <li
               key={step.number}
-              className="relative flex flex-col rounded-xl border border-gray-200 bg-white p-6 sm:p-8"
+              className="relative flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:shadow-md sm:p-8"
             >
-              {/* Big number — gradient instead of pale indigo-100 for better visibility */}
+              {/* 번호 — solid indigo-500 (그라데이션 제거) */}
               <div
                 aria-hidden="true"
-                className="bg-gradient-to-br from-indigo-500 to-violet-500 bg-clip-text text-5xl font-extrabold tracking-tight text-transparent sm:text-6xl"
+                className="text-5xl font-extrabold tracking-tight text-indigo-500 sm:text-6xl"
               >
                 {step.number}
               </div>
@@ -105,7 +111,6 @@ export function HowItWorks() {
                 {step.description}
               </p>
 
-              {/* Mini UI mock */}
               <StepMock number={step.number} />
 
               <div className="mt-auto pt-5">
@@ -114,14 +119,14 @@ export function HowItWorks() {
                 </span>
               </div>
 
-              {/* Connector arrow — bolder color + slight bg pill for visibility */}
+              {/* Connector — solid indigo (그라데이션 제거) */}
               {idx < processSteps.length - 1 && (
                 <span
                   aria-hidden="true"
                   className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 translate-x-full items-center justify-center md:flex"
                   style={{ width: '2rem' }}
                 >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-indigo-500 shadow-sm">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-indigo-500 shadow-xs">
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
@@ -141,27 +146,27 @@ export function HowItWorks() {
           ))}
         </ol>
 
-        {/* Final CTA — back to Hero form */}
         <div className="mt-14 flex flex-col items-center gap-4 text-center sm:mt-16">
           <p className="text-lg font-semibold text-gray-900 sm:text-xl">
             준비됐어요. 어떤 사이트가 필요하신가요?
           </p>
           <Link
-            href="#hero-intent"
-            className="cta-glow inline-flex h-14 items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 px-7 text-base font-semibold text-white sm:text-[17px]"
+            href="/wizard"
+            className="cta-glow inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-indigo-600 px-7 text-base font-semibold text-white hover:bg-indigo-700 sm:text-[17px]"
           >
-            지금 한 줄 입력해보기
+            <span>1분 만에 견적 받기</span>
             <svg
               aria-hidden="true"
-              viewBox="0 0 16 16"
-              className="ml-2 h-4 w-4"
+              viewBox="0 0 24 24"
               fill="none"
-              strokeWidth="2"
               stroke="currentColor"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
+              className="h-5 w-5"
             >
-              <polyline points="3,10 8,5 13,10" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="13 6 19 12 13 18" />
             </svg>
           </Link>
         </div>

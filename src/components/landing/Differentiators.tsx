@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react'
 import { differentiators } from '@/config/differentiators'
 
-// 4색 시스템 — 사용자 평("아이콘 톤 다양화" + "보조 컬러 1개 추가") 반영
-// 각 카드별로 다른 hue, 50/600 톤 일관 유지
+// 4색 톤은 유지 (각 차별점의 의미 차별화에 도움), 그라데이션은 제거
 const colorMap: Record<string, { tile: string; icon: string; accent: string }> = {
   clock: { tile: 'bg-indigo-50', icon: 'text-indigo-600', accent: 'text-indigo-700' },
   sparkles: { tile: 'bg-pink-50', icon: 'text-pink-600', accent: 'text-pink-700' },
@@ -68,29 +67,52 @@ const iconMap: Record<string, ReactNode> = {
   ),
 }
 
-// 각 차별점 카드 안에 들어갈 작은 시각 모킹
+/**
+ * Differentiators 미니 mock — Features는 "가치", Process는 "스텝"으로 역할 분리.
+ * P0-08: 24시간 카톡 알림과 사이트 위 코멘트 mock은 Process로 옮겨가고
+ *        Features에서는 다른 시각화 사용.
+ *
+ *  clock(24h)    → 캘린더/시계 시각화 (속도감)
+ *  sparkles(AI)  → AI 텍스트 생성 시뮬 (유지)
+ *  comment(코멘트)→ 안내 텍스트 카드 (Process와 시각 차별)
+ *  tag(가격)     → 가격표 (유지)
+ */
 function MiniMock({ icon, accent }: { icon: string; accent: string }) {
   if (icon === 'clock') {
-    // 카톡 알림 모킹
+    // 캘린더 시각화 — "오늘 → 내일" 흐름
     return (
-      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
-        <div className="flex items-start gap-2.5">
-          <div className="h-7 w-7 shrink-0 rounded-full bg-yellow-300" />
-          <div className="flex-1 text-left">
-            <div className="text-[11px] font-semibold text-gray-900">EasySite</div>
-            <div className="mt-0.5 text-[11px] leading-snug text-gray-600">
-              사장님 견적이랑 사이트 시안 도착했어요 ✨
-            </div>
+      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 shadow-xs">
+        <div className="grid grid-cols-3 gap-2 text-center">
+          <div className="rounded-md bg-gray-100 px-2 py-2">
+            <div className="text-[10px] font-semibold uppercase text-gray-500">오늘</div>
+            <div className="mt-0.5 text-lg font-bold text-gray-800">접수</div>
           </div>
-          <div className="text-[10px] text-gray-400">방금</div>
+          <div className="flex items-center justify-center">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4 text-gray-400"
+              aria-hidden="true"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="13 6 19 12 13 18" />
+            </svg>
+          </div>
+          <div className={`rounded-md bg-indigo-50 px-2 py-2 ring-1 ring-indigo-200`}>
+            <div className={`text-[10px] font-semibold uppercase ${accent}`}>내일</div>
+            <div className="mt-0.5 text-lg font-bold text-gray-900">도착</div>
+          </div>
         </div>
       </div>
     )
   }
   if (icon === 'sparkles') {
-    // AI 텍스트 생성 모킹
     return (
-      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 shadow-sm text-left">
+      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 text-left shadow-xs">
         <div className={`text-[10px] font-bold uppercase tracking-wider ${accent}`}>
           AI 회사 소개 초안
         </div>
@@ -103,29 +125,23 @@ function MiniMock({ icon, accent }: { icon: string; accent: string }) {
     )
   }
   if (icon === 'comment') {
-    // 사이트 위 코멘트 오버레이 모킹
+    // 텍스트 안내 — 카톡 핑퐁 비교
     return (
-      <div className="mt-5 relative rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
-        <div className="space-y-1.5">
-          <div className="h-2 w-3/4 rounded-full bg-gray-100" />
-          <div className="h-2 w-full rounded-full bg-gray-100" />
-        </div>
-        {/* Annotation pin */}
-        <div className="absolute -right-1 -top-1 flex items-center gap-1.5">
-          <div className="rounded-md bg-emerald-600 px-1.5 py-0.5 text-[10px] font-semibold text-white shadow">
-            여기 색 바꿔주세요
+      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 text-left shadow-xs">
+        <div className="space-y-2 text-[11px]">
+          <div className="flex items-center gap-2 text-gray-400 line-through">
+            <span>카톡으로 “1쪽 3번째 줄 첫째 줄…”</span>
           </div>
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white shadow">
-            !
+          <div className={`flex items-center gap-2 font-semibold ${accent}`}>
+            <span>👆 사이트 위에 동그라미 한 번</span>
           </div>
         </div>
       </div>
     )
   }
   if (icon === 'tag') {
-    // 가격표 미리보기 모킹
     return (
-      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 shadow-sm text-left">
+      <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 text-left shadow-xs">
         <div className="space-y-1.5 text-[11px]">
           <div className="flex justify-between">
             <span className="text-gray-600">메인 + 소개 페이지</span>
@@ -150,27 +166,23 @@ export function Differentiators() {
   return (
     <section id="solutions" className="bg-gray-50 py-24 sm:py-32">
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
-        {/* Eyebrow + Heading */}
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
             Features
           </p>
-          <h2 className="mt-3 text-4xl font-extrabold leading-[1.2] tracking-[-0.022em] text-gray-900 sm:text-5xl">
-            EasySite는 이렇게{' '}
-            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
-              다릅니다
-            </span>
+          {/* h2 weight 700, 그라데이션 제거 */}
+          <h2 className="mt-3 text-4xl font-bold leading-[1.22] tracking-[-0.015em] text-gray-900 sm:text-5xl">
+            EasySite는 이렇게 다릅니다
           </h2>
         </div>
 
-        {/* Cards 2x2 */}
         <ul className="mx-auto mt-12 grid grid-cols-1 gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-5">
           {differentiators.map((d) => {
             const color = colorMap[d.icon]
             return (
               <li
                 key={d.id}
-                className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition hover:shadow-lg hover:shadow-gray-200/60 sm:p-8"
+                className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:shadow-md sm:p-8"
               >
                 <div
                   className={`mb-5 inline-flex h-12 w-12 items-center justify-center rounded-lg ${color.tile} ${color.icon}`}
@@ -185,11 +197,10 @@ export function Differentiators() {
                   {d.description}
                 </p>
 
-                {/* Mini visual mock */}
                 <MiniMock icon={d.icon} accent={color.accent} />
 
                 {d.example && (
-                  <p className="mt-auto border-l-2 border-gray-300 pl-3 pt-4 text-xs leading-relaxed text-gray-500 sm:text-sm">
+                  <p className="mt-auto border-l-2 border-gray-300 pl-3 pt-4 text-xs leading-relaxed text-gray-600 sm:text-sm">
                     {d.example}
                   </p>
                 )}
@@ -198,7 +209,6 @@ export function Differentiators() {
           })}
         </ul>
 
-        {/* Bridge + CTA to next section */}
         <div className="mt-14 flex flex-col items-center gap-4 text-center sm:mt-16">
           <a
             href="#how-it-works"

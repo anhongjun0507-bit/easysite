@@ -10,11 +10,14 @@
     "db:types": "node scripts/gen-types.mjs"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.105.4",
     "next": "14.2.35",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-hook-form": "^7.76.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -6,12 +6,11 @@
 
 html {
   scroll-behavior: smooth;
-  /* sticky header offset so anchor jumps don't hide content behind blur bar */
   scroll-padding-top: 96px;
 }
 
 body {
-  color: #1f2937; /* gray-800 — 더 진한 본문 (옛 gray-700 #374151 → 한 단계) */
+  color: #1f2937;
   background-color: #ffffff;
   font-family:
     'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
@@ -19,37 +18,70 @@ body {
   word-break: keep-all;
 }
 
-/* Hero multi-radial mesh background (subtle, no noise/animation) */
-.bg-hero-mesh {
-  background-image:
-    radial-gradient(at 18% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 55%),
-    radial-gradient(at 82% 0%, rgba(168, 85, 247, 0.14) 0px, transparent 55%),
-    radial-gradient(at 50% 100%, rgba(236, 72, 153, 0.07) 0px, transparent 55%);
+/* Focus-visible 글로벌 — WCAG 2.4.7 */
+*:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-/* Soft glow on primary CTA hover */
+/* Hero mesh — 더 차분하게 (그라데이션 의존 줄임) */
+.bg-hero-mesh {
+  background-image: radial-gradient(
+      at 50% 0%,
+      rgba(99, 102, 241, 0.08) 0px,
+      transparent 60%
+    ),
+    radial-gradient(at 0% 100%, rgba(99, 102, 241, 0.04) 0px, transparent 55%);
+}
+
+/* CTA 호버 효과 (solid indigo 버튼용) */
 .cta-glow {
   box-shadow: 0 1px 2px rgba(79, 70, 229, 0.18);
-  transition: box-shadow 200ms ease, transform 200ms ease, background-color 200ms ease;
+  transition:
+    box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .cta-glow:hover {
   box-shadow:
     0 0 0 1px rgba(99, 102, 241, 0.25),
-    0 10px 30px -8px rgba(99, 102, 241, 0.45),
-    0 6px 16px -6px rgba(168, 85, 247, 0.35);
+    0 10px 30px -8px rgba(79, 70, 229, 0.45);
   transform: translateY(-1px);
 }
 
-/* Subtle entrance animations — respect prefers-reduced-motion */
+/* Subtle entrance — respect prefers-reduced-motion */
 @keyframes ease-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 @media (prefers-reduced-motion: no-preference) {
   .animate-ease-up {
-    animation: ease-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: ease-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-  .animate-ease-up-d1 { animation-delay: 80ms; }
-  .animate-ease-up-d2 { animation-delay: 160ms; }
-  .animate-ease-up-d3 { animation-delay: 240ms; }
+  .animate-ease-up-d1 {
+    animation-delay: 60ms;
+  }
+  .animate-ease-up-d2 {
+    animation-delay: 120ms;
+  }
+  .animate-ease-up-d3 {
+    animation-delay: 180ms;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

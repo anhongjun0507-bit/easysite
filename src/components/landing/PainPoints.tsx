@@ -1,7 +1,6 @@
 import type { ReactNode } from 'react'
 import { painPoints } from '@/config/pain-points'
 
-// 각 pain에 어울리는 아이콘 — 부정/문제 상황이라 회색 톤 stroke
 const painIconMap: Record<string, ReactNode> = {
   'slow-quote': (
     <svg
@@ -70,31 +69,26 @@ export function PainPoints() {
   return (
     <section id="pain-points" className="py-24 sm:py-32">
       <div className="mx-auto max-w-5xl px-6 sm:px-8">
-        {/* Eyebrow + Heading */}
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
             Pain Points
           </p>
-          <h2 className="mt-3 text-4xl font-extrabold leading-[1.2] tracking-[-0.022em] text-gray-900 sm:text-5xl">
-            혹시 이런 고민,{' '}
-            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
-              익숙
-            </span>
-            하세요?
+          {/* h2 weight 700 (h1과 차등) — 그라데이션 제거 */}
+          <h2 className="mt-3 text-4xl font-bold leading-[1.22] tracking-[-0.015em] text-gray-900 sm:text-5xl">
+            혹시 이런 고민, 익숙하세요?
           </h2>
         </div>
 
-        {/* Cards 2x2 — bg-gray-50 (들어간 느낌) */}
         <ul className="mx-auto mt-12 grid grid-cols-1 gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-5">
           {painPoints.map((p) => (
             <li
               key={p.id}
-              className="flex flex-col rounded-xl border border-gray-200 bg-gray-50 p-6 transition hover:border-gray-300 hover:bg-white sm:p-8"
+              className="flex flex-col rounded-xl border border-gray-200 bg-gray-50 p-6 transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:border-gray-300 hover:bg-white hover:shadow-sm sm:p-8"
             >
               <div className="flex items-start gap-4">
                 <span
                   aria-hidden="true"
-                  className="mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-gray-500 shadow-sm ring-1 ring-gray-200"
+                  className="mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-gray-500 shadow-xs ring-1 ring-gray-200"
                 >
                   {painIconMap[p.id]}
                 </span>
@@ -114,13 +108,10 @@ export function PainPoints() {
           ))}
         </ul>
 
-        {/* Bridge to next section */}
+        {/* Bridge — 그라데이션 제거, solid indigo-700 */}
         <p className="mx-auto mt-12 max-w-xl text-center text-lg font-semibold text-gray-900 sm:mt-14 sm:text-xl">
-          맞아요.{' '}
-          <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 bg-clip-text text-transparent">
-            그래서 EasySite
-          </span>
-          를 만들었어요.
+          맞아요. 그래서{' '}
+          <span className="text-indigo-700">EasySite</span>를 만들었어요.
         </p>
       </div>
     </section>

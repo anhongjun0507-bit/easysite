@@ -9,11 +9,9 @@ const businessInfo: { label: string; value: string; href?: string }[] = [
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-400">
+    <footer className="bg-gray-900 text-gray-300">
       <div className="mx-auto max-w-7xl px-6 py-14 sm:px-8 sm:py-16">
-        {/* Top: Brand + Business info */}
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-12 md:grid-cols-[1fr_auto]">
-          {/* Left: Brand */}
           <div>
             <Link
               href="/"
@@ -21,23 +19,22 @@ export function Footer() {
             >
               EasySite
             </Link>
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-gray-400">
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-gray-300">
               아이디어만 있으면 됩니다.
               <br />
               나머지는 AI가 채워드립니다.
             </p>
           </div>
 
-          {/* Right: Business info — label/value 정렬된 2-column */}
           <address className="not-italic">
-            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-400">
               사업자 정보
             </p>
             <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-5 gap-y-1.5 text-sm leading-relaxed sm:gap-x-6">
               {businessInfo.map((item) => (
                 <div key={item.label} className="contents">
-                  <dt className="text-gray-500">{item.label}</dt>
-                  <dd className="text-gray-200">
+                  <dt className="text-gray-400">{item.label}</dt>
+                  <dd className="text-gray-100">
                     {item.href ? (
                       <a
                         href={item.href}
@@ -55,25 +52,23 @@ export function Footer() {
           </address>
         </div>
 
-        {/* Bottom: legal + copyright */}
-        <div className="mt-12 flex flex-col gap-3 border-t border-gray-800 pt-6 text-xs sm:mt-14 sm:flex-row sm:items-center sm:justify-between">
+        {/* Legal links — 실제 경로 (P0-04 fix) */}
+        <div className="mt-12 flex flex-col gap-3 border-t border-gray-800 pt-6 text-[13px] sm:mt-14 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex gap-5">
             <Link
-              href="#"
-              className="transition hover:text-gray-300"
-              aria-disabled="true"
+              href="/terms"
+              className="text-gray-300 transition hover:text-white"
             >
               이용약관
             </Link>
             <Link
-              href="#"
-              className="transition hover:text-gray-300"
-              aria-disabled="true"
+              href="/privacy"
+              className="text-gray-300 transition hover:text-white"
             >
               개인정보처리방침
             </Link>
           </div>
-          <p className="text-gray-500">
+          <p className="text-gray-400">
             © 2026 EasySite. All rights reserved.
           </p>
         </div>
