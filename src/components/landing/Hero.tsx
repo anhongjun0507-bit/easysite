@@ -1,4 +1,6 @@
+import { Fragment } from 'react'
 import Link from 'next/link'
+import { featuredPortfolio } from '@/config/portfolio'
 
 export function Hero() {
   return (
@@ -68,19 +70,23 @@ export function Hero() {
               이미 함께한 브랜드
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[15px] font-semibold text-gray-500">
-              <span>프리즘 입시</span>
-              <span aria-hidden="true" className="text-gray-300">
-                ·
-              </span>
-              <span>Conatus 입시</span>
-              <span aria-hidden="true" className="text-gray-300">
-                ·
-              </span>
-              <span>디지털스토어</span>
-              <span aria-hidden="true" className="text-gray-300">
-                ·
-              </span>
-              <span>PS Company</span>
+              {featuredPortfolio.map((item, idx) => (
+                <Fragment key={item.id}>
+                  {idx > 0 && (
+                    <span aria-hidden="true" className="text-gray-300">
+                      ·
+                    </span>
+                  )}
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded transition hover:text-indigo-700"
+                  >
+                    {item.name}
+                  </a>
+                </Fragment>
+              ))}
             </div>
           </div>
         </div>
