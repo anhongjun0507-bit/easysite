@@ -27,7 +27,7 @@ export const wizardSchema = z.object({
 export type WizardInput = z.infer<typeof wizardSchema>
 
 export type WizardResult =
-  | { ok: true; id: string }
+  | { ok: true }
   | { ok: false; error: string }
 
 export async function submitWizard(input: WizardInput): Promise<WizardResult> {
@@ -49,23 +49,21 @@ export async function submitWizard(input: WizardInput): Promise<WizardResult> {
   }
   if (data.intent) wizardAnswers.intent = data.intent
 
-  const { data: row, error } = await supabase
-    .from('leads')
-    .insert({
-      business_name: data.businessName,
-      contact_name: data.contactName,
-      contact_phone: data.contactPhone,
-      contact_email: data.contactEmail || null,
-      wizard_answers: wizardAnswers,
-      status: 'new',
-      source: 'landing-wizard',
-    })
-    .select('id')
-    .single()
+  // anon 정책은 INSERT 만 허용 → .select() 미사용 (return=minimal).
+  // RETURNING 이 트리거되면 SELECT RLS 까지 검사돼서 42501 에러가 떠요.
+  const { error } = await supabase.from('leads').insert({
+    business_name: data.businessName,
+    contact_name: data.contactName,
+    contact_phone: data.contactPhone,
+    contact_email: data.contactEmail || null,
+    wizard_answers: wizardAnswers,
+    status: 'new',
+    source: 'landing-wizard',
+  })
 
   if (error) {
     return { ok: false, error: '저장 중 오류가 발생했어요. 잠시 후 다시 시도해 주세요.' }
   }
 
-  return { ok: true, id: row.id }
+  return { ok: true }
 }

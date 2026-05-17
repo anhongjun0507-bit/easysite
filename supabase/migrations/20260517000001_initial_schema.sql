@@ -91,6 +91,8 @@ create index lead_events_session_id_idx  on public.lead_events (session_id, crea
 -- RLS
 --   * 익명 사용자: 위저드 제출 / 챗봇 사용 / 이벤트 기록만 INSERT 가능
 --   * SELECT/UPDATE/DELETE: service_role 만 (관리자 패널은 추후)
+--   ⚠️ 클라이언트에서 .insert().select() 패턴 금지 — RETURNING 이
+--      SELECT RLS 까지 트리거해서 42501 에러가 떠요. return=minimal 사용.
 -- ───────────────────────────────────────────────────────────────
 alter table public.leads          enable row level security;
 alter table public.conversations  enable row level security;
