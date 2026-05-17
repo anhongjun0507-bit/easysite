@@ -5,17 +5,23 @@ export function Hero() {
     <section className="relative">
       <div className="mx-auto max-w-7xl px-6 pt-16 pb-20 sm:px-8 sm:pt-24 sm:pb-24 md:pt-32 md:pb-32">
         <div className="mx-auto max-w-3xl text-center">
-          {/* Eyebrow */}
+          {/* Eyebrow: 숨고 평점 5.0 */}
           <div className="mb-8 inline-flex items-center rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-semibold text-gray-700">
-            <span
+            <svg
               aria-hidden="true"
-              className="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-indigo-500"
-            />
-            사장님을 위한 AI 사이트 제작
+              viewBox="0 0 20 20"
+              className="mr-1.5 h-4 w-4 fill-amber-500"
+            >
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.952a1 1 0 00.95.69h4.155c.969 0 1.371 1.24.588 1.81l-3.36 2.44a1 1 0 00-.364 1.118l1.287 3.952c.3.922-.755 1.688-1.54 1.118l-3.36-2.44a1 1 0 00-1.175 0l-3.36 2.44c-.784.57-1.838-.197-1.539-1.118l1.287-3.952a1 1 0 00-.364-1.118L2.572 9.38c-.783-.57-.38-1.81.588-1.81h4.155a1 1 0 00.951-.69l1.286-3.952z" />
+            </svg>
+            숨고 평점
+            <span className="mx-1 font-bold text-gray-900">5.0</span>
+            <span aria-hidden="true" className="mx-1.5 text-gray-300">·</span>
+            1인 프리미엄 제작
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl font-extrabold leading-[1.15] tracking-[-0.025em] text-gray-900 sm:text-6xl md:text-7xl">
+          <h1 className="text-5xl font-extrabold leading-[1.15] tracking-[-0.025em] text-gray-900 sm:text-6xl">
             아이디어만 있으면 됩니다.
             <br />
             나머지는{' '}
@@ -55,6 +61,28 @@ export function Hero() {
           <p className="mt-6 text-sm font-medium text-gray-500">
             1분이면 끝나요 · 가입 없이 가능
           </p>
+
+          {/* Trust bar */}
+          <div className="mx-auto mt-12 max-w-2xl border-t border-gray-100 pt-8 sm:mt-14 sm:pt-10">
+            <p className="text-xs font-semibold tracking-[0.1em] text-gray-400">
+              이미 함께한 브랜드
+            </p>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[15px] font-semibold text-gray-500">
+              <span>프리즘 입시</span>
+              <span aria-hidden="true" className="text-gray-300">
+                ·
+              </span>
+              <span>Conatus 입시</span>
+              <span aria-hidden="true" className="text-gray-300">
+                ·
+              </span>
+              <span>디지털스토어</span>
+              <span aria-hidden="true" className="text-gray-300">
+                ·
+              </span>
+              <span>PS Company</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
