@@ -20,12 +20,12 @@ export function HowItWorks() {
           </p>
         </div>
 
-        {/* Steps — 3 columns on md+, stacked on mobile */}
-        <ol className="mx-auto mt-14 grid grid-cols-1 gap-4 sm:mt-16 md:grid-cols-3 md:gap-5">
-          {processSteps.map((step) => (
+        {/* Steps — 3 columns on md+; gap-8 to make room for connector arrows */}
+        <ol className="mx-auto mt-14 grid grid-cols-1 gap-4 sm:mt-16 md:grid-cols-3 md:gap-8">
+          {processSteps.map((step, idx) => (
             <li
               key={step.number}
-              className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 sm:p-8"
+              className="relative flex flex-col rounded-xl border border-gray-200 bg-white p-6 sm:p-8"
             >
               <div
                 aria-hidden="true"
@@ -44,6 +44,28 @@ export function HowItWorks() {
                   {step.duration}
                 </span>
               </div>
+
+              {/* Connector arrow (desktop only, between cards) */}
+              {idx < processSteps.length - 1 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute right-0 top-1/2 z-10 hidden -translate-y-1/2 translate-x-full items-center justify-center md:flex"
+                  style={{ width: '2rem' }}
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-6 w-6 text-gray-300"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="13 6 19 12 13 18" />
+                  </svg>
+                </span>
+              )}
             </li>
           ))}
         </ol>
