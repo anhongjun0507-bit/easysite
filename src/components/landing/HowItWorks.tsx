@@ -146,15 +146,13 @@ export function HowItWorks() {
           ))}
         </ol>
 
-        <div className="mt-14 flex flex-col items-center gap-4 text-center sm:mt-16">
-          <p className="text-lg font-semibold text-gray-900 sm:text-xl">
-            준비됐어요. 어떤 사이트가 필요하신가요?
-          </p>
+        {/* primary CTA 는 바로 다음 FinalCta 섹션에서 강조 → 여기는 텍스트 링크로 약화 (#8) */}
+        <div className="mt-12 text-center sm:mt-14">
           <Link
             href="/wizard"
-            className="cta-glow inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-indigo-600 px-7 text-base font-semibold text-white hover:bg-indigo-700 sm:text-[17px]"
+            className="inline-flex items-center gap-1.5 text-base font-semibold text-indigo-600 transition hover:text-indigo-700 sm:text-[17px]"
           >
-            <span>1분 만에 견적 받기</span>
+            지금 신청서 작성하기
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
@@ -163,7 +161,7 @@ export function HowItWorks() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-5 w-5"
+              className="h-4 w-4"
             >
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="13 6 19 12 13 18" />

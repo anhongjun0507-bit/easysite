@@ -190,24 +190,47 @@ function MockPreview() {
             </div>
           </div>
 
-          {/* Image placeholder — 이모지 🍱 제거, 추상 도형으로 대체 (P1-03) */}
+          {/* 실제 사이트 콘텐츠 미니 카드 — placeholder 인상 해소 (#3) */}
           <div className="sm:col-span-2">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-200 sm:aspect-square">
-              <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex h-full flex-col justify-between rounded-lg border border-gray-200 bg-white p-4">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-amber-600">
+                  오늘의 메뉴
+                </div>
+                <ul className="mt-2 space-y-1.5 text-[13px]">
+                  <li className="flex items-baseline justify-between gap-2">
+                    <span className="font-semibold text-gray-900">
+                      한정식 코스
+                    </span>
+                    <span className="shrink-0 font-semibold text-gray-700">
+                      18,000원
+                    </span>
+                  </li>
+                  <li className="flex items-baseline justify-between gap-2">
+                    <span className="text-gray-700">갈비찜 정식</span>
+                    <span className="shrink-0 text-gray-600">12,000원</span>
+                  </li>
+                  <li className="flex items-baseline justify-between gap-2">
+                    <span className="text-gray-700">제육볶음 정식</span>
+                    <span className="shrink-0 text-gray-600">9,500원</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="mt-4 flex items-center gap-1.5 border-t border-gray-100 pt-3 text-[11px] text-gray-500">
                 <svg
-                  aria-hidden="true"
-                  viewBox="0 0 64 64"
+                  viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="1.75"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="h-16 w-16 text-indigo-600/70"
+                  className="h-3 w-3"
+                  aria-hidden="true"
                 >
-                  <rect x="8" y="20" width="48" height="32" rx="4" />
-                  <path d="M16 20l4-8h24l4 8" />
-                  <line x1="20" y1="34" x2="44" y2="34" />
+                  <circle cx="12" cy="12" r="9" />
+                  <polyline points="12 7 12 12 15 14" />
                 </svg>
+                <span>매일 11:00 ~ 21:30</span>
               </div>
             </div>
           </div>

@@ -111,16 +111,16 @@ function MiniMock({ icon, accent }: { icon: string; accent: string }) {
     )
   }
   if (icon === 'sparkles') {
+    // 실제 생성 예시 노출 — "그래서 뭐가 나오는데?" 의문 해소 (#11)
     return (
       <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 text-left shadow-xs">
         <div className={`text-[10px] font-bold uppercase tracking-wider ${accent}`}>
           AI 회사 소개 초안
         </div>
-        <div className="mt-1.5 space-y-1">
-          <div className="h-2 w-full rounded-full bg-pink-100" />
-          <div className="h-2 w-5/6 rounded-full bg-pink-100" />
-          <div className="h-2 w-4/6 rounded-full bg-pink-100" />
-        </div>
+        <p className="mt-1.5 text-[12px] leading-relaxed text-gray-700">
+          1989년 강남에서 시작한 한식당, 30년 동안 어머니의 손맛을 그대로
+          이어오고 있습니다.
+        </p>
       </div>
     )
   }

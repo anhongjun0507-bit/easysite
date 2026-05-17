@@ -101,6 +101,12 @@ export function PainPoints() {
                   </span>
                   <p className="mt-2 text-lg font-semibold leading-snug text-gray-900 sm:text-xl">
                     {p.quote}
+                    <span
+                      aria-hidden="true"
+                      className="ml-1 align-baseline text-2xl font-extrabold leading-none text-indigo-300 sm:text-3xl"
+                    >
+                      &rdquo;
+                    </span>
                   </p>
                 </div>
               </div>
