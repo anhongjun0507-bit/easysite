@@ -23,7 +23,7 @@ export default function PrivacyPage() {
             1. 수집하는 개인정보의 항목
           </h2>
           <ul className="mt-3 list-inside list-disc space-y-2">
-            <li>견적 위저드 응답: 업종·페이지 구성·기능 요구·예산 범위</li>
+            <li>견적 신청서 응답: 업종·페이지 구성·기능 요구·예산 범위</li>
             <li>연락처: 이름, 휴대전화번호, 이메일(선택)</li>
             <li>자동 수집: IP 주소, 브라우저·디바이스 정보, 접속 시각</li>
           </ul>

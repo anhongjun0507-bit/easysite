@@ -4,7 +4,7 @@ import { WizardForm } from './WizardForm'
 export const metadata: Metadata = {
   title: '1분 만에 견적 받기',
   description:
-    '간단히 입력하시면 24시간 안에 견적이랑 사이트 미리보기를 카톡으로 보내드려요.',
+    '간단히 입력하시면 영업일 24시간 안에 견적이랑 사이트 미리보기를 카톡으로 보내드려요.',
 }
 
 function parseIntent(raw: string | string[] | undefined): string {
@@ -29,7 +29,7 @@ export default function WizardPage({
           어떤 사이트가 필요하세요?
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-gray-700 sm:text-lg">
-          간단히만 적어주세요. <strong className="font-semibold text-gray-900">24시간 안에</strong>{' '}
+          간단히만 적어주세요. <strong className="font-semibold text-gray-900">영업일 24시간 안에</strong>{' '}
           견적이랑 사이트 미리보기를 보내드릴게요.
         </p>
       </div>

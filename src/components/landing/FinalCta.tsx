@@ -44,7 +44,7 @@ export function FinalCta() {
 
         {/* 보라 배경 위 indigo-100 → 대비 충분 (4.5:1+) */}
         <p className="mt-6 text-sm font-medium text-indigo-100">
-          가입 없이 가능 · 24시간 안에 카톡으로 답변
+          가입 없이 가능 · 영업일 24시간 안에 카톡으로 답변
         </p>
       </div>
     </section>

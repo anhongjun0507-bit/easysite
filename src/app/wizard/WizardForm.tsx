@@ -59,7 +59,7 @@ export function WizardForm({ initialIntent }: { initialIntent: string }) {
           잘 받았어요!
         </h2>
         <p className="mt-3 text-base leading-relaxed text-gray-700">
-          24시간 안에 견적이랑 사이트 미리보기 보내드릴게요.
+          영업일 24시간 안에 견적이랑 사이트 미리보기 보내드릴게요.
           <br className="hidden sm:inline" /> 빠른 답변이 필요하시면 아래로 직접
           연락주셔도 좋아요.
         </p>
@@ -203,7 +203,7 @@ export function WizardForm({ initialIntent }: { initialIntent: string }) {
           )}
         </button>
         <p className="mt-3 text-center text-sm font-medium text-gray-600">
-          가입 없이 가능 · 24시간 안에 카톡으로 답변
+          가입 없이 가능 · 영업일 24시간 안에 카톡으로 답변
         </p>
       </div>
     </form>

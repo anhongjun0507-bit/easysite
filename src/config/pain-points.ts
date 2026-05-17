@@ -27,6 +27,6 @@ export const painPoints: PainPoint[] = [
   },
   {
     id: 'price-opaque',
-    quote: '도대체 얼마 들지 견적 받아봐야 알아서 답답해요',
+    quote: '얼마 들지 미리 모르니까 답답해요',
   },
 ]

@@ -50,7 +50,7 @@ export const differentiators: Differentiator[] = [
     title: '가격을 처음부터 공개',
     description:
       '얼마 들지 모르면 답답하잖아요. 숨고 1인 프리랜서 시세 기준으로 처음부터 다 공개합니다.',
-    example: '예: 위저드 답변하면서 실시간으로 시세 확인',
+    example: '예: 신청서 답변하면서 실시간으로 시세 확인',
     icon: 'tag',
     answersPainPointId: 'price-opaque',
   },

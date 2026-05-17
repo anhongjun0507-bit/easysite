@@ -23,7 +23,7 @@ export function Hero() {
             <span aria-hidden="true" className="mx-1.5 text-gray-400">
               ·
             </span>
-            1인 프리미엄 제작
+            프리즘 안홍준 대표 직접 제작
           </div>
 
           {/* Headline — clamp font, 1.18 line-height, 한글 가독성 확보. 강조어 solid (그라데이션 제거) */}
@@ -42,8 +42,8 @@ export function Hero() {
 
           {/* Subheadline — gray-700 (대비 충분) */}
           <p className="animate-ease-up animate-ease-up-d2 mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-700 sm:mt-6 sm:text-lg md:text-xl">
-            지금 한 줄만 알려주시면, 내일까지 견적이랑 사이트 미리보기를
-            보내드릴게요.
+            지금 한 줄만 알려주시면, 영업일 24시간 안에 견적이랑 사이트
+            미리보기를 보내드릴게요.
           </p>
 
           {/* Inline wizard form */}
@@ -106,7 +106,7 @@ export function Hero() {
 
           {/* Caption — 흰배경 대비 통과 (gray-600 = 7.0:1) */}
           <p className="mt-5 text-sm font-medium text-gray-600">
-            가입 없이 가능 · 24시간 안에 카톡으로 답변
+            가입 없이 가능 · 영업일 24시간 안에 카톡으로 답변
           </p>
         </div>
 

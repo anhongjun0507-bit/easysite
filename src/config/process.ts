@@ -17,7 +17,7 @@ export type ProcessStep = {
 export const processSteps: ProcessStep[] = [
   {
     number: '01',
-    title: '1분 위저드 작성',
+    title: '1분 신청서 작성',
     description:
       'AI가 짧게 여쭤봐요. 잘 모르시면 “잘 모르겠어요” 누르시면 돼요.',
     duration: '약 1분',
@@ -34,6 +34,6 @@ export const processSteps: ProcessStep[] = [
     title: '사이트 위에서 코멘트로 수정',
     description:
       '카톡 핑퐁 없이, 사이트 화면 위에 동그라미 치고 “여기 바꿔주세요” 한 마디면 반영해드려요.',
-    duration: '본 제작 1~2주',
+    duration: '본격 제작 시작',
   },
 ]
