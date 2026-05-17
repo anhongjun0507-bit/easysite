@@ -1,12 +1,44 @@
 import type { ReactNode } from 'react'
 import { differentiators } from '@/config/differentiators'
 
-// 4색 톤은 유지 (각 차별점의 의미 차별화에 도움), 그라데이션은 제거
-const colorMap: Record<string, { tile: string; icon: string; accent: string }> = {
-  clock: { tile: 'bg-indigo-50', icon: 'text-indigo-600', accent: 'text-indigo-700' },
-  sparkles: { tile: 'bg-pink-50', icon: 'text-pink-600', accent: 'text-pink-700' },
-  comment: { tile: 'bg-emerald-50', icon: 'text-emerald-600', accent: 'text-emerald-700' },
-  tag: { tile: 'bg-amber-50', icon: 'text-amber-600', accent: 'text-amber-700' },
+// 4색 톤은 유지 (각 차별점의 의미 차별화에 도움), 그라데이션은 제거.
+// Pain ↔ Diff 시각 페어 매칭 (#9): 색은 PainPoints 카드와 동일.
+const colorMap: Record<
+  string,
+  { tile: string; icon: string; accent: string; chip: string }
+> = {
+  clock: {
+    tile: 'bg-indigo-50',
+    icon: 'text-indigo-600',
+    accent: 'text-indigo-700',
+    chip: 'bg-indigo-50 text-indigo-700 ring-indigo-100',
+  },
+  sparkles: {
+    tile: 'bg-pink-50',
+    icon: 'text-pink-600',
+    accent: 'text-pink-700',
+    chip: 'bg-pink-50 text-pink-700 ring-pink-100',
+  },
+  comment: {
+    tile: 'bg-emerald-50',
+    icon: 'text-emerald-600',
+    accent: 'text-emerald-700',
+    chip: 'bg-emerald-50 text-emerald-700 ring-emerald-100',
+  },
+  tag: {
+    tile: 'bg-amber-50',
+    icon: 'text-amber-600',
+    accent: 'text-amber-700',
+    chip: 'bg-amber-50 text-amber-700 ring-amber-100',
+  },
+}
+
+// 차별점이 해결하는 Pain 의 짧은 인용 — Pain 카드와 페어 인지를 돕는 시각 신호.
+const painShortQuote: Record<string, string> = {
+  'slow-quote': '외주 견적까지 2주씩 걸려서',
+  'writing-hard': '회사 소개 글쓰기 자신 없어서',
+  'revision-pain': '수정 요청 카톡으로 일일이',
+  'price-opaque': '얼마 들지 미리 몰라서',
 }
 
 const iconMap: Record<string, ReactNode> = {
@@ -129,7 +161,7 @@ function MiniMock({ icon, accent }: { icon: string; accent: string }) {
     return (
       <div className="mt-5 rounded-lg border border-gray-200 bg-white p-3 text-left shadow-xs">
         <div className="space-y-2 text-[11px]">
-          <div className="flex items-center gap-2 text-gray-400 line-through">
+          <div className="flex items-center gap-2 text-gray-500 line-through">
             <span>카톡으로 “1쪽 3번째 줄 첫째 줄…”</span>
           </div>
           <div className={`flex items-center gap-2 font-semibold ${accent}`}>
@@ -184,10 +216,20 @@ export function Differentiators() {
                 key={d.id}
                 className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:shadow-md sm:p-8"
               >
-                <div
-                  className={`mb-5 inline-flex h-12 w-12 items-center justify-center rounded-lg ${color.tile} ${color.icon}`}
-                >
-                  {iconMap[d.icon]}
+                <div className="mb-5 flex items-center gap-3">
+                  <div
+                    className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-lg ${color.tile} ${color.icon}`}
+                  >
+                    {iconMap[d.icon]}
+                  </div>
+                  {d.answersPainPointId &&
+                    painShortQuote[d.answersPainPointId] && (
+                      <span
+                        className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ring-1 ring-inset ${color.chip}`}
+                      >
+                        해결: “{painShortQuote[d.answersPainPointId]}”
+                      </span>
+                    )}
                 </div>
 
                 <h3 className="text-lg font-bold leading-snug text-gray-900 sm:text-xl">

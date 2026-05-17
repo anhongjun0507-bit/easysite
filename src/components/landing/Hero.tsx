@@ -64,7 +64,7 @@ export function Hero() {
                 required
                 maxLength={120}
                 autoComplete="off"
-                className="h-14 flex-1 rounded-lg border border-gray-300 bg-white px-5 text-base text-gray-900 shadow-sm placeholder:text-gray-400 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 sm:text-[17px]"
+                className="h-14 flex-1 rounded-lg border border-gray-300 bg-white px-5 text-base text-gray-900 shadow-sm placeholder:text-gray-500 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 sm:text-[17px]"
               />
               <button
                 type="submit"
@@ -88,24 +88,24 @@ export function Hero() {
             </div>
           </form>
 
-          {/* Quick intent chips */}
+          {/* Quick intent chips — 터치 영역 ≥44px (#4) */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:mt-5">
-            <span className="text-sm font-medium text-gray-600">
+            <span className="text-sm font-medium text-gray-700">
               자주 찾는 분야
             </span>
             {quickIntents.map((label) => (
               <Link
                 key={label}
                 href={`/wizard?intent=${encodeURIComponent(label + ' 사이트')}`}
-                className="rounded-full border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 transition hover:border-indigo-400 hover:text-indigo-700"
+                className="inline-flex h-11 items-center rounded-full border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 transition hover:border-indigo-400 hover:text-indigo-700"
               >
                 {label}
               </Link>
             ))}
           </div>
 
-          {/* Caption — 흰배경 대비 통과 (gray-600 = 7.0:1) */}
-          <p className="mt-5 text-sm font-medium text-gray-600">
+          {/* Caption — 60대 사장님 시력 고려해 gray-700 (#374151, ~10:1) */}
+          <p className="mt-5 text-sm font-medium text-gray-700">
             가입 없이 가능 · 영업일 24시간 안에 카톡으로 답변
           </p>
         </div>

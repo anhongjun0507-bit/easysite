@@ -1,6 +1,38 @@
 import type { ReactNode } from 'react'
 import { painPoints } from '@/config/pain-points'
 
+// Pain ↔ Differentiator 시각 페어 매칭 (#9)
+// 각 Pain 의 아이콘·따옴표 색을 대응하는 Differentiator 카드 색과 동일하게.
+//  slow-quote     → fast-quote        (indigo)
+//  writing-hard   → ai-copy           (pink)
+//  revision-pain  → in-place-comments (emerald)
+//  price-opaque   → open-pricing      (amber)
+const painPairTone: Record<
+  string,
+  { iconTile: string; iconColor: string; quoteMark: string }
+> = {
+  'slow-quote': {
+    iconTile: 'bg-indigo-50 ring-indigo-100',
+    iconColor: 'text-indigo-600',
+    quoteMark: 'text-indigo-300',
+  },
+  'writing-hard': {
+    iconTile: 'bg-pink-50 ring-pink-100',
+    iconColor: 'text-pink-600',
+    quoteMark: 'text-pink-300',
+  },
+  'revision-pain': {
+    iconTile: 'bg-emerald-50 ring-emerald-100',
+    iconColor: 'text-emerald-600',
+    quoteMark: 'text-emerald-300',
+  },
+  'price-opaque': {
+    iconTile: 'bg-amber-50 ring-amber-100',
+    iconColor: 'text-amber-600',
+    quoteMark: 'text-amber-300',
+  },
+}
+
 const painIconMap: Record<string, ReactNode> = {
   'slow-quote': (
     <svg
@@ -80,38 +112,41 @@ export function PainPoints() {
         </div>
 
         <ul className="mx-auto mt-12 grid grid-cols-1 gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-5">
-          {painPoints.map((p) => (
-            <li
-              key={p.id}
-              className="flex flex-col rounded-xl border border-gray-200 bg-gray-50 p-6 transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:border-gray-300 hover:bg-white hover:shadow-sm sm:p-8"
-            >
-              <div className="flex items-start gap-4">
-                <span
-                  aria-hidden="true"
-                  className="mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-gray-500 shadow-xs ring-1 ring-gray-200"
-                >
-                  {painIconMap[p.id]}
-                </span>
-                <div className="flex-1">
+          {painPoints.map((p) => {
+            const tone = painPairTone[p.id]
+            return (
+              <li
+                key={p.id}
+                className="flex flex-col rounded-xl border border-gray-200 bg-gray-50 p-6 transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:border-gray-300 hover:bg-white hover:shadow-sm sm:p-8"
+              >
+                <div className="flex items-start gap-4">
                   <span
                     aria-hidden="true"
-                    className="block text-4xl font-extrabold leading-none text-indigo-300 sm:text-5xl"
+                    className={`mt-1 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg shadow-xs ring-1 ${tone.iconTile} ${tone.iconColor}`}
                   >
-                    &ldquo;
+                    {painIconMap[p.id]}
                   </span>
-                  <p className="mt-2 text-lg font-semibold leading-snug text-gray-900 sm:text-xl">
-                    {p.quote}
+                  <div className="flex-1">
                     <span
                       aria-hidden="true"
-                      className="ml-1 align-baseline text-2xl font-extrabold leading-none text-indigo-300 sm:text-3xl"
+                      className={`block text-4xl font-extrabold leading-none sm:text-5xl ${tone.quoteMark}`}
                     >
-                      &rdquo;
+                      &ldquo;
                     </span>
-                  </p>
+                    <p className="mt-2 text-lg font-semibold leading-snug text-gray-900 sm:text-xl">
+                      {p.quote}
+                      <span
+                        aria-hidden="true"
+                        className={`ml-1 align-baseline text-2xl font-extrabold leading-none sm:text-3xl ${tone.quoteMark}`}
+                      >
+                        &rdquo;
+                      </span>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
+              </li>
+            )
+          })}
         </ul>
 
         {/* Bridge — 그라데이션 제거, solid indigo-700 */}

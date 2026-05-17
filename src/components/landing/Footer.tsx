@@ -53,17 +53,17 @@ export function Footer() {
         </div>
 
         {/* Legal links — 실제 경로 (P0-04 fix) */}
-        <div className="mt-12 flex flex-col gap-3 border-t border-gray-800 pt-6 text-[13px] sm:mt-14 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex gap-5">
+        <div className="mt-12 flex flex-col gap-1 border-t border-gray-800 pt-4 text-[13px] sm:mt-14 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex gap-2">
             <Link
               href="/terms"
-              className="text-gray-300 transition hover:text-white"
+              className="inline-flex h-11 items-center px-1 text-gray-300 transition hover:text-white"
             >
               이용약관
             </Link>
             <Link
               href="/privacy"
-              className="text-gray-300 transition hover:text-white"
+              className="inline-flex h-11 items-center px-1 text-gray-300 transition hover:text-white"
             >
               개인정보처리방침
             </Link>

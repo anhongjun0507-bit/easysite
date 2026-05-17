@@ -135,7 +135,7 @@ export function WizardForm({ initialIntent }: { initialIntent: string }) {
         <textarea
           id="description"
           rows={5}
-          className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 shadow-sm placeholder:text-gray-400 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+          className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-base text-gray-900 shadow-sm placeholder:text-gray-500 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
           placeholder="예: 30년 된 한식당이에요. 메뉴랑 예약 페이지 필요하고..."
           {...register('description')}
         />
@@ -202,7 +202,7 @@ export function WizardForm({ initialIntent }: { initialIntent: string }) {
             </>
           )}
         </button>
-        <p className="mt-3 text-center text-sm font-medium text-gray-600">
+        <p className="mt-3 text-center text-sm font-medium text-gray-700">
           가입 없이 가능 · 영업일 24시간 안에 카톡으로 답변
         </p>
       </div>
@@ -256,7 +256,7 @@ const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
         onBlur={onBlur}
         aria-invalid={error ? 'true' : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
-        className={`mt-2 h-12 w-full rounded-lg border bg-white px-4 text-base text-gray-900 shadow-sm placeholder:text-gray-400 transition focus:outline-none focus:ring-2 ${
+        className={`mt-2 h-12 w-full rounded-lg border bg-white px-4 text-base text-gray-900 shadow-sm placeholder:text-gray-500 transition focus:outline-none focus:ring-2 ${
           error
             ? 'border-red-300 focus:border-red-500 focus:ring-red-500/30'
             : 'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500/30'

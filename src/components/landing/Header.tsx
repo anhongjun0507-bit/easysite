@@ -22,7 +22,7 @@ export function Header() {
           EasySite
         </Link>
 
-        <ul className="hidden items-center gap-6 sm:flex md:gap-7">
+        <ul className="hidden items-center gap-2 sm:flex md:gap-3">
           {navLinks.map((link) => {
             const isActive =
               link.match === 'path' ? pathname === link.href : false
@@ -31,10 +31,10 @@ export function Header() {
                 <Link
                   href={link.href}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`text-sm font-medium transition ${
+                  className={`inline-flex h-11 items-center rounded-md px-3 text-sm font-medium transition ${
                     isActive
                       ? 'text-gray-900 underline decoration-indigo-500 decoration-2 underline-offset-[6px]'
-                      : 'text-gray-600 hover:text-gray-900'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`}
                 >
                   {link.label}
@@ -44,10 +44,10 @@ export function Header() {
           })}
         </ul>
 
-        {/* CTA 텍스트 통일: "1분 만에 견적 받기" (P1-11) */}
+        {/* CTA — 모바일 h-11(44px), sm h-12(48px) — WCAG 2.5.5 / iOS HIG 44pt */}
         <Link
           href="/wizard"
-          className="shrink-0 rounded-lg bg-gray-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-gray-700 sm:px-4 sm:text-[15px]"
+          className="inline-flex h-11 shrink-0 items-center rounded-lg bg-gray-900 px-4 text-sm font-semibold text-white transition hover:bg-gray-700 sm:h-12 sm:px-5 sm:text-[15px]"
         >
           1분 만에 견적 받기
         </Link>
