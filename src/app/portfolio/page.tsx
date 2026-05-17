@@ -1,9 +1,10 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import { portfolio } from '@/config/portfolio'
 
 export const metadata: Metadata = {
-  title: '포트폴리오 — EasySite',
+  title: '포트폴리오',
   description: '프리즘이 실제로 만들어 운영 중인 사이트들.',
 }
 
@@ -30,54 +31,79 @@ export default function PortfolioPage() {
           이미 만들어 운영 중인 사이트들
         </h1>
         <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-gray-600 sm:text-lg">
-          상세한 설명과 화면 캡처는 곧 추가됩니다. 우선 카드를 눌러 직접
-          방문해보세요.
+          모두 프리즘이 직접 설계·개발한 사이트예요. 카드를 누르면 실제 운영
+          중인 화면으로 이동합니다.
         </p>
       </div>
 
-      <ul className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+      <ul className="mt-12 grid grid-cols-1 gap-5 sm:mt-14 sm:grid-cols-2 sm:gap-6">
         {portfolio.map((site) => (
           <li key={site.id}>
             <a
               href={site.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 transition hover:border-indigo-300 hover:shadow-md"
+              className="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md"
             >
-              <div className="flex items-center justify-between gap-3">
-                <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
-                  {site.category}
-                </span>
-                <span
-                  aria-hidden="true"
-                  className="text-sm font-medium text-gray-400 transition group-hover:text-indigo-600"
-                >
-                  방문 →
-                </span>
+              {/* Thumbnail — 16:10 */}
+              <div className="relative aspect-[16/10] overflow-hidden bg-gray-50">
+                <Image
+                  src={site.image}
+                  alt={site.imageAlt}
+                  fill
+                  sizes="(min-width: 640px) 50vw, 100vw"
+                  className="object-cover object-top transition duration-300 ease-emphasized group-hover:scale-[1.02]"
+                  loading="lazy"
+                />
               </div>
 
-              <h2 className="mt-4 text-lg font-bold text-gray-900 sm:text-xl">
-                {site.name}
-              </h2>
-              <p className="mt-2 text-sm leading-relaxed text-gray-600 sm:text-base">
-                {site.description}
-              </p>
+              <div className="flex flex-1 flex-col p-6">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+                    {site.category}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-gray-500 transition group-hover:text-indigo-600">
+                    방문
+                    <svg
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-3 w-3"
+                      aria-hidden="true"
+                    >
+                      <path d="M6 3h7v7" />
+                      <path d="M13 3 5 11" />
+                      <path d="M11 13H3V5" />
+                    </svg>
+                  </span>
+                </div>
 
-              <div className="mt-auto pt-4">
-                {site.tech_stack.length > 0 && (
-                  <div className="mb-3 flex flex-wrap gap-1.5">
-                    {site.tech_stack.map((t) => (
-                      <span
-                        key={t}
-                        className="rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600"
-                      >
-                        {t}
-                      </span>
-                    ))}
+                <h2 className="mt-4 text-lg font-bold text-gray-900 sm:text-xl">
+                  {site.name}
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-gray-600 sm:text-base">
+                  {site.description}
+                </p>
+
+                <div className="mt-auto pt-4">
+                  {site.tech_stack.length > 0 && (
+                    <div className="mb-3 flex flex-wrap gap-1.5">
+                      {site.tech_stack.map((t) => (
+                        <span
+                          key={t}
+                          className="rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <div className="text-xs font-medium text-gray-500">
+                    {hostnameOf(site.url)}
                   </div>
-                )}
-                <div className="text-xs font-medium text-gray-400">
-                  {hostnameOf(site.url)}
                 </div>
               </div>
             </a>
@@ -88,16 +114,29 @@ export default function PortfolioPage() {
       <div className="mt-16 text-center">
         <Link
           href="/wizard"
-          className="inline-flex h-14 items-center justify-center rounded-lg bg-indigo-600 px-7 text-base font-semibold text-white shadow-sm transition hover:bg-indigo-700 hover:shadow-md sm:text-[17px]"
+          className="cta-glow inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-indigo-600 px-7 text-base font-semibold text-white hover:bg-indigo-700 sm:text-[17px]"
         >
-          내 사이트도 견적 받아보기 →
+          <span>내 사이트도 1분 만에 견적 받기</span>
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5"
+          >
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="13 6 19 12 13 18" />
+          </svg>
         </Link>
         <div className="mt-4">
           <Link
             href="/"
             className="text-sm font-medium text-gray-500 hover:text-gray-900"
           >
-            ← 처음으로 돌아가기
+            처음으로 돌아가기
           </Link>
         </div>
       </div>

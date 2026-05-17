@@ -1,6 +1,7 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
+import { FloatingContact } from '@/components/landing/FloatingContact'
 import './globals.css'
 
 const SITE_URL = 'https://easysite-sage.vercel.app'
@@ -38,7 +39,13 @@ export const metadata: Metadata = {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
   },
+  manifest: '/manifest.webmanifest',
   robots: { index: true, follow: true },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#4f46e5',
+  colorScheme: 'light',
 }
 
 export default function RootLayout({
@@ -52,6 +59,7 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <FloatingContact />
       </body>
     </html>
   )
