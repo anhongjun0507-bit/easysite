@@ -22,8 +22,8 @@ export const differentiators: Differentiator[] = [
     id: 'fast-quote',
     title: '24시간 안에 견적이랑 미리보기까지',
     description:
-      '다른 곳은 견적 받는 데만 2주씩 걸려요. 우리는 다음 날 사이트 미리보기까지 함께 보내드려요.',
-    example: '예: 평일 오후 신청 → 다음 날 오전 견적·시안 도착',
+      '다른 곳은 견적 받는 데만 2주씩 걸려요. 우리는 영업일 24시간 안에 사이트 미리보기까지 함께 보내드려요.',
+    example: '예: 평일 오후 신청 → 다음 영업일 오전 견적·시안 도착',
     icon: 'clock',
     answersPainPointId: 'slow-quote',
   },
