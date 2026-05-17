@@ -65,7 +65,7 @@ export function Hero() {
           </p>
 
           {/* Trust bar */}
-          <div className="mx-auto mt-12 max-w-2xl border-t border-gray-100 pt-8 sm:mt-14 sm:pt-10">
+          <div className="mx-auto mt-12 max-w-3xl border-t border-gray-100 pt-8 sm:mt-14 sm:pt-10">
             <p className="text-xs font-semibold tracking-[0.1em] text-gray-400">
               이미 함께한 브랜드
             </p>

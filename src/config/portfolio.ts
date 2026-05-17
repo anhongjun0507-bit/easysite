@@ -59,7 +59,7 @@ export const portfolio: PortfolioItem[] = [
     category: '인쇄·서비스',
     description: '명함·스티커·포스터를 2~5일 안에 받아보는 사내 인쇄 주문 서비스',
     tech_stack: ['Vercel'],
-    featured: false,
+    featured: true,
   },
   {
     id: 'waylog',
@@ -68,7 +68,7 @@ export const portfolio: PortfolioItem[] = [
     category: '라이프스타일',
     description: '라이프스타일 리뷰와 8주 챌린지를 한 곳에서 관리하는 서비스',
     tech_stack: ['Vercel'],
-    featured: false,
+    featured: true,
   },
   {
     id: 'soc-architects',
@@ -77,7 +77,7 @@ export const portfolio: PortfolioItem[] = [
     category: '건축',
     description: '주택·농장·상업시설을 설계하는 건축사무소의 프로젝트 포트폴리오',
     tech_stack: ['Next.js', 'Sanity CMS'],
-    featured: false,
+    featured: true,
   },
 ]
 
