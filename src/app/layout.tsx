@@ -24,15 +24,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="flex min-h-screen flex-col antialiased">
-        <div className="relative isolate flex-1 overflow-hidden">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px] bg-gradient-to-b from-indigo-100/60 via-indigo-50/30 to-transparent"
-          />
-          <Header />
-          {children}
-        </div>
+      <body className="relative isolate flex min-h-screen flex-col antialiased">
+        {/* Subtle global accent — Hero owns its stronger mesh; this just keeps brand tone on other pages */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 -z-20 h-[480px] bg-gradient-to-b from-indigo-50/40 via-transparent to-transparent"
+        />
+        <Header />
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>

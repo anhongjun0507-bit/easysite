@@ -1,13 +1,24 @@
 import Link from 'next/link'
 
+const businessInfo: { label: string; value: string; href?: string }[] = [
+  { label: '상호', value: '프리즘' },
+  { label: '사업자등록번호', value: '672-35-01596' },
+  { label: '대표', value: '안홍준' },
+  { label: '연락처', value: '010-3782-5418', href: 'tel:01037825418' },
+]
+
 export function Footer() {
   return (
     <footer className="bg-gray-900 text-gray-400">
-      <div className="mx-auto max-w-7xl px-6 py-12 sm:px-8 sm:py-16">
+      <div className="mx-auto max-w-7xl px-6 py-14 sm:px-8 sm:py-16">
         {/* Top: Brand + Business info */}
-        <div className="flex flex-col gap-10 sm:flex-row sm:items-start sm:justify-between sm:gap-12">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-12 md:grid-cols-[1fr_auto]">
+          {/* Left: Brand */}
           <div>
-            <Link href="/" className="text-xl font-bold text-white">
+            <Link
+              href="/"
+              className="text-xl font-bold tracking-tight text-white"
+            >
               EasySite
             </Link>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-gray-400">
@@ -17,18 +28,30 @@ export function Footer() {
             </p>
           </div>
 
-          <address className="not-italic text-sm leading-relaxed text-gray-400 sm:text-right">
-            <p className="font-semibold text-gray-200">프리즘</p>
-            <p className="mt-1">사업자등록번호 672-35-01596</p>
-            <p>대표 안홍준</p>
-            <p>
-              <a
-                href="tel:01037825418"
-                className="transition hover:text-white"
-              >
-                010-3782-5418
-              </a>
+          {/* Right: Business info — label/value 정렬된 2-column */}
+          <address className="not-italic">
+            <p className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-500">
+              사업자 정보
             </p>
+            <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-5 gap-y-1.5 text-sm leading-relaxed sm:gap-x-6">
+              {businessInfo.map((item) => (
+                <div key={item.label} className="contents">
+                  <dt className="text-gray-500">{item.label}</dt>
+                  <dd className="text-gray-200">
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        className="transition hover:text-white"
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      item.value
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </address>
         </div>
 

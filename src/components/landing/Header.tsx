@@ -8,8 +8,8 @@ const navLinks = [
 
 export function Header() {
   return (
-    <header className="relative z-10">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-5 sm:px-8 sm:py-6">
+    <header className="sticky top-0 z-40 border-b border-gray-200/60 bg-white/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 sm:px-8 sm:py-5">
         <Link
           href="/"
           className="shrink-0 text-lg font-bold tracking-tight text-gray-900 sm:text-xl"
