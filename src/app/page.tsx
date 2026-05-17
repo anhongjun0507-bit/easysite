@@ -1,13 +1,11 @@
 import { Hero } from '@/components/landing/Hero'
-import { PainPoints } from '@/components/landing/PainPoints'
-import { Differentiators } from '@/components/landing/Differentiators'
+import { PainSolutions } from '@/components/landing/PainSolutions'
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <PainPoints />
-      <Differentiators />
+      <PainSolutions />
     </>
   )
 }
