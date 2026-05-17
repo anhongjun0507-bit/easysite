@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Header } from '@/components/landing/Header'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -22,7 +23,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <div className="relative isolate min-h-screen overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[720px] bg-gradient-to-b from-indigo-100/60 via-indigo-50/30 to-transparent"
+          />
+          <Header />
+          {children}
+        </div>
+      </body>
     </html>
   )
 }
