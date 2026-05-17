@@ -2,13 +2,15 @@ import { Fragment } from 'react'
 import Link from 'next/link'
 import { featuredPortfolio } from '@/config/portfolio'
 
+const quickIntents = ['학원·교육', '쇼핑몰', '회사 소개', '주문·예약']
+
 export function Hero() {
   return (
     <section className="relative">
-      <div className="mx-auto max-w-7xl px-6 pt-16 pb-20 sm:px-8 sm:pt-24 sm:pb-24 md:pt-32 md:pb-32">
+      <div className="mx-auto max-w-7xl px-6 pt-10 pb-16 sm:px-8 sm:pt-16 sm:pb-24 md:pt-24 md:pb-32">
         <div className="mx-auto max-w-3xl text-center">
-          {/* Eyebrow: 숨고 평점 5.0 */}
-          <div className="mb-8 inline-flex items-center rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-semibold text-gray-700">
+          {/* Eyebrow */}
+          <div className="mb-6 inline-flex items-center rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-semibold text-gray-700 sm:mb-8">
             <svg
               aria-hidden="true"
               viewBox="0 0 20 20"
@@ -18,12 +20,14 @@ export function Hero() {
             </svg>
             숨고 평점
             <span className="mx-1 font-bold text-gray-900">5.0</span>
-            <span aria-hidden="true" className="mx-1.5 text-gray-300">·</span>
+            <span aria-hidden="true" className="mx-1.5 text-gray-300">
+              ·
+            </span>
             1인 프리미엄 제작
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl font-extrabold leading-[1.15] tracking-[-0.025em] text-gray-900 sm:text-6xl">
+          <h1 className="text-4xl font-extrabold leading-[1.15] tracking-[-0.025em] text-gray-900 sm:text-5xl md:text-6xl">
             아이디어만 있으면 됩니다.
             <br />
             나머지는{' '}
@@ -33,30 +37,58 @@ export function Hero() {
             채워드립니다.
           </h1>
 
-          {/* Subheadline */}
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-gray-600 sm:mt-8 sm:text-xl md:text-2xl">
-            1분만 알려주세요.{' '}
-            <strong className="font-semibold text-gray-900">24시간 안에</strong>{' '}
-            견적이랑 사이트 미리보기까지 보여드릴게요.
+          {/* Subheadline (action-priming) */}
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-600 sm:mt-6 sm:text-lg md:text-xl">
+            지금 한 줄만 알려주시면, 내일까지 견적이랑 사이트 미리보기를
+            보내드릴게요.
           </p>
 
-          {/* CTAs */}
-          <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:mt-12 sm:flex-row sm:gap-4">
-            <Link
-              href="/wizard"
-              className="inline-flex h-14 w-full items-center justify-center rounded-lg bg-indigo-600 px-7 text-base font-semibold text-white shadow-sm transition hover:bg-indigo-700 hover:shadow-md sm:w-auto sm:text-[17px]"
-            >
-              무료로 견적 받기
-              <span aria-hidden="true" className="ml-2">
-                →
-              </span>
-            </Link>
-            <Link
-              href="/portfolio"
-              className="inline-flex h-14 w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-6 text-base font-semibold text-gray-700 transition hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 sm:w-auto sm:text-[17px]"
-            >
-              포트폴리오 보기
-            </Link>
+          {/* Inline wizard form (Bitly-pattern) */}
+          <form
+            action="/wizard"
+            method="get"
+            className="mx-auto mt-7 max-w-xl sm:mt-9"
+          >
+            <div className="flex flex-col gap-2.5 sm:flex-row sm:gap-3">
+              <label htmlFor="hero-intent" className="sr-only">
+                어떤 사이트가 필요하세요?
+              </label>
+              <input
+                id="hero-intent"
+                type="text"
+                name="intent"
+                placeholder="예: 학원 홈페이지, 카페 예약, 쇼핑몰"
+                required
+                maxLength={120}
+                autoComplete="off"
+                className="h-14 flex-1 rounded-lg border border-gray-300 bg-white px-5 text-base text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 sm:text-[17px]"
+              />
+              <button
+                type="submit"
+                className="inline-flex h-14 items-center justify-center rounded-lg bg-indigo-600 px-7 text-base font-semibold text-white shadow-sm transition hover:bg-indigo-700 hover:shadow-md sm:text-[17px]"
+              >
+                견적 받기
+                <span aria-hidden="true" className="ml-2">
+                  →
+                </span>
+              </button>
+            </div>
+          </form>
+
+          {/* Quick intent chips */}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:mt-5">
+            <span className="text-sm font-medium text-gray-500">
+              자주 찾는 분야
+            </span>
+            {quickIntents.map((label) => (
+              <Link
+                key={label}
+                href={`/wizard?intent=${encodeURIComponent(label + ' 사이트')}`}
+                className="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm font-medium text-gray-700 transition hover:border-indigo-300 hover:text-indigo-700"
+              >
+                {label}
+              </Link>
+            ))}
           </div>
 
           {/* Caption */}
@@ -64,7 +96,7 @@ export function Hero() {
             1분이면 끝나요 · 가입 없이 가능
           </p>
 
-          {/* Trust bar */}
+          {/* Trust bar — 7건 클라이언트 */}
           <div className="mx-auto mt-12 max-w-3xl border-t border-gray-100 pt-8 sm:mt-14 sm:pt-10">
             <p className="text-xs font-semibold tracking-[0.1em] text-gray-400">
               이미 함께한 브랜드
