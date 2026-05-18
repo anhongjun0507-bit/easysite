@@ -7,6 +7,7 @@ import { calculateQuote } from '@/lib/quote/calculate'
 import { matchPortfolio } from '@/lib/quote/match-portfolio'
 import type { SiteType, PageCount, YesNoUnsure, DesignTone, Timeline } from '@/app/wizard/lib/state'
 import { AISection } from './AISection'
+import { ChatWidget } from './ChatWidget'
 import { FinalCta } from './FinalCta'
 import { QuoteHero } from './QuoteHero'
 import { SimilarCases } from './SimilarCases'
@@ -103,6 +104,7 @@ export default async function WizardResultPage({
       />
       <SimilarCases items={similar} />
       <FinalCta />
+      <ChatWidget leadId={leadId} />
     </>
   )
 }
