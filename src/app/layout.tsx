@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Header } from '@/components/landing/Header'
 import { Footer } from '@/components/landing/Footer'
 import { FloatingContact } from '@/components/landing/FloatingContact'
+import { BackToTop } from '@/components/landing/BackToTop'
 import './globals.css'
 
 const SITE_URL = 'https://easysite-sage.vercel.app'
@@ -60,6 +61,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <FloatingContact />
+        <BackToTop />
       </body>
     </html>
   )

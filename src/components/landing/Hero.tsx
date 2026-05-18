@@ -27,17 +27,21 @@ export function Hero() {
           </div>
 
           {/* Headline — clamp font, 1.18 line-height, 한글 가독성 확보. 강조어 solid (그라데이션 제거) */}
+          {/* "AI가 채워드립니다" 한 덩어리로 줄바꿈되도록 whitespace-nowrap — 모바일 "AI가" 단독 줄 방지 */}
           <h1
             className="animate-ease-up animate-ease-up-d1 font-extrabold text-gray-900"
             style={{
-              fontSize: 'clamp(34px, 6vw, 60px)',
+              fontSize: 'clamp(32px, 6vw, 60px)',
               lineHeight: 1.18,
               letterSpacing: '-0.02em',
             }}
           >
             아이디어만 있으면 됩니다.
             <br />
-            나머지는 <span className="text-indigo-600">AI가</span> 채워드립니다.
+            나머지는{' '}
+            <span className="whitespace-nowrap">
+              <span className="text-indigo-600">AI가</span> 채워드립니다.
+            </span>
           </h1>
 
           {/* Subheadline — gray-700 (대비 충분) */}
@@ -46,45 +50,69 @@ export function Hero() {
             미리보기를 보내드릴게요.
           </p>
 
-          {/* Inline wizard form */}
+          {/* Inline wizard form — Conjoined (Linear형):
+              데스크톱은 외부 컨테이너 ring+shadow, 내부 inset 버튼.
+              모바일은 같은 컨테이너 안에 input+button stack — 한 위젯으로 인지.
+              ✨ leading icon으로 "AI가 채워드립니다" 컨셉 시각화. */}
           <form
             action="/wizard"
             method="get"
             className="animate-ease-up animate-ease-up-d3 mx-auto mt-7 max-w-xl sm:mt-9"
           >
-            <div className="flex flex-col gap-2.5 sm:flex-row sm:gap-3">
-              <label htmlFor="hero-intent" className="sr-only">
-                어떤 사이트가 필요하세요?
-              </label>
-              <input
-                id="hero-intent"
-                type="text"
-                name="intent"
-                placeholder="예: 학원 홈페이지, 카페 예약, 쇼핑몰"
-                required
-                maxLength={120}
-                autoComplete="off"
-                className="h-14 flex-1 rounded-lg border border-gray-300 bg-white px-5 text-base text-gray-900 shadow-sm placeholder:text-gray-500 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 sm:text-[17px]"
-              />
-              <button
-                type="submit"
-                className="cta-glow inline-flex h-14 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-indigo-600 px-7 text-base font-semibold text-white hover:bg-indigo-700 sm:text-[17px]"
-              >
-                <span>1분 만에 견적 받기</span>
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="h-5 w-5"
+            <div className="group relative rounded-xl bg-white p-1.5 shadow-md ring-1 ring-gray-300 transition focus-within:shadow-xl focus-within:ring-2 focus-within:ring-indigo-500 sm:rounded-2xl sm:shadow-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center">
+                <label htmlFor="hero-intent" className="sr-only">
+                  어떤 사이트가 필요하세요?
+                </label>
+                <div className="relative flex-1">
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-indigo-500 sm:left-3"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="h-5 w-5"
+                    >
+                      <path d="M12 3l1.9 4.8L19 9.9l-4.7 2.1L12 17l-2.3-5L5 9.9l5.1-2.1z" />
+                      <path d="M19 16l.7 1.7 1.8.7-1.8.7-.7 1.9-.8-1.9-1.7-.7 1.7-.7z" />
+                    </svg>
+                  </span>
+                  <input
+                    id="hero-intent"
+                    type="text"
+                    name="intent"
+                    placeholder="예: 학원 홈페이지, 카페 예약, 쇼핑몰"
+                    required
+                    maxLength={120}
+                    autoComplete="off"
+                    className="h-12 w-full bg-transparent pl-11 pr-3 text-base font-medium text-gray-900 placeholder:font-normal placeholder:text-gray-600 focus:outline-none sm:h-12 sm:text-[17px]"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="cta-glow mt-1.5 inline-flex h-12 w-full shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-indigo-600 px-5 text-base font-semibold text-white transition hover:bg-indigo-700 sm:ml-1.5 sm:mt-0 sm:w-auto sm:rounded-xl sm:text-[15px]"
                 >
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="13 6 19 12 13 18" />
-                </svg>
-              </button>
+                  <span>1분 만에 견적 받기</span>
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-5 w-5"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="13 6 19 12 13 18" />
+                  </svg>
+                </button>
+              </div>
             </div>
           </form>
 
