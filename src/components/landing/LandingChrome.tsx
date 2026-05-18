@@ -12,9 +12,12 @@ import { Header } from './Header'
  */
 export function LandingChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const isWizard = pathname?.startsWith('/wizard') ?? false
+  // /wizard 와 /wizard?step=… 만 풀스크린. /wizard/result는 Header 다시 노출.
+  const isWizardForm =
+    (pathname?.startsWith('/wizard') ?? false) &&
+    !(pathname?.startsWith('/wizard/result') ?? false)
 
-  if (isWizard) {
+  if (isWizardForm) {
     return <main className="flex-1">{children}</main>
   }
 

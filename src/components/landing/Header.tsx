@@ -12,6 +12,8 @@ const navLinks = [
 
 export function Header() {
   const pathname = usePathname()
+  const isResult = pathname?.startsWith('/wizard/result') ?? false
+  const ctaLabel = isResult ? '다시 견적 받기' : '1분 만에 견적 받기'
   const [open, setOpen] = useState(false)
 
   // 경로 변경 시 자동 닫기 (앵커 이동 포함)
@@ -106,7 +108,7 @@ export function Header() {
             href="/wizard"
             className="inline-flex h-11 shrink-0 items-center rounded-lg bg-gray-900 px-3.5 text-[13px] font-semibold text-white transition hover:bg-gray-700 sm:h-12 sm:px-5 sm:text-[15px]"
           >
-            1분 만에 견적 받기
+            {ctaLabel}
           </Link>
         </div>
       </nav>

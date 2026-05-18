@@ -89,6 +89,11 @@ export type Database = {
       }
       leads: {
         Row: {
+          ai_about_draft: string | null
+          ai_colors: Json | null
+          ai_generated_at: string | null
+          ai_hero_copy: Json | null
+          ai_menu_structure: Json | null
           business_name: string | null
           contact_email: string | null
           contact_name: string | null
@@ -107,6 +112,11 @@ export type Database = {
           wizard_answers: Json
         }
         Insert: {
+          ai_about_draft?: string | null
+          ai_colors?: Json | null
+          ai_generated_at?: string | null
+          ai_hero_copy?: Json | null
+          ai_menu_structure?: Json | null
           business_name?: string | null
           contact_email?: string | null
           contact_name?: string | null
@@ -125,6 +135,11 @@ export type Database = {
           wizard_answers?: Json
         }
         Update: {
+          ai_about_draft?: string | null
+          ai_colors?: Json | null
+          ai_generated_at?: string | null
+          ai_hero_copy?: Json | null
+          ai_menu_structure?: Json | null
           business_name?: string | null
           contact_email?: string | null
           contact_name?: string | null
