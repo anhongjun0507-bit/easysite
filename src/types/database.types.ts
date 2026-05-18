@@ -95,6 +95,7 @@ export type Database = {
           ai_hero_copy: Json | null
           ai_menu_structure: Json | null
           business_name: string | null
+          chat_notified_at: string | null
           contact_email: string | null
           contact_name: string | null
           contact_phone: string | null
@@ -118,6 +119,7 @@ export type Database = {
           ai_hero_copy?: Json | null
           ai_menu_structure?: Json | null
           business_name?: string | null
+          chat_notified_at?: string | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
@@ -141,6 +143,7 @@ export type Database = {
           ai_hero_copy?: Json | null
           ai_menu_structure?: Json | null
           business_name?: string | null
+          chat_notified_at?: string | null
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null

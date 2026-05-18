@@ -7,9 +7,12 @@ import {
   buildChatContextBlock,
   type ChatLeadContext,
 } from '@/lib/ai/chat-prompt'
+import { formatChatNotification } from '@/lib/ai/chat-notify'
+import { detectIntent, shouldNotify } from '@/lib/ai/intent-detect'
 import { aiCopyResultSchema } from '@/lib/ai/types'
 import { calculateQuote } from '@/lib/quote/calculate'
 import { matchPortfolio } from '@/lib/quote/match-portfolio'
+import { notifyTelegram } from '@/app/wizard/lib/telegram'
 import type { Json } from '@/types/database.types'
 import type {
   SiteType,
@@ -72,7 +75,7 @@ export async function POST(request: Request) {
   const { data: lead, error: fetchErr } = await admin
     .from('leads')
     .select(
-      'id, business_name, industry, wizard_answers, ai_menu_structure, ai_hero_copy, ai_about_draft, ai_colors',
+      'id, business_name, contact_name, contact_phone, contact_email, industry, wizard_answers, ai_menu_structure, ai_hero_copy, ai_about_draft, ai_colors, chat_notified_at',
     )
     .eq('id', leadId)
     .maybeSingle()
@@ -103,6 +106,15 @@ export async function POST(request: Request) {
     role: 'user',
     content: message,
     metadata: {} as Json,
+  })
+
+  // 알림 트리거 결정 — 응답 시작 전 미리 계산
+  const detection = detectIntent(message)
+  const userTurnsAfterThis = userTurns + 1
+  const notifyDecision = shouldNotify({
+    userTurnsAfterThis,
+    detection,
+    alreadyNotified: Boolean(lead.chat_notified_at),
   })
 
   // SSE 스트림 응답
@@ -143,6 +155,41 @@ export async function POST(request: Request) {
             metadata: {} as Json,
           })
         }
+
+        // 텔레그램 알림 — 응답 완료 후 best-effort. 사용자 응답엔 영향 X.
+        if (notifyDecision.notify) {
+          try {
+            const recentMessages: Array<{
+              role: 'user' | 'assistant'
+              content: string
+            }> = [
+              ...history.map((h) => ({ role: h.role, content: h.content })),
+              { role: 'user', content: message },
+            ]
+            if (fullText.trim()) {
+              recentMessages.push({ role: 'assistant', content: fullText })
+            }
+            const text = formatChatNotification({
+              leadId,
+              reasons: notifyDecision.reasons,
+              contact: {
+                name: lead.contact_name,
+                phone: lead.contact_phone,
+                email: lead.contact_email,
+              },
+              context,
+              recentMessages,
+            })
+            await notifyTelegram(text)
+            await admin
+              .from('leads')
+              .update({ chat_notified_at: new Date().toISOString() })
+              .eq('id', leadId)
+          } catch {
+            // 알림 실패해도 사용자에게 영향 없음
+          }
+        }
+
         controller.close()
       }
     },
