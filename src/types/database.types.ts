@@ -89,6 +89,7 @@ export type Database = {
       }
       leads: {
         Row: {
+          admin_memo: string | null
           ai_about_draft: string | null
           ai_colors: Json | null
           ai_generated_at: string | null
@@ -113,6 +114,7 @@ export type Database = {
           wizard_answers: Json
         }
         Insert: {
+          admin_memo?: string | null
           ai_about_draft?: string | null
           ai_colors?: Json | null
           ai_generated_at?: string | null
@@ -137,6 +139,7 @@ export type Database = {
           wizard_answers?: Json
         }
         Update: {
+          admin_memo?: string | null
           ai_about_draft?: string | null
           ai_colors?: Json | null
           ai_generated_at?: string | null
