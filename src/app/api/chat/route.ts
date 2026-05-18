@@ -131,6 +131,9 @@ export async function POST(request: Request) {
           system: CHAT_SYSTEM_PROMPT,
           messages,
           maxTokens: 1024,
+          // 시스템 프롬프트 prompt caching (ephemeral, 5분 TTL)
+          // — 5분 내 동일 system 재호출 시 input 비용 ~90% 절감
+          cacheSystem: true,
         })) {
           if (ev.type === 'text') {
             fullText += ev.delta

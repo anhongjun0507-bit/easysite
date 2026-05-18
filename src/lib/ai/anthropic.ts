@@ -92,11 +92,23 @@ export type StreamOptions = {
   messages: ChatMessage[]
   maxTokens?: number
   signal?: AbortSignal
+  /** 모델 override — 미지정 시 MODEL 상수 사용 */
+  model?: string
+  /** 시스템 프롬프트에 ephemeral cache_control 부여 (5분 TTL). 동일 system 반복 호출 시 90% input 절감 */
+  cacheSystem?: boolean
 }
 
 export type StreamEvent =
   | { type: 'text'; delta: string }
-  | { type: 'usage'; inputTokens: number; outputTokens: number }
+  | {
+      type: 'usage'
+      inputTokens: number
+      outputTokens: number
+      /** prompt caching read — 캐시 hit, $0.3/MTok (Sonnet 기준) */
+      cacheReadTokens: number
+      /** prompt caching write — 첫 호출, $3.75/MTok (Sonnet 기준) */
+      cacheCreationTokens: number
+    }
 
 /**
  * Anthropic Messages API streaming — SSE 응답을 파싱해 텍스트 토큰을 yield.
@@ -108,6 +120,17 @@ export async function* callAnthropicStream(
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY missing')
 
+  // 시스템 프롬프트 캐싱 — content blocks 배열 형태로 보내야 cache_control 부여 가능
+  const systemPayload = opts.cacheSystem
+    ? [
+        {
+          type: 'text',
+          text: opts.system,
+          cache_control: { type: 'ephemeral' },
+        },
+      ]
+    : opts.system
+
   const res = await fetch(ANTHROPIC_API_URL, {
     method: 'POST',
     signal: opts.signal,
@@ -118,9 +141,9 @@ export async function* callAnthropicStream(
       accept: 'text/event-stream',
     },
     body: JSON.stringify({
-      model: MODEL,
+      model: opts.model ?? MODEL,
       max_tokens: opts.maxTokens ?? 1024,
-      system: opts.system,
+      system: systemPayload,
       messages: opts.messages,
       stream: true,
     }),
@@ -136,6 +159,8 @@ export async function* callAnthropicStream(
   let buffer = ''
   let inputTokens = 0
   let outputTokens = 0
+  let cacheCreation = 0
+  let cacheRead = 0
 
   try {
     while (true) {
@@ -154,8 +179,20 @@ export async function* callAnthropicStream(
         let event: {
           type: string
           delta?: { type?: string; text?: string }
-          message?: { usage?: { input_tokens?: number; output_tokens?: number } }
-          usage?: { input_tokens?: number; output_tokens?: number }
+          message?: {
+            usage?: {
+              input_tokens?: number
+              output_tokens?: number
+              cache_creation_input_tokens?: number
+              cache_read_input_tokens?: number
+            }
+          }
+          usage?: {
+            input_tokens?: number
+            output_tokens?: number
+            cache_creation_input_tokens?: number
+            cache_read_input_tokens?: number
+          }
         }
         try {
           event = JSON.parse(raw)
@@ -169,7 +206,10 @@ export async function* callAnthropicStream(
         ) {
           yield { type: 'text', delta: event.delta.text }
         } else if (event.type === 'message_start') {
-          inputTokens = event.message?.usage?.input_tokens ?? inputTokens
+          const u = event.message?.usage
+          inputTokens = u?.input_tokens ?? inputTokens
+          cacheCreation = u?.cache_creation_input_tokens ?? cacheCreation
+          cacheRead = u?.cache_read_input_tokens ?? cacheRead
         } else if (event.type === 'message_delta') {
           outputTokens = event.usage?.output_tokens ?? outputTokens
         }
@@ -179,5 +219,11 @@ export async function* callAnthropicStream(
     reader.releaseLock()
   }
 
-  yield { type: 'usage', inputTokens, outputTokens }
+  yield {
+    type: 'usage',
+    inputTokens,
+    outputTokens,
+    cacheReadTokens: cacheRead,
+    cacheCreationTokens: cacheCreation,
+  }
 }
