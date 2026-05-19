@@ -184,7 +184,44 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-            제10조 (분쟁의 해결)
+            제10조 (지적재산권 및 사용권)
+          </h2>
+          <ol className="mt-3 list-decimal space-y-3 pl-6">
+            <li>
+              본 서비스를 통해 제공되는 위저드, AI 생성 콘텐츠, 산출된 견적서,
+              그리고 정식 계약을 통해 제작되는 웹사이트의 코드·디자인·결과물
+              일체에 대한 지적재산권은 잔금이 완납되기 전까지 회사(프리즘)에
+              귀속됩니다.
+            </li>
+            <li>
+              잔금 완납 후 다음 권리가 이용자에게 이전됩니다.
+              <ul className="mt-2 list-disc space-y-1 pl-6">
+                <li>제작된 웹사이트의 사용·운영 권리</li>
+                <li>콘텐츠(텍스트·이미지)의 사용 권리</li>
+                <li>도메인·호스팅 등 제3자 서비스의 운영 권리</li>
+              </ul>
+            </li>
+            <li>
+              다음 권리는 회사가 계속 보유합니다.
+              <ul className="mt-2 list-disc space-y-1 pl-6">
+                <li>제작 과정에서 사용된 자체 개발 코드·라이브러리·도구</li>
+                <li>재사용 가능한 컴포넌트 및 패턴</li>
+                <li>
+                  해당 프로젝트를 포트폴리오로 활용할 권리 (회사명·로고·스크린샷
+                  사용 포함)
+                </li>
+              </ul>
+            </li>
+            <li>
+              이용자는 회사의 사전 서면 동의 없이 제작 결과물의 코드를 제3자에게
+              재배포·재판매할 수 없습니다.
+            </li>
+          </ol>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+            제11조 (분쟁의 해결)
           </h2>
           <ul className="mt-3 list-disc space-y-2 pl-6">
             <li>
@@ -200,7 +237,7 @@ export default function TermsPage() {
 
         <section>
           <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
-            제11조 (사업자 정보)
+            제12조 (사업자 정보)
           </h2>
           <dl className="mt-3 grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-[140px_1fr]">
             <dt className="font-semibold text-gray-900">상호</dt>
