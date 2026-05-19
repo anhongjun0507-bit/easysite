@@ -21,6 +21,27 @@ export type LeadDetail = LeadListItem & {
   notes: string | null
   source: string | null
   updated_at: string
+  admin_memo: string | null
+  ai_menu_structure: unknown
+  ai_hero_copy: unknown
+  ai_about_draft: string | null
+  ai_colors: unknown
+  ai_generated_at: string | null
+  chat_notified_at: string | null
+}
+
+export type ConversationRow = {
+  id: string
+  role: string
+  content: string
+  created_at: string
+}
+
+export type LeadDetailWithConversations = {
+  lead: LeadDetail
+  conversations: ConversationRow[]
+  /** wizard_completed 이벤트 payload에서 추출 — leads 컬럼엔 안 들어감 */
+  kakaoId: string | null
 }
 
 export type LeadListQuery = {
@@ -86,17 +107,54 @@ export async function listLeads(query: LeadListQuery): Promise<LeadListResult> {
   }
 }
 
+const DETAIL_COLS = `${LIST_COLS}, contact_email, page_count, wizard_answers, notes, source, updated_at, admin_memo, ai_menu_structure, ai_hero_copy, ai_about_draft, ai_colors, ai_generated_at, chat_notified_at`
+
 export async function getLead(id: string): Promise<LeadDetail | null> {
   const admin = createAdminClient()
   const { data, error } = await admin
     .from('leads')
-    .select(
-      `${LIST_COLS}, contact_email, page_count, wizard_answers, notes, source, updated_at`,
-    )
+    .select(DETAIL_COLS)
     .eq('id', id)
     .maybeSingle()
   if (error || !data) return null
   return data as unknown as LeadDetail
+}
+
+export async function getLeadDetail(
+  id: string,
+): Promise<LeadDetailWithConversations | null> {
+  const admin = createAdminClient()
+  const [leadRes, convoRes, eventRes] = await Promise.all([
+    admin.from('leads').select(DETAIL_COLS).eq('id', id).maybeSingle(),
+    admin
+      .from('conversations')
+      .select('id, role, content, created_at')
+      .eq('lead_id', id)
+      .in('role', ['user', 'assistant'])
+      .order('created_at', { ascending: true }),
+    admin
+      .from('lead_events')
+      .select('payload')
+      .eq('lead_id', id)
+      .eq('event_type', 'wizard_completed')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ])
+  if (leadRes.error || !leadRes.data) return null
+
+  let kakaoId: string | null = null
+  const p = eventRes.data?.payload
+  if (p && typeof p === 'object' && 'kakao' in p) {
+    const k = (p as { kakao?: unknown }).kakao
+    if (typeof k === 'string' && k.trim()) kakaoId = k.trim()
+  }
+
+  return {
+    lead: leadRes.data as unknown as LeadDetail,
+    conversations: (convoRes.data ?? []) as ConversationRow[],
+    kakaoId,
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
