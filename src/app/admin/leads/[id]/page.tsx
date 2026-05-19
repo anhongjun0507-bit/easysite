@@ -36,10 +36,16 @@ import type {
   Timeline,
   Budget,
 } from '@/app/wizard/lib/state'
+import {
+  getExistingPaymentTypes,
+  getLeadPayments,
+} from '@/lib/admin/payments'
 import { ChatLog } from './ChatLog'
 import { CopyText, KakaoCopyButton } from './CopyText'
 import { LeadMemoEditor } from './LeadMemoEditor'
 import { LeadStatusSelect } from './LeadStatusSelect'
+import { PaymentRequestModal } from './PaymentRequestModal'
+import { PaymentsCard } from './PaymentsCard'
 import { Toaster } from './Toaster'
 
 export const metadata: Metadata = {
@@ -79,6 +85,8 @@ export default async function LeadDetailPage({
   if (!detail) notFound()
 
   const { lead, conversations, kakaoId } = detail
+  const payments = await getLeadPayments(lead.id)
+  const existingPaymentTypes = getExistingPaymentTypes(payments)
   const answers = (lead.wizard_answers ?? {}) as WizardAnswers
   // tagline/rawIntent 등 features에 따로 저장된 항목 보강 (wizard/actions.ts 참조)
   const features = (lead.features ?? {}) as Record<string, unknown>
@@ -174,6 +182,10 @@ export default async function LeadDetailPage({
             kakao={kakaoId}
           />
           <LeadStatusSelect leadId={lead.id} initialStatus={lead.status} />
+          <PaymentRequestModal
+            leadId={lead.id}
+            existingTypes={existingPaymentTypes}
+          />
         </div>
       </header>
 
@@ -194,6 +206,7 @@ export default async function LeadDetailPage({
             />
           )}
           <SimilarCard items={similar} />
+          <PaymentsCard payments={payments} />
           <MemoCard leadId={lead.id} initialMemo={lead.admin_memo ?? ''} />
         </div>
       </div>

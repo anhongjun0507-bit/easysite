@@ -165,6 +165,59 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          fail_reason: string | null
+          id: string
+          lead_id: string
+          memo: string | null
+          paid_at: string | null
+          payment_type: string
+          status: string
+          toss_order_id: string
+          toss_payment_key: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          fail_reason?: string | null
+          id?: string
+          lead_id: string
+          memo?: string | null
+          paid_at?: string | null
+          payment_type: string
+          status?: string
+          toss_order_id: string
+          toss_payment_key?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          fail_reason?: string | null
+          id?: string
+          lead_id?: string
+          memo?: string | null
+          paid_at?: string | null
+          payment_type?: string
+          status?: string
+          toss_order_id?: string
+          toss_payment_key?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
