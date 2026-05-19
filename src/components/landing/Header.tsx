@@ -8,6 +8,7 @@ const navLinks = [
   { href: '/#solutions', label: '차별점', match: 'anchor' as const },
   { href: '/#how-it-works', label: '제작 과정', match: 'anchor' as const },
   { href: '/portfolio', label: '포트폴리오', match: 'path' as const },
+  { href: '/about', label: '소개', match: 'path' as const },
 ]
 
 export function Header() {
