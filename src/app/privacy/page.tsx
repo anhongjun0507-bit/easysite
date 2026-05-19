@@ -147,6 +147,15 @@ export default function PrivacyPage() {
                   </td>
                   <td className="px-4 py-3">웹사이트 호스팅 및 콘텐츠 전송</td>
                 </tr>
+                <tr>
+                  <td className="px-4 py-3 font-medium text-gray-900">
+                    Telegram FZ-LLC
+                  </td>
+                  <td className="px-4 py-3">
+                    신규 리드 및 챗봇 의향 알림 발송 (이름·연락처·견적 요약
+                    정보 포함)
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -154,6 +163,69 @@ export default function PrivacyPage() {
             회사는 위탁 계약 체결 시 「개인정보 보호법」 제26조에 따라 위탁 업무
             수행 목적 외 개인정보 처리 금지, 안전성 확보 조치, 재위탁 제한 등을
             계약서에 명시하고 위탁 처리 현황을 관리·감독합니다.
+          </p>
+        </section>
+
+        <section>
+          <h2 className="text-lg font-bold text-gray-900 sm:text-xl">
+            제5조의2 (개인정보의 국외 이전)
+          </h2>
+          <p className="mt-3">
+            회사는 안정적인 서비스 제공을 위해 다음과 같이 개인정보를 국외로
+            이전하고 있습니다.
+          </p>
+          <div className="mt-4 overflow-hidden rounded-lg border border-gray-200">
+            <table className="w-full text-sm sm:text-base">
+              <thead className="bg-gray-50 text-left text-gray-900">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">이전받는 자</th>
+                  <th className="px-4 py-3 font-semibold">이전 국가</th>
+                  <th className="px-4 py-3 font-semibold">이전 목적</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                <tr>
+                  <td className="px-4 py-3 font-medium text-gray-900">
+                    Anthropic, PBC
+                  </td>
+                  <td className="px-4 py-3">미국</td>
+                  <td className="px-4 py-3">Claude API 기반 AI 처리</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 font-medium text-gray-900">
+                    Supabase, Inc.
+                  </td>
+                  <td className="px-4 py-3">미국</td>
+                  <td className="px-4 py-3">데이터베이스 운영</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 font-medium text-gray-900">
+                    Vercel, Inc.
+                  </td>
+                  <td className="px-4 py-3">미국</td>
+                  <td className="px-4 py-3">웹사이트 호스팅</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 font-medium text-gray-900">
+                    Telegram FZ-LLC
+                  </td>
+                  <td className="px-4 py-3">아랍에미리트</td>
+                  <td className="px-4 py-3">알림 발송</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <dl className="mt-5 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-[180px_1fr]">
+            <dt className="font-semibold text-gray-900">이전 일시·방법</dt>
+            <dd>서비스 이용 시점에 네트워크를 통한 자동 전송</dd>
+            <dt className="font-semibold text-gray-900">이전 항목</dt>
+            <dd>제1조에 명시된 수집 항목</dd>
+            <dt className="font-semibold text-gray-900">보유·이용 기간</dt>
+            <dd>위탁 계약 종료 또는 정보주체의 동의 철회 시까지</dd>
+          </dl>
+          <p className="mt-4 text-sm text-gray-600">
+            정보주체는 본 국외 이전을 거부할 권리가 있으며, 거부 시 일부 또는
+            전부의 서비스 이용이 제한될 수 있습니다.
           </p>
         </section>
 
