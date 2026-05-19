@@ -48,8 +48,11 @@ export type QuoteResult = {
   breakdown: QuoteBreakdownItem[]
 }
 
-/** 사이트 유형별 기준가 (만원) — 숨고 1인 시세 */
-const BASE_PRICE_MANWON: Record<SiteType, number> = {
+/**
+ * 사이트 유형별 기준가 (만원) — 숨고 1인 시세.
+ * /pricing 가격표가 이 값을 import하므로, 가격을 바꿀 때 여기 한 곳만 수정.
+ */
+export const BASE_PRICE_MANWON: Record<SiteType, number> = {
   landing: 100,
   company: 200,
   reservation: 350,
@@ -57,7 +60,7 @@ const BASE_PRICE_MANWON: Record<SiteType, number> = {
   other: 200,
 }
 
-const SITE_TYPE_LABEL: Record<SiteType, string> = {
+export const SITE_TYPE_LABEL: Record<SiteType, string> = {
   landing: '랜딩페이지',
   company: '회사·가게 소개',
   reservation: '예약·회원제',
@@ -86,13 +89,14 @@ const PAGE_BASE_WEEKS: Record<PageCount, number> = {
   unsure: 3,
 }
 
-const PAYMENT_ADDON_MANWON = 80
-const AI_ADDON_MANWON = 150
+/** /pricing 옵션 가산표가 이 값들을 import. 변경 시 한 곳만 수정. */
+export const PAYMENT_ADDON_MANWON = 80
+export const AI_ADDON_MANWON = 150
 const PAYMENT_ADDON_WEEKS = 1
 const AI_ADDON_WEEKS = 2
 const LUXURY_ADDON_WEEKS = 0.5
-const LUXURY_MULT = 1.2
-const RUSH_PRICE_MULT = 1.3 // 2주 납기 가산
+export const LUXURY_MULT = 1.2
+export const RUSH_PRICE_MULT = 1.3 // 2주 납기 가산
 const RUSH_WEEKS_MULT = 0.7
 const PRICE_RANGE_PCT = 0.15
 
