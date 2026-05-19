@@ -57,7 +57,7 @@ export function Step6AIChat({ state, onAnswer }: Props) {
           <button
             type="button"
             onClick={() => setMode('init')}
-            className="mt-4 inline-flex h-10 items-center text-sm font-medium text-gray-500 hover:text-gray-700"
+            className="mt-4 inline-flex h-11 items-center text-sm font-medium text-gray-500 hover:text-gray-700"
           >
             ← 다시 고르기
           </button>

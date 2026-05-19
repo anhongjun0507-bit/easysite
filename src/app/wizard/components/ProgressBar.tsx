@@ -26,7 +26,7 @@ export function ProgressBar({ index, total = TOTAL_QUESTIONS, onBack, canGoBack 
           onClick={onBack}
           disabled={!canGoBack}
           aria-label="이전 단계"
-          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-gray-700 transition hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
         >
           <svg
             viewBox="0 0 24 24"

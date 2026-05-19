@@ -327,7 +327,7 @@ export function ChatWidget({ leadId }: { leadId: string }) {
               type="button"
               onClick={() => setOpen(false)}
               aria-label="닫기"
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -370,7 +370,7 @@ export function ChatWidget({ leadId }: { leadId: string }) {
                       type="button"
                       onClick={() => sendMessage(p)}
                       disabled={streaming || limitReached}
-                      className="inline-flex h-9 items-center rounded-full border border-indigo-200 bg-white px-3 text-[13px] font-medium text-indigo-700 transition hover:border-indigo-400 hover:bg-indigo-50 disabled:opacity-50"
+                      className="inline-flex h-11 items-center rounded-full border border-indigo-200 bg-white px-3 text-[13px] font-medium text-indigo-700 transition hover:border-indigo-400 hover:bg-indigo-50 disabled:opacity-50"
                     >
                       {p}
                     </button>

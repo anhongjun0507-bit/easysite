@@ -38,7 +38,7 @@ export function Step2Industry({ state, onAnswer, onSkip }: Props) {
               key={s}
               type="button"
               onClick={() => setValue(s)}
-              className="inline-flex h-10 items-center rounded-full border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 transition hover:border-indigo-400 hover:text-indigo-700"
+              className="inline-flex h-11 items-center rounded-full border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 transition hover:border-indigo-400 hover:text-indigo-700"
             >
               {s}
             </button>
