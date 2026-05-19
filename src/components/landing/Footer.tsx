@@ -1,10 +1,15 @@
 import Link from 'next/link'
 
+// 사장님 사양 순서: 상호 → 대표 → 사업자번호 → 소재지 → 연락처 → 이메일 → 세금계산서
+// 입금계좌는 푸터 노출 X (견적서·계약서에서만 노출 — 분쟁 방지)
 const businessInfo: { label: string; value: string; href?: string }[] = [
   { label: '상호', value: '프리즘' },
-  { label: '사업자등록번호', value: '672-35-01596' },
   { label: '대표', value: '안홍준' },
+  { label: '사업자등록번호', value: '672-35-01596' },
+  { label: '소재지', value: '경기도 의정부시' },
   { label: '연락처', value: '010-3782-5418', href: 'tel:01037825418' },
+  { label: '이메일', value: 'hjan040507@gmail.com', href: 'mailto:hjan040507@gmail.com' },
+  { label: '세금계산서', value: '발행 가능 (부가세 별도)' },
 ]
 
 export function Footer() {
@@ -30,11 +35,11 @@ export function Footer() {
             <p className="text-xs font-semibold uppercase tracking-[0.15em] text-gray-400">
               사업자 정보
             </p>
-            <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-5 gap-y-1.5 text-sm leading-relaxed sm:gap-x-6">
+            <dl className="mt-3 grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-1.5 text-sm leading-relaxed sm:gap-x-6">
               {businessInfo.map((item) => (
                 <div key={item.label} className="contents">
                   <dt className="text-gray-400">{item.label}</dt>
-                  <dd className="text-gray-100">
+                  <dd className="break-words text-gray-100">
                     {item.href ? (
                       <a
                         href={item.href}

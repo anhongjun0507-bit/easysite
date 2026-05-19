@@ -254,6 +254,8 @@ export default function TermsPage() {
             <dd>안홍준</dd>
             <dt className="font-semibold text-gray-900">사업자등록번호</dt>
             <dd>672-35-01596</dd>
+            <dt className="font-semibold text-gray-900">소재지</dt>
+            <dd>경기도 의정부시</dd>
             <dt className="font-semibold text-gray-900">연락처</dt>
             <dd>
               <a
