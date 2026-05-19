@@ -25,13 +25,13 @@ export const metadata: Metadata = {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     url: SITE_URL,
-    images: ['/og.png'],
+    // og:image 는 app/opengraph-image.tsx 가 자동 주입 (시안 A — 단색 indigo)
   },
   twitter: {
     card: 'summary_large_image',
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
-    images: ['/og.png'],
+    // twitter:image 는 app/twitter-image.tsx 가 자동 주입
   },
   icons: {
     icon: '/favicon.ico',
