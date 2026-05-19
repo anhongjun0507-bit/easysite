@@ -275,7 +275,7 @@ export default function TermsPage() {
               </a>
             </dd>
             <dt className="font-semibold text-gray-900">입금계좌</dt>
-            <dd>우리은행 1002-858-580385 (예금주 안홍준)</dd>
+            <dd>계약 시 별도 안내</dd>
           </dl>
         </section>
 

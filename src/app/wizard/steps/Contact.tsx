@@ -133,7 +133,7 @@ export function ContactStep({
               <span className="font-semibold text-gray-900">
                 개인정보 수집·이용에 동의
               </span>
-              합니다. 견적 답변·서비스 제공 목적, 보유 기간 2년.{' '}
+              합니다. 견적 답변·서비스 제공 목적, 보유 기간 3년.{' '}
               <Link
                 href="/privacy"
                 target="_blank"
