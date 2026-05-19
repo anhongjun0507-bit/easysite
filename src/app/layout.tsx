@@ -33,10 +33,7 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     // twitter:image 는 app/twitter-image.tsx 가 자동 주입
   },
-  icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-touch-icon.png',
-  },
+  // icon, apple-icon 는 app/icon.tsx, app/apple-icon.tsx 가 자동 주입
   manifest: '/manifest.webmanifest',
   robots: { index: true, follow: true },
 }
