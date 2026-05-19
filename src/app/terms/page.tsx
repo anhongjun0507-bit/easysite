@@ -3,11 +3,13 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: '이용약관',
-  description: 'EasySite 이용약관',
+  description:
+    'EasySite 이용약관. 프리즘(사업자 672-35-01596)이 제공하는 웹사이트 제작 중개·자동 견적 서비스의 이용 조건과 환불·지적재산권 정책을 안내드립니다.',
   alternates: { canonical: '/terms' },
   openGraph: {
     title: '이용약관 | EasySite',
-    description: 'EasySite 이용약관',
+    description:
+      'EasySite 이용약관. 프리즘(사업자 672-35-01596)이 제공하는 웹사이트 제작 중개·자동 견적 서비스의 이용 조건과 환불·지적재산권 정책을 안내드립니다.',
     url: '/terms',
   },
 }

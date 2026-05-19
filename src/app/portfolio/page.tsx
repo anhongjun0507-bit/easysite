@@ -5,11 +5,13 @@ import { portfolio } from '@/config/portfolio'
 
 export const metadata: Metadata = {
   title: '포트폴리오',
-  description: '프리즘 안홍준 대표가 직접 만든 사이트들.',
+  description:
+    '프리즘 안홍준 대표가 직접 만든 사이트 7건. 교육·쇼핑몰·회사소개·라이프스타일·건축·인쇄 등 다양한 분야의 실제 운영 사례를 확인하세요.',
   alternates: { canonical: '/portfolio' },
   openGraph: {
     title: '포트폴리오 | EasySite',
-    description: '프리즘 안홍준 대표가 직접 만든 사이트들.',
+    description:
+      '프리즘 안홍준 대표가 직접 만든 사이트 7건. 교육·쇼핑몰·회사소개·라이프스타일·건축·인쇄 등 다양한 분야의 실제 운영 사례를 확인하세요.',
     url: '/portfolio',
   },
 }
@@ -43,25 +45,30 @@ export default function PortfolioPage() {
       </div>
 
       <ul className="mt-12 grid grid-cols-1 gap-5 sm:mt-14 sm:grid-cols-2 sm:gap-6">
-        {portfolio.map((site) => (
-          <li key={site.id}>
-            <a
-              href={site.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md"
-            >
-              {/* Thumbnail — 16:10 */}
-              <div className="relative aspect-[16/10] overflow-hidden bg-gray-50">
-                <Image
-                  src={site.image}
-                  alt={site.imageAlt}
-                  fill
-                  sizes="(min-width: 640px) 50vw, 100vw"
-                  className="object-cover object-top transition duration-300 ease-emphasized group-hover:scale-[1.02]"
-                  loading="lazy"
-                />
-              </div>
+        {portfolio.map((site, idx) => {
+          // P2-11: 첫 2장은 above-the-fold — priority 로 LCP 개선 + 회색 박스 제거
+          const aboveFold = idx < 2
+          return (
+            <li key={site.id}>
+              <a
+                href={site.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md"
+              >
+                {/* Thumbnail — 16:10 */}
+                <div className="relative aspect-[16/10] overflow-hidden bg-gray-50">
+                  <Image
+                    src={site.image}
+                    alt={site.imageAlt}
+                    fill
+                    sizes="(min-width: 640px) 50vw, 100vw"
+                    className="object-cover object-top transition duration-300 ease-emphasized group-hover:scale-[1.02]"
+                    {...(aboveFold
+                      ? { priority: true }
+                      : { loading: 'lazy' as const })}
+                  />
+                </div>
 
               <div className="flex flex-1 flex-col p-6">
                 <div className="flex items-center justify-between gap-3">
@@ -112,9 +119,10 @@ export default function PortfolioPage() {
                   </div>
                 </div>
               </div>
-            </a>
-          </li>
-        ))}
+              </a>
+            </li>
+          )
+        })}
       </ul>
 
       <div className="mt-16 text-center">

@@ -4,12 +4,12 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: '소개 — 안홍준',
   description:
-    '안홍준 - 자체 서비스를 직접 운영하는 풀스택 개발자. 프리즘 대표.',
+    '프리즘 안홍준 대표 소개. 자체 서비스 3개(prismedu·EasySite·Waylog)를 직접 운영하는 풀스택 개발자. 만드는 단계부터 운영 함정을 피해 설계합니다.',
   alternates: { canonical: '/about' },
   openGraph: {
     title: '소개 — 안홍준 | EasySite',
     description:
-      '안홍준 - 자체 서비스를 직접 운영하는 풀스택 개발자. 프리즘 대표.',
+      '프리즘 안홍준 대표 소개. 자체 서비스 3개(prismedu·EasySite·Waylog)를 직접 운영하는 풀스택 개발자. 만드는 단계부터 운영 함정을 피해 설계합니다.',
     url: '/about',
   },
 }
