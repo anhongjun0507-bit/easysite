@@ -121,6 +121,49 @@ export function formatChatNotification(input: ChatNotifyInput): string {
   return lines.join('\n')
 }
 
+// ─────────────────────────────────────────────────────────────
+// 통화 시간대 응답 — 의향 표시 후 시간대 칩 클릭 시 별도 알림 (P2-13)
+// ─────────────────────────────────────────────────────────────
+
+export type ChatTimeSlotInput = {
+  leadId: string
+  timeSlot: string
+  contact: {
+    name?: string | null
+    phone?: string | null
+    email?: string | null
+  }
+  businessName?: string | null
+  industry?: string | null
+}
+
+export function formatChatTimeSlotNotification(
+  input: ChatTimeSlotInput,
+): string {
+  const { leadId, timeSlot, contact, businessName, industry } = input
+  const lines: string[] = []
+
+  lines.push('💬 <b>챗봇 의향 표시 + 통화 시간대</b>')
+  lines.push('')
+
+  if (contact.name) lines.push(`<b>사장님</b>: ${escape(contact.name)}`)
+  if (businessName) lines.push(`<b>상호</b>: ${escape(businessName)}`)
+  if (industry) lines.push(`<b>업종</b>: ${escape(industry)}`)
+  if (contact.phone)
+    lines.push(`<b>전화</b>: <code>${escape(contact.phone)}</code>`)
+  if (contact.email) lines.push(`<b>이메일</b>: ${escape(contact.email)}`)
+  lines.push('')
+
+  lines.push(`📞 <b>통화 시간대</b>: ${escape(timeSlot)}`)
+  lines.push('')
+
+  lines.push(
+    `<b>리드 ID</b>: <code>${escape(leadId)}</code>\n<a href="${SITE_URL}/admin/leads/${encodeURIComponent(leadId)}">어드민 상세 보기</a>`,
+  )
+
+  return lines.join('\n')
+}
+
 const labelOr = (map: Record<string, string>, v?: string) =>
   v ? (map[v] ?? v) : '미응답'
 

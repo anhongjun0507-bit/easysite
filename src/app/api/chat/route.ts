@@ -7,7 +7,10 @@ import {
   buildChatContextBlock,
   type ChatLeadContext,
 } from '@/lib/ai/chat-prompt'
-import { formatChatNotification } from '@/lib/ai/chat-notify'
+import {
+  formatChatNotification,
+  formatChatTimeSlotNotification,
+} from '@/lib/ai/chat-notify'
 import { detectIntent, shouldNotify } from '@/lib/ai/intent-detect'
 import { aiCopyResultSchema } from '@/lib/ai/types'
 import { calculateQuote } from '@/lib/quote/calculate'
@@ -42,6 +45,8 @@ const bodySchema = z.object({
     )
     .max(40)
     .default([]),
+  // P2-13: 사장님이 시간대 칩 클릭 시 동봉. metadata 저장 + 별도 알림 트리거.
+  timeSlot: z.string().trim().min(1).max(40).optional(),
 })
 
 export async function POST(request: Request) {
@@ -55,7 +60,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ ok: false, error: '잘못된 요청' }, { status: 400 })
   }
-  const { leadId, sessionId, message, history } = parsed.data
+  const { leadId, sessionId, message, history, timeSlot } = parsed.data
 
   // 사용자 턴 수 — history는 (user, assistant) 쌍이라 user 메시지만 카운트
   const userTurns = history.filter((m) => m.role === 'user').length
@@ -100,13 +105,34 @@ export async function POST(request: Request) {
   messages.push({ role: 'user', content: firstUserContent })
 
   // user 메시지 저장 (원본 — 컨텍스트 prepend 안 함)
+  // P2-13: timeSlot 동봉 시 metadata.timeSlot 함께 저장 (어드민 대화 로그에서 식별)
   await admin.from('conversations').insert({
     session_id: sessionId,
     lead_id: leadId,
     role: 'user',
     content: message,
-    metadata: {} as Json,
+    metadata: (timeSlot ? { timeSlot } : {}) as Json,
   })
+
+  // P2-13: 시간대 칩 응답이면 즉시 텔레그램 알림 (chat_notified_at 가드 무관)
+  if (timeSlot) {
+    try {
+      const text = formatChatTimeSlotNotification({
+        leadId,
+        timeSlot,
+        contact: {
+          name: lead.contact_name,
+          phone: lead.contact_phone,
+          email: lead.contact_email,
+        },
+        businessName: lead.business_name,
+        industry: lead.industry,
+      })
+      await notifyTelegram(text)
+    } catch {
+      // best-effort
+    }
+  }
 
   // 알림 트리거 결정 — 응답 시작 전 미리 계산
   const detection = detectIntent(message)
@@ -116,6 +142,8 @@ export async function POST(request: Request) {
     detection,
     alreadyNotified: Boolean(lead.chat_notified_at),
   })
+  // P2-13: 의향 감지 + timeSlot 미수신 시 SSE 'intent' 이벤트로 시간대 칩 노출
+  const emitIntentMarker = detection.hasIntent && !timeSlot
 
   // SSE 스트림 응답
   const encoder = new TextEncoder()
@@ -141,6 +169,10 @@ export async function POST(request: Request) {
           } else if (ev.type === 'usage') {
             send({ type: 'usage', inputTokens: ev.inputTokens, outputTokens: ev.outputTokens })
           }
+        }
+        // P2-13: 응답 완료 후 의향 감지된 경우 시간대 칩 노출 신호
+        if (emitIntentMarker && fullText.trim()) {
+          send({ type: 'intent' })
         }
         send({ type: 'done' })
       } catch (err) {

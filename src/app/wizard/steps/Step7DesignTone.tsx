@@ -11,7 +11,7 @@ type Props = {
 }
 
 const OPTIONS: Array<{ value: DesignTone; title: string; desc: string }> = [
-  { value: 'modern', title: '모던·심플', desc: '요즘 SaaS 같은 깔끔한 느낌' },
+  { value: 'modern', title: '모던·심플', desc: '요즘 회사 사이트 같은 깔끔한 느낌' },
   { value: 'luxury', title: '럭셔리', desc: '고급, 차분한 색감' },
   { value: 'friendly', title: '친근', desc: '따뜻하고 부드러운 분위기' },
   { value: 'auto', title: '알아서 추천해주세요', desc: '업종에 맞게 저희가 골라드릴게요' },

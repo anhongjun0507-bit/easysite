@@ -1,16 +1,36 @@
 'use client'
 
-import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
+import {
+  Fragment,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+} from 'react'
 
 const TOAST_KEY = (leadId: string) => `easysite-chat-toast-${leadId}`
 const SESSION_KEY = (leadId: string) => `easysite-chat-session-${leadId}`
 const MESSAGES_KEY = (leadId: string) => `easysite-chat-messages-${leadId}`
+// P2-13: 시간대 칩 클릭 후 재노출 방지 (한 대화에 한 번만)
+const TIME_SLOT_KEY = (leadId: string) => `easysite-chat-time-slot-${leadId}`
 
 type Message = {
   id: string
   role: 'user' | 'assistant'
   content: string
+  /** P2-13: 의향 감지된 assistant 메시지 — 시간대 칩 노출 트리거 */
+  intentDetected?: boolean
 }
+
+// P2-13: 통화 시간대 칩 4개 (사장님 사양 그대로)
+const TIME_SLOTS = [
+  '오전 10~12시',
+  '오후 2~5시',
+  '저녁 7~9시',
+  '주말만 가능해요',
+] as const
 
 const GREETING: Message = {
   id: 'greeting',
@@ -37,6 +57,8 @@ export function ChatWidget({ leadId }: { leadId: string }) {
   const [streaming, setStreaming] = useState(false)
   const [limitReached, setLimitReached] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // P2-13: 시간대 칩 클릭 결과 — sessionStorage 로 새로고침 후에도 유지
+  const [timeSlotPicked, setTimeSlotPicked] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -67,6 +89,10 @@ export function ChatWidget({ leadId }: { leadId: string }) {
           // ignore
         }
       }
+
+      // P2-13: 시간대 칩 선택 이력 복원
+      const storedSlot = sessionStorage.getItem(TIME_SLOT_KEY(leadId))
+      if (storedSlot) setTimeSlotPicked(storedSlot)
     } catch {
       setSessionId(`s_${Date.now()}_${Math.random().toString(36).slice(2)}`)
     }
@@ -137,7 +163,7 @@ export function ChatWidget({ leadId }: { leadId: string }) {
     }
   }
 
-  const sendMessage = async (text: string) => {
+  const sendMessage = async (text: string, timeSlot?: string) => {
     const trimmed = text.trim()
     if (!trimmed || streaming || limitReached || !sessionId) return
     setError(null)
@@ -167,7 +193,13 @@ export function ChatWidget({ leadId }: { leadId: string }) {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ leadId, sessionId, message: trimmed, history }),
+        body: JSON.stringify({
+          leadId,
+          sessionId,
+          message: trimmed,
+          history,
+          ...(timeSlot ? { timeSlot } : {}),
+        }),
       })
 
       if (res.status === 429) {
@@ -212,6 +244,13 @@ export function ChatWidget({ leadId }: { leadId: string }) {
                   m.id === assistantId ? { ...m, content: accumulated } : m,
                 ),
               )
+            } else if (ev.type === 'intent') {
+              // P2-13: 의향 감지된 응답 — 메시지에 플래그, 시간대 칩 노출 트리거
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === assistantId ? { ...m, intentDetected: true } : m,
+                ),
+              )
             } else if (ev.type === 'error') {
               throw new Error(ev.error || 'AI 응답 실패')
             }
@@ -241,6 +280,25 @@ export function ChatWidget({ leadId }: { leadId: string }) {
   }
 
   const userTurns = messages.filter((m) => m.role === 'user').length
+
+  // P2-13: 마지막 의향 감지 메시지 인덱스 — 그 메시지 직후에만 시간대 칩 노출
+  const lastIntentIdx = useMemo(() => {
+    for (let i = messages.length - 1; i >= 0; i--) {
+      if (messages[i].intentDetected) return i
+    }
+    return -1
+  }, [messages])
+
+  const handleTimeSlotPick = (slot: string) => {
+    if (timeSlotPicked || streaming || limitReached) return
+    setTimeSlotPicked(slot)
+    try {
+      sessionStorage.setItem(TIME_SLOT_KEY(leadId), slot)
+    } catch {
+      // ignore
+    }
+    sendMessage(`${slot}에 통화 부탁드려요`, slot)
+  }
 
   return (
     <>
@@ -351,14 +409,34 @@ export function ChatWidget({ leadId }: { leadId: string }) {
             className="flex-1 overflow-y-auto bg-gray-50/60 px-4 py-5 sm:px-5"
           >
             <div className="space-y-3">
-              {messages.map((m) => (
-                <MessageBubble key={m.id} role={m.role}>
-                  {m.content ? (
-                    <MarkdownText text={m.content} />
-                  ) : (
-                    <TypingDots />
-                  )}
-                </MessageBubble>
+              {messages.map((m, idx) => (
+                <Fragment key={m.id}>
+                  <MessageBubble role={m.role}>
+                    {m.content ? (
+                      <MarkdownText text={m.content} />
+                    ) : (
+                      <TypingDots />
+                    )}
+                  </MessageBubble>
+                  {/* P2-13: 마지막 의향 감지 메시지 직후 + 미선택 시 시간대 칩 4개 */}
+                  {m.intentDetected &&
+                    !timeSlotPicked &&
+                    idx === lastIntentIdx && (
+                      <div className="mt-1 grid grid-cols-2 gap-2 pl-1 sm:grid-cols-2">
+                        {TIME_SLOTS.map((slot) => (
+                          <button
+                            key={slot}
+                            type="button"
+                            onClick={() => handleTimeSlotPick(slot)}
+                            disabled={streaming || limitReached}
+                            className="inline-flex h-11 items-center justify-center rounded-full border border-indigo-200 bg-white px-3 text-[13px] font-semibold text-indigo-700 transition hover:border-indigo-400 hover:bg-indigo-50 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            {slot}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                </Fragment>
               ))}
 
               {/* 추천 칩 — greeting 직후만 (사장님이 첫 입력 전) */}
