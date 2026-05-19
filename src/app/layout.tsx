@@ -6,13 +6,13 @@ const SITE_URL = 'https://easysite-sage.vercel.app'
 const SITE_NAME = 'EasySite'
 const SITE_TITLE = 'EasySite — 아이디어만 있으면 됩니다'
 const SITE_DESCRIPTION =
-  '웹사이트 제작이 처음이어도 괜찮습니다. AI가 견적부터 시안·정보 수집·제작 진행까지 자동으로 도와드려요.'
+  '사이트 만들기 막막하셨죠? 1분 만에 견적 받고, AI가 만든 초안을 바로 보여드려요. 운영 중인 자체 서비스 3개로 검증된 1인 프리랜서가 직접 제작합니다.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: SITE_TITLE,
-    template: '%s — EasySite',
+    template: '%s | EasySite',
   },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,

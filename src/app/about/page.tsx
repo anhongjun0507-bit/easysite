@@ -2,13 +2,15 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: '소개 — 안홍준 | EasySite',
+  title: '소개 — 안홍준',
   description:
-    '제가 만들고, 제가 직접 운영합니다. 자체 서비스 3개를 운영하면서 사장님 사이트도 같이 만듭니다.',
+    '안홍준 - 자체 서비스를 직접 운영하는 풀스택 개발자. 프리즘 대표.',
+  alternates: { canonical: '/about' },
   openGraph: {
     title: '소개 — 안홍준 | EasySite',
     description:
-      '제가 만들고, 제가 직접 운영합니다. 자체 서비스 3개를 운영하면서 사장님 사이트도 같이 만듭니다.',
+      '안홍준 - 자체 서비스를 직접 운영하는 풀스택 개발자. 프리즘 대표.',
+    url: '/about',
   },
 }
 

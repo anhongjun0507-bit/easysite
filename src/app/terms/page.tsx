@@ -2,8 +2,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '이용약관 | EasySite',
-  description: 'EasySite(프리즘) 서비스 이용약관입니다.',
+  title: '이용약관',
+  description: 'EasySite 이용약관',
+  alternates: { canonical: '/terms' },
+  openGraph: {
+    title: '이용약관 | EasySite',
+    description: 'EasySite 이용약관',
+    url: '/terms',
+  },
 }
 
 export default function TermsPage() {

@@ -2,8 +2,14 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '개인정보처리방침 | EasySite',
-  description: 'EasySite(프리즘)의 개인정보 수집·이용·보관·파기 방침입니다.',
+  title: '개인정보처리방침',
+  description: 'EasySite 개인정보처리방침',
+  alternates: { canonical: '/privacy' },
+  openGraph: {
+    title: '개인정보처리방침 | EasySite',
+    description: 'EasySite 개인정보처리방침',
+    url: '/privacy',
+  },
 }
 
 export default function PrivacyPage() {

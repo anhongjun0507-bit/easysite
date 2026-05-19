@@ -5,7 +5,13 @@ import { portfolio } from '@/config/portfolio'
 
 export const metadata: Metadata = {
   title: '포트폴리오',
-  description: '프리즘이 실제로 만들어 운영 중인 사이트들.',
+  description: '프리즘 안홍준 대표가 직접 만든 사이트들.',
+  alternates: { canonical: '/portfolio' },
+  openGraph: {
+    title: '포트폴리오 | EasySite',
+    description: '프리즘 안홍준 대표가 직접 만든 사이트들.',
+    url: '/portfolio',
+  },
 }
 
 function hostnameOf(url: string): string {

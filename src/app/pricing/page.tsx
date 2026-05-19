@@ -9,13 +9,15 @@ import {
 } from '@/lib/quote/calculate'
 
 export const metadata: Metadata = {
-  title: '가격표 — 사이트 유형별 시작가 | EasySite',
+  title: '가격표',
   description:
-    '회사·가게 소개부터 쇼핑몰까지 — 사이트 유형별 시작가와 옵션 가산표를 처음부터 공개합니다. 숨고 1인 프리랜서 시세 기준.',
+    'EasySite 가격을 처음부터 공개합니다. 사이트 유형별 시작가와 옵션 가산표를 한눈에 확인하세요.',
+  alternates: { canonical: '/pricing' },
   openGraph: {
-    title: '가격표 — 사이트 유형별 시작가 | EasySite',
+    title: '가격표 | EasySite',
     description:
-      '회사·가게 소개부터 쇼핑몰까지 — 사이트 유형별 시작가와 옵션 가산표를 처음부터 공개합니다.',
+      'EasySite 가격을 처음부터 공개합니다. 사이트 유형별 시작가와 옵션 가산표를 한눈에 확인하세요.',
+    url: '/pricing',
   },
 }
 
