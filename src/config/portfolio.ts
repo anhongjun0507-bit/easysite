@@ -85,6 +85,30 @@ export const portfolio: PortfolioItem[] = [
     image: '/portfolio/soc-architects.png',
     imageAlt: 'SOC Architects — 건축사무소 프로젝트 포트폴리오 상세 화면',
   },
+  {
+    id: 'kbgroup',
+    name: '케이비개발',
+    url: 'https://kbgroup.kr',
+    category: '회사소개·시설관리',
+    description:
+      '아파트 주택관리·위생청소·경비보안·시행건설을 아우르는 종합 시설관리 회사 소개 사이트',
+    tech_stack: ['Next.js', 'Vercel'],
+    featured: true,
+    image: '/portfolio/kbgroup.png',
+    imageAlt: '케이비개발(KB GROUP) — 종합 시설관리 회사 메인 화면',
+  },
+  {
+    id: 'nomorenusu',
+    name: '유레카 누수탐지',
+    url: 'https://nomorenusu.com',
+    category: '설비·수리',
+    description:
+      '수도권 24시간 긴급출동으로 누수탐지·배관 수리를 해결하는 설비 전문 업체 사이트',
+    tech_stack: ['Next.js', 'Vercel'],
+    featured: true,
+    image: '/portfolio/nomorenusu.png',
+    imageAlt: '유레카 누수탐지 — 24시간 긴급출동 누수탐지·설비 수리 서비스 메인 화면',
+  },
 ]
 
 export const featuredPortfolio: PortfolioItem[] = portfolio.filter(

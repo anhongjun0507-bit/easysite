@@ -24,6 +24,9 @@ export function matchPortfolio(input: {
     if (/(건축|디자인|인테리어|스튜디오)/.test(industry)) {
       return compact([byId('soc-architects'), byId('ps-company'), byId('prismedu')])
     }
+    if (/(시설|청소|경비|건설|누수|설비|수리|배관|방수|하자|시공)/.test(industry)) {
+      return compact([byId('kbgroup'), byId('nomorenusu'), byId('soc-architects')])
+    }
     if (/(인쇄|명함|굿즈)/.test(industry)) {
       return compact([byId('prism-print'), byId('digitalst'), byId('ps-company')])
     }
@@ -41,7 +44,7 @@ export function matchPortfolio(input: {
     case 'landing':
       return compact([byId('ps-company'), byId('digitalst'), byId('prismedu')])
     case 'company':
-      return compact([byId('ps-company'), byId('soc-architects'), byId('prismedu')])
+      return compact([byId('ps-company'), byId('kbgroup'), byId('soc-architects')])
     case 'other':
     default:
       // 3) Fallback — 다양한 카테고리 한 개씩

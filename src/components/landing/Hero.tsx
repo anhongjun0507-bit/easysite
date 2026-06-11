@@ -143,7 +143,7 @@ export function Hero() {
           <MockPreview />
         </div>
 
-        {/* Trust bar — 7건 클라이언트 */}
+        {/* Trust bar — 8건 클라이언트 */}
         <div className="mx-auto mt-12 max-w-3xl border-t border-gray-200 pt-6 text-center sm:mt-14 sm:pt-8">
           <p className="text-xs font-semibold tracking-[0.1em] text-gray-500">
             이미 함께한 브랜드
