@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { LandingChrome } from '@/components/landing/LandingChrome'
+import { RefCapture } from '@/components/RefCapture'
 import './globals.css'
 
 const SITE_URL = 'https://easysite-sage.vercel.app'
@@ -51,6 +52,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className="relative isolate flex min-h-screen flex-col antialiased">
+        <RefCapture />
         <LandingChrome>{children}</LandingChrome>
       </body>
     </html>

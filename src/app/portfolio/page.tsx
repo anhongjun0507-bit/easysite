@@ -145,6 +145,15 @@ export default function PortfolioPage() {
             <polyline points="13 6 19 12 13 18" />
           </svg>
         </Link>
+        <p className="mt-4 text-sm text-gray-600">
+          이런 사이트, 사장님도 만들고 싶으세요?{' '}
+          <Link
+            href="/consult"
+            className="font-semibold text-indigo-700 underline underline-offset-4 hover:text-indigo-900"
+          >
+            바로 상담 신청하기 →
+          </Link>
+        </p>
         <div className="mt-4">
           <Link
             href="/"

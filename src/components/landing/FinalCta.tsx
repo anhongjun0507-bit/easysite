@@ -42,8 +42,19 @@ export function FinalCta() {
           </Link>
         </div>
 
+        <p className="mt-6 text-base font-medium text-indigo-50">
+          이미 정하셨다면{' '}
+          <Link
+            href="/consult"
+            className="font-bold text-white underline decoration-2 underline-offset-4 hover:text-indigo-100"
+          >
+            바로 상담 신청
+          </Link>
+          하셔도 돼요
+        </p>
+
         {/* 보라 배경 위 indigo-100 → 대비 충분 (4.5:1+) */}
-        <p className="mt-6 text-sm font-medium text-indigo-100">
+        <p className="mt-3 text-sm font-medium text-indigo-100">
           가입 없이 가능 · 영업일 24시간 안에 카톡으로 답변
         </p>
       </div>
