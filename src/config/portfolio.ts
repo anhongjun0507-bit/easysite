@@ -109,6 +109,18 @@ export const portfolio: PortfolioItem[] = [
     image: '/portfolio/nomorenusu.png',
     imageAlt: '유레카 누수탐지 — 24시간 긴급출동 누수탐지·설비 수리 서비스 메인 화면',
   },
+  {
+    id: 'grassflowerhealing',
+    name: '풀밭꽃밭 치유센터',
+    url: 'https://grassflowerhealing.com',
+    category: '원예치유·교육',
+    description:
+      '원예 치유 수업과 웰니스 원예지도사 자격 교육을 운영하는 치유·힐링 전문 센터',
+    tech_stack: ['Next.js', 'Vercel'],
+    featured: true,
+    image: '/portfolio/grassflowerhealing.png',
+    imageAlt: '풀밭꽃밭 치유센터 — 원예 치유·힐링 프로그램 안내 메인 화면',
+  },
 ]
 
 export const featuredPortfolio: PortfolioItem[] = portfolio.filter(

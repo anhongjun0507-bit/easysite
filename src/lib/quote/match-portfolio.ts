@@ -15,6 +15,9 @@ export function matchPortfolio(input: {
 
   // 1) 업종 키워드 매칭 — 우선순위 높음
   if (industry) {
+    if (/(치유|힐링|명상|상담|웰니스|원예|가드닝|공방|요가|필라테스|스파|테라피|심리|돌봄)/.test(industry)) {
+      return compact([byId('grassflowerhealing'), byId('prismedu'), byId('conatusipsi')])
+    }
     if (/(학원|교육|입시|레슨|클래스)/.test(industry)) {
       return compact([byId('prismedu'), byId('conatusipsi'), byId('ps-company')])
     }

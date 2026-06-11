@@ -6,12 +6,12 @@ import { portfolio } from '@/config/portfolio'
 export const metadata: Metadata = {
   title: '포트폴리오',
   description:
-    '프리즘 안홍준 대표가 직접 만든 사이트 8건. 교육·쇼핑몰·회사소개·건축·인쇄·시설관리 등 다양한 분야의 실제 운영 사례를 확인하세요.',
+    '프리즘 안홍준 대표가 직접 만든 사이트 9건. 교육·쇼핑몰·회사소개·건축·인쇄·시설관리·힐링 등 다양한 분야의 실제 운영 사례를 확인하세요.',
   alternates: { canonical: '/portfolio' },
   openGraph: {
     title: '포트폴리오 | EasySite',
     description:
-      '프리즘 안홍준 대표가 직접 만든 사이트 8건. 교육·쇼핑몰·회사소개·건축·인쇄·시설관리 등 다양한 분야의 실제 운영 사례를 확인하세요.',
+      '프리즘 안홍준 대표가 직접 만든 사이트 9건. 교육·쇼핑몰·회사소개·건축·인쇄·시설관리·힐링 등 다양한 분야의 실제 운영 사례를 확인하세요.',
     url: '/portfolio',
   },
 }
