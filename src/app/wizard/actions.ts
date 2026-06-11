@@ -1,8 +1,10 @@
 'use server'
 
+import { cookies } from 'next/headers'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { Json } from '@/types/database.types'
 import { notifyTelegram } from './lib/telegram'
+import { REF_COOKIE, refSource, sanitizeRef } from '@/lib/tracking/ref'
 import {
   estimateBudget,
   estimatePageCount,
@@ -31,6 +33,7 @@ export async function submitWizard(input: SubmitInput): Promise<WizardSubmitResu
 
   const { answers, contact, sessionId } = parsed.data
   const admin = createAdminClient()
+  const ref = sanitizeRef(cookies().get(REF_COOKIE)?.value)
 
   // 1. leads insert — RETURNING id 회수
   const { min: budgetMin, max: budgetMax } = estimateBudget(answers.budget)
@@ -52,7 +55,7 @@ export async function submitWizard(input: SubmitInput): Promise<WizardSubmitResu
       features,
       wizard_answers: wizardAnswersJson,
       status: 'new',
-      source: 'wizard-v1',
+      source: refSource('wizard-v1', ref),
     })
     .select('id')
     .single()
