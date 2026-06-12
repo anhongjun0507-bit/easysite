@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
+import Image from 'next/image'
 import { RegisterForm } from './RegisterForm'
 
 const TITLE = '지으리 — 말하면, 지으리'
@@ -77,6 +78,27 @@ const steps = [
     title: '내 도메인으로 바로 출시',
     desc: '복잡한 설정 없이 한 번에 올라가요.',
     icon: RocketIcon,
+  },
+]
+
+// 제작 사례 — EasySite 레포에 있는 실제 운영 사이트 스크린샷(public/portfolio) 재사용.
+// 상호명 텍스트는 강조하지 않고 업종 라벨만 노출(이미지 안에 보이는 상호는 그대로).
+const cases = [
+  { image: '/portfolio/prismedu.png', label: 'AI 서비스', alt: 'AI 서비스 제작 사례 화면' },
+  {
+    image: '/portfolio/conatusipsi.png',
+    label: '교육 플랫폼',
+    alt: '교육 플랫폼 제작 사례 화면',
+  },
+  {
+    image: '/portfolio/digitalst.png',
+    label: '디지털 카탈로그',
+    alt: '디지털 카탈로그 제작 사례 화면',
+  },
+  {
+    image: '/portfolio/kbgroup.png',
+    label: '기업 홈페이지',
+    alt: '기업 홈페이지 제작 사례 화면',
   },
 ]
 
@@ -236,18 +258,26 @@ export default function JieuriPage() {
             </p>
           </div>
 
-          {/* 제작 사례 이미지 슬롯 4개 — 추후 실제 이미지로 교체 */}
+          {/* 제작 사례 — 실제 운영 중인 사이트 스크린샷 (모바일 2열). next/image가 webp로 최적화 */}
           <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => (
+            {cases.map((c) => (
               <figure
-                key={i}
-                className="overflow-hidden rounded-2xl border border-gray-200 bg-gray-50"
+                key={c.image}
+                className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xs"
               >
-                <div className="flex aspect-[4/3] items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                  <ImagePlaceholderIcon />
+                <div className="relative aspect-[16/10] overflow-hidden bg-gray-50">
+                  <Image
+                    src={c.image}
+                    alt={c.alt}
+                    fill
+                    sizes="(min-width: 640px) 25vw, 50vw"
+                    className="object-cover object-top"
+                  />
                 </div>
-                <figcaption className="px-3 py-2.5 text-center text-xs font-medium text-gray-500">
-                  제작 사례 {i + 1}
+                <figcaption className="px-3 py-3 text-center">
+                  <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
+                    {c.label}
+                  </span>
                 </figcaption>
               </figure>
             ))}
@@ -362,25 +392,6 @@ function StarIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
       <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 7.1-1.01L12 2Z" />
-    </svg>
-  )
-}
-
-function ImagePlaceholderIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-8 w-8 text-gray-300"
-    >
-      <rect x="3" y="3" width="18" height="18" rx="2" />
-      <circle cx="9" cy="9" r="2" />
-      <path d="M21 15l-5-5L5 21" />
     </svg>
   )
 }
