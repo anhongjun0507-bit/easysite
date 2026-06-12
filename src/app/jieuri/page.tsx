@@ -44,6 +44,18 @@ export async function generateMetadata(): Promise<Metadata> {
     title: { absolute: TITLE },
     description: DESCRIPTION,
     alternates: { canonical: JIEURI_ORIGIN },
+    // 파비콘: jieuri.com 호스트에서만 지으리 아이콘 적용.
+    // EasySite 호스트면 undefined → 루트(app/icon.tsx)의 EasySite 파비콘 그대로 상속.
+    icons: jieuri
+      ? {
+          icon: [
+            { url: '/jieuri-icon.svg', type: 'image/svg+xml' },
+            { url: '/jieuri-favicon.ico', sizes: '32x32' },
+          ],
+          shortcut: '/jieuri-favicon.ico',
+          apple: '/jieuri-apple-touch-icon.png',
+        }
+      : undefined,
     robots: jieuri
       ? { index: true, follow: true }
       : { index: false, follow: false },
