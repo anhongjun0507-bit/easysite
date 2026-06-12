@@ -7,6 +7,8 @@ import {
   BUSINESS_TYPES,
   WANT_TYPES,
   EXPERIENCES,
+  URGENCY,
+  CURRENT_SITE,
   WILLINGNESS_TO_PAY,
   preregisterSchema,
   type PreregisterInput,
@@ -16,7 +18,13 @@ import { submitPreregistration } from './actions'
 const inputBase =
   'h-12 w-full rounded-lg border-0 bg-white px-3.5 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'
 
-type RadioName = 'businessType' | 'wantType' | 'experience' | 'willingnessToPay'
+type RadioName =
+  | 'businessType'
+  | 'wantType'
+  | 'experience'
+  | 'urgency'
+  | 'currentSite'
+  | 'willingnessToPay'
 
 export function RegisterForm() {
   const [done, setDone] = useState(false)
@@ -34,6 +42,8 @@ export function RegisterForm() {
       businessType: undefined,
       wantType: undefined,
       experience: undefined,
+      urgency: undefined,
+      currentSite: undefined,
       willingnessToPay: undefined,
       blocker: '',
       contact: '',
@@ -146,6 +156,32 @@ export function RegisterForm() {
 
         <Question
           step={5}
+          label="언제 필요하세요?"
+          required
+          error={errors.urgency?.message}
+        >
+          <CardGrid cols={2}>
+            {URGENCY.map((v) => (
+              <RadioCard key={v} name="urgency" value={v} register={register} />
+            ))}
+          </CardGrid>
+        </Question>
+
+        <Question
+          step={6}
+          label="지금 홈페이지가 있나요?"
+          required
+          error={errors.currentSite?.message}
+        >
+          <CardGrid cols={1}>
+            {CURRENT_SITE.map((v) => (
+              <RadioCard key={v} name="currentSite" value={v} register={register} />
+            ))}
+          </CardGrid>
+        </Question>
+
+        <Question
+          step={7}
           label="한 달에 얼마면 쓸 만하다 싶으세요?"
           required
           error={errors.willingnessToPay?.message}
@@ -163,7 +199,7 @@ export function RegisterForm() {
         </Question>
 
         <Question
-          step={6}
+          step={8}
           label="어디로 연락드리면 될까요?"
           required
           hint="출시되면 여기로 딱 한 번만 알려드려요. 이메일이나 카톡 ID, 편하신 걸로요."

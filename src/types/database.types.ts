@@ -59,8 +59,10 @@ export type Database = {
           consented_at: string
           contact: string
           created_at: string
+          current_site: string | null
           experience: string | null
           id: string
+          urgency: string | null
           want_type: string | null
           willingness_to_pay: string | null
         }
@@ -70,8 +72,10 @@ export type Database = {
           consented_at?: string
           contact: string
           created_at?: string
+          current_site?: string | null
           experience?: string | null
           id?: string
+          urgency?: string | null
           want_type?: string | null
           willingness_to_pay?: string | null
         }
@@ -81,8 +85,10 @@ export type Database = {
           consented_at?: string
           contact?: string
           created_at?: string
+          current_site?: string | null
           experience?: string | null
           id?: string
+          urgency?: string | null
           want_type?: string | null
           willingness_to_pay?: string | null
         }

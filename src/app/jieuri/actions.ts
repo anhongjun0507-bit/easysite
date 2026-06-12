@@ -34,6 +34,8 @@ export async function submitPreregistration(
     want_type: d.wantType,
     experience: d.experience,
     blocker,
+    urgency: d.urgency,
+    current_site: d.currentSite,
     willingness_to_pay: d.willingnessToPay,
     contact: d.contact,
     // 개인정보 수집·이용 동의 시각 (동의 없이는 스키마 검증에서 막힘)
@@ -70,6 +72,8 @@ function formatPreregisterMessage(
     d.businessType ? `<b>업종</b>: ${esc(d.businessType)}` : null,
     d.wantType ? `<b>만들 것</b>: ${esc(d.wantType)}` : null,
     d.experience ? `<b>시도</b>: ${esc(d.experience)}` : null,
+    d.urgency ? `<b>시기</b>: ${esc(d.urgency)}` : null,
+    d.currentSite ? `<b>현재 사이트</b>: ${esc(d.currentSite)}` : null,
     d.willingnessToPay ? `<b>지불 의향</b>: ${esc(d.willingnessToPay)}` : null,
     d.blocker ? `\n<b>막혔던 점</b>: ${esc(d.blocker)}` : null,
   ]
