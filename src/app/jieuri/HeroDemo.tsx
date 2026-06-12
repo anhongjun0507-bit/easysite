@@ -102,36 +102,60 @@ export function HeroDemo() {
           </span>
         </div>
 
-        {/* 슬롯 자리 고정 — 등장은 opacity/scale 만 */}
+        {/* 가상의 동네 카페 사이트 — 슬롯 높이 고정(등장은 opacity/scale 만). 이미지 파일 없이 CSS/div 만 */}
         <div className="space-y-3 p-4">
+          {/* nav: 카페 이름 + 메뉴 */}
           <div className="flex items-center justify-between">
-            <div className="h-3 w-16 rounded bg-gray-900/85" />
-            <div className="flex gap-1.5">
-              <div className="h-2.5 w-8 rounded bg-gray-200" />
-              <div className="h-2.5 w-8 rounded bg-gray-200" />
-              <div className="h-2.5 w-8 rounded bg-gray-200" />
-            </div>
+            <span className="text-[13px] font-extrabold tracking-tight text-stone-800">
+              모모 커피
+            </span>
+            <span className="flex gap-2.5 text-[10px] font-medium text-stone-400">
+              <span>메뉴</span>
+              <span>오시는 길</span>
+              <span>예약</span>
+            </span>
           </div>
 
-          <div className="overflow-hidden rounded-xl bg-gradient-to-br from-gray-100 to-gray-200">
+          {/* 히어로 사진(따뜻한 그라데이션으로 사진 느낌) — 'image' 단계에서 확대 */}
+          <div className="overflow-hidden rounded-xl bg-[#f3e7d6]">
             <div
-              className="flex aspect-[16/9] items-center justify-center transition-transform duration-700 ease-emphasized will-change-transform"
+              className="relative aspect-[16/9] transition-transform duration-700 ease-emphasized will-change-transform"
               style={{ transform: has('image') ? 'scale(1)' : 'scale(0.86)' }}
             >
-              <div className="h-9 w-9 rounded-lg bg-white/70 ring-1 ring-black/5" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#e7b27a] via-[#c98a52] to-[#7c4f33]" />
+              <div className="absolute inset-0 bg-[radial-gradient(120%_80%_at_22%_12%,rgba(255,255,255,0.38),transparent_55%)]" />
+              <div className="absolute inset-0 flex flex-col justify-end p-3">
+                <span className="text-[15px] font-extrabold leading-tight text-white drop-shadow-sm">
+                  오늘도, 모모
+                </span>
+                <span className="mt-0.5 text-[10px] font-medium text-white/85">
+                  방배동 골목 끝 작은 커피집
+                </span>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <div className="h-3.5 w-2/3 rounded bg-gray-900/80" />
-            <div className="h-2.5 w-full rounded bg-gray-200" />
-            <div className="h-2.5 w-4/5 rounded bg-gray-200" />
+          {/* 메뉴 텍스트 */}
+          <div className="space-y-1.5">
+            {[
+              ['아메리카노', '4,500'],
+              ['바닐라 라떼', '5,500'],
+              ['오늘의 디저트', '6,000'],
+            ].map(([name, price]) => (
+              <div
+                key={name}
+                className="flex items-center justify-between text-[11px]"
+              >
+                <span className="font-semibold text-stone-700">{name}</span>
+                <span className="font-medium text-stone-400">{price}</span>
+              </div>
+            ))}
           </div>
 
-          {/* 예약 버튼 슬롯(높이 고정) */}
+          {/* 예약 버튼 슬롯 — 'cta' 단계 (카페 브랜드 톤 = 따뜻한 다크) */}
           <div className="h-9">
             <div
-              className="inline-flex h-9 items-center rounded-lg bg-indigo-600 px-4 text-[13px] font-semibold text-white shadow-sm transition-[opacity,transform] duration-500 ease-emphasized will-change-transform"
+              className="inline-flex h-9 items-center rounded-lg bg-stone-800 px-4 text-[13px] font-semibold text-white shadow-sm transition-[opacity,transform] duration-500 ease-emphasized will-change-transform"
               style={{
                 opacity: has('cta') ? 1 : 0,
                 transform: has('cta')
@@ -143,7 +167,7 @@ export function HeroDemo() {
             </div>
           </div>
 
-          {/* 후기 슬롯(높이 고정) */}
+          {/* 후기 슬롯 — 'reviews' 단계 */}
           <div className="h-6">
             <div
               className="flex items-center gap-2 transition-[opacity,transform] duration-500 ease-out will-change-transform"
@@ -157,8 +181,8 @@ export function HeroDemo() {
                   <Star key={i} className="h-3.5 w-3.5" fill="currentColor" strokeWidth={0} />
                 ))}
               </span>
-              <span className="text-[11px] font-bold text-gray-700">5.0</span>
-              <span className="h-2 w-14 rounded bg-gray-200" />
+              <span className="text-[11px] font-bold text-stone-700">5.0</span>
+              <span className="text-[11px] text-stone-400">후기 32</span>
             </div>
           </div>
         </div>
