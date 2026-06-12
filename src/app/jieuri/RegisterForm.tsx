@@ -1,7 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm, type UseFormRegister } from 'react-hook-form'
+import {
+  useForm,
+  type UseFormRegister,
+  type UseFormRegisterReturn,
+} from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Check, ChevronDown, CircleCheck, Loader2 } from 'lucide-react'
 import {
@@ -36,12 +40,15 @@ export function RegisterForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<PreregisterInput>({
     resolver: zodResolver(preregisterSchema),
     defaultValues: {
       businessType: undefined,
+      businessTypeEtc: '',
       wantType: undefined,
+      wantTypeEtc: '',
       experience: undefined,
       urgency: undefined,
       currentSite: undefined,
@@ -51,6 +58,10 @@ export function RegisterForm() {
       consent: false,
     },
   })
+
+  // "기타" 선택 시에만 직접 입력칸 펼침
+  const showBizEtc = watch('businessType') === '기타'
+  const showWantEtc = watch('wantType') === '기타'
 
   async function onSubmit(values: PreregisterInput) {
     setDuplicate(false)
@@ -102,6 +113,12 @@ export function RegisterForm() {
               <RadioCard key={v} name="businessType" value={v} register={register} />
             ))}
           </CardGrid>
+          <EtcInput
+            show={showBizEtc}
+            registration={register('businessTypeEtc')}
+            error={errors.businessTypeEtc?.message}
+            placeholder="어떤 일을 하시는지 적어주세요"
+          />
         </Question>
 
         <Question
@@ -115,6 +132,12 @@ export function RegisterForm() {
               <RadioCard key={v} name="wantType" value={v} register={register} />
             ))}
           </CardGrid>
+          <EtcInput
+            show={showWantEtc}
+            registration={register('wantTypeEtc')}
+            error={errors.wantTypeEtc?.message}
+            placeholder="무엇을 만들고 싶은지 적어주세요"
+          />
         </Question>
 
         <Question
@@ -368,6 +391,41 @@ function CardGrid({
       className={`grid gap-2.5 ${cols === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}
     >
       {children}
+    </div>
+  )
+}
+
+function EtcInput({
+  show,
+  registration,
+  error,
+  placeholder,
+}: {
+  show: boolean
+  registration: UseFormRegisterReturn
+  error?: string
+  placeholder: string
+}) {
+  // grid-rows 0fr↔1fr 로 부드럽게 펼침 (layout 자연 변화, 모션 끔이면 즉시)
+  return (
+    <div
+      className={`grid transition-[grid-template-rows] duration-300 ease-emphasized motion-reduce:transition-none ${
+        show ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+      }`}
+    >
+      <div className="overflow-hidden">
+        <div className="pt-2.5">
+          <input
+            {...registration}
+            type="text"
+            placeholder={placeholder}
+            aria-hidden={!show}
+            tabIndex={show ? 0 : -1}
+            className={inputBase}
+          />
+          {error && <p className="mt-1.5 text-sm text-red-600">{error}</p>}
+        </div>
+      </div>
     </div>
   )
 }

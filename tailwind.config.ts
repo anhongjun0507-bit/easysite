@@ -16,6 +16,16 @@ const config: Config = {
       transitionTimingFunction: {
         emphasized: 'cubic-bezier(0.22, 1, 0.36, 1)',
       },
+      keyframes: {
+        // 스크롤 유도 화살표 — 부드러운 상하 바운스
+        softbounce: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(5px)' },
+        },
+      },
+      animation: {
+        softbounce: 'softbounce 1.8s ease-in-out infinite',
+      },
     },
   },
   plugins: [],
