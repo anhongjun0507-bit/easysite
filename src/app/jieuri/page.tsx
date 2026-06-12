@@ -4,6 +4,7 @@ import Image from 'next/image'
 import {
   ArrowRight,
   Check,
+  ChevronDown,
   ClipboardList,
   LifeBuoy,
   MessageSquare,
@@ -15,6 +16,7 @@ import {
 import { RegisterForm } from './RegisterForm'
 import { HeroDemo } from './HeroDemo'
 import { Reveal } from './Reveal'
+import { StickyCta } from './StickyCta'
 
 const TITLE = '지으리 — 말하면, 지으리'
 const DESCRIPTION =
@@ -139,7 +141,7 @@ export default function JieuriPage() {
       <main className="flex-1">
         {/* 1. 히어로 */}
         <section className="overflow-hidden">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 pb-16 pt-12 sm:pb-24 sm:pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 pb-8 pt-12 sm:pb-10 sm:pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
             {/* 카피 */}
             <div className="text-center lg:text-left">
               <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-[13px] font-semibold text-gray-700 shadow-xs">
@@ -180,6 +182,22 @@ export default function JieuriPage() {
             <div className="lg:pl-4">
               <HeroDemo />
             </div>
+          </div>
+
+          {/* 스크롤 유도 인디케이터 → 사전등록 폼 */}
+          <div className="flex justify-center px-6 pb-14 sm:pb-20">
+            <a
+              href="#register"
+              className="group flex flex-col items-center gap-1.5 text-gray-400 transition hover:text-gray-700"
+            >
+              <span className="text-[13px] font-medium tracking-tight">
+                1분 사전등록
+              </span>
+              <ChevronDown
+                aria-hidden
+                className="h-5 w-5 motion-safe:animate-softbounce"
+              />
+            </a>
           </div>
         </section>
 
@@ -340,6 +358,8 @@ export default function JieuriPage() {
           </div>
         </section>
       </main>
+
+      <StickyCta />
 
       {/* 자체 푸터 — 사업자 정보 (개인정보 수집 페이지 신뢰·고지) */}
       <footer className="border-t border-gray-100 bg-white">

@@ -56,6 +56,7 @@ export type Database = {
         Row: {
           blocker: string | null
           business_type: string | null
+          business_type_etc: string | null
           consented_at: string
           contact: string
           created_at: string
@@ -64,11 +65,13 @@ export type Database = {
           id: string
           urgency: string | null
           want_type: string | null
+          want_type_etc: string | null
           willingness_to_pay: string | null
         }
         Insert: {
           blocker?: string | null
           business_type?: string | null
+          business_type_etc?: string | null
           consented_at?: string
           contact: string
           created_at?: string
@@ -77,11 +80,13 @@ export type Database = {
           id?: string
           urgency?: string | null
           want_type?: string | null
+          want_type_etc?: string | null
           willingness_to_pay?: string | null
         }
         Update: {
           blocker?: string | null
           business_type?: string | null
+          business_type_etc?: string | null
           consented_at?: string
           contact?: string
           created_at?: string
@@ -90,6 +95,7 @@ export type Database = {
           id?: string
           urgency?: string | null
           want_type?: string | null
+          want_type_etc?: string | null
           willingness_to_pay?: string | null
         }
         Relationships: []

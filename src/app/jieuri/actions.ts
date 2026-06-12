@@ -27,11 +27,20 @@ export async function submitPreregistration(
 
   const d = parsed.data
   const blocker = d.blocker?.trim() ? d.blocker.trim() : null
+  // "기타" 일 때만 직접 입력값 저장 (다른 선택이면 null)
+  const businessTypeEtc =
+    d.businessType === '기타' && d.businessTypeEtc?.trim()
+      ? d.businessTypeEtc.trim()
+      : null
+  const wantTypeEtc =
+    d.wantType === '기타' && d.wantTypeEtc?.trim() ? d.wantTypeEtc.trim() : null
   const admin = createAdminClient()
 
   const { error } = await admin.from('jieuri_preregistrations').insert({
     business_type: d.businessType,
+    business_type_etc: businessTypeEtc,
     want_type: d.wantType,
+    want_type_etc: wantTypeEtc,
     experience: d.experience,
     blocker,
     urgency: d.urgency,
@@ -69,8 +78,12 @@ function formatPreregisterMessage(
     `🌱 <b>지으리 사전등록</b>`,
     ``,
     `<b>연락처</b>: ${esc(d.contact)}`,
-    d.businessType ? `<b>업종</b>: ${esc(d.businessType)}` : null,
-    d.wantType ? `<b>만들 것</b>: ${esc(d.wantType)}` : null,
+    d.businessType
+      ? `<b>업종</b>: ${esc(d.businessType === '기타' && d.businessTypeEtc ? `기타 — ${d.businessTypeEtc}` : d.businessType)}`
+      : null,
+    d.wantType
+      ? `<b>만들 것</b>: ${esc(d.wantType === '기타' && d.wantTypeEtc ? `기타 — ${d.wantTypeEtc}` : d.wantType)}`
+      : null,
     d.experience ? `<b>시도</b>: ${esc(d.experience)}` : null,
     d.urgency ? `<b>시기</b>: ${esc(d.urgency)}` : null,
     d.currentSite ? `<b>현재 사이트</b>: ${esc(d.currentSite)}` : null,

@@ -63,9 +63,11 @@ export const preregisterSchema = z.object({
   businessType: z.enum(BUSINESS_TYPES, {
     message: '어떤 일을 하시는지 하나만 골라주세요',
   }),
+  businessTypeEtc: z.string().trim().max(100).optional().or(z.literal('')),
   wantType: z.enum(WANT_TYPES, {
     message: '무엇을 만들고 싶은지 하나만 골라주세요',
   }),
+  wantTypeEtc: z.string().trim().max(100).optional().or(z.literal('')),
   experience: z.enum(EXPERIENCES, {
     message: '전에 시도해본 적 있는지 하나만 골라주세요',
   }),
@@ -88,5 +90,22 @@ export const preregisterSchema = z.object({
     .boolean()
     .refine((v) => v === true, { message: '개인정보 수집·이용에 동의해 주세요' }),
 })
+  // "기타" 선택 시에만 직접 입력 필수 (다른 선택이면 무시)
+  .superRefine((data, ctx) => {
+    if (data.businessType === '기타' && !data.businessTypeEtc?.trim()) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['businessTypeEtc'],
+        message: '어떤 일을 하시는지 적어주세요',
+      })
+    }
+    if (data.wantType === '기타' && !data.wantTypeEtc?.trim()) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['wantTypeEtc'],
+        message: '무엇을 만들고 싶은지 적어주세요',
+      })
+    }
+  })
 
 export type PreregisterInput = z.infer<typeof preregisterSchema>
