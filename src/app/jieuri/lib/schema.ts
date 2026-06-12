@@ -2,8 +2,8 @@ import { z } from 'zod'
 
 /**
  * 지으리 사전등록 설문.
- * 필수: Q1·Q2·Q3·Q5 라디오 + Q6 연락처 + 개인정보 동의.
- * 선택: Q4(막혔던 점) textarea.
+ * 필수: 업종·만들것·시도경험·언제필요·현재사이트·지불의향 라디오 + 연락처 + 개인정보 동의.
+ * 선택: 막혔던 점 textarea.
  * 라디오 값은 DB·텔레그램·어드민에서 바로 읽히도록 한글 라벨 그대로 저장한다.
  * (blocker 만 nullable, 동의 시각은 consented_at 컬럼에 별도 기록)
  */
@@ -34,7 +34,23 @@ export const EXPERIENCES = [
   '처음',
 ] as const
 
-// Q5 월 지불 의향
+// 언제 필요하세요?
+export const URGENCY = [
+  '당장 이번 달',
+  '1~3개월 내',
+  '올해 안',
+  '아직은 그냥 궁금함',
+] as const
+
+// 지금 홈페이지가 있나요?
+export const CURRENT_SITE = [
+  '없음',
+  '있는데 방치 중이거나 불만',
+  '아임웹 등으로 직접 만든 것 사용 중',
+  '인스타·블로그로 대체 중',
+] as const
+
+// 월 지불 의향
 export const WILLINGNESS_TO_PAY = [
   '1만원 이하',
   '1~3만원',
@@ -54,6 +70,12 @@ export const preregisterSchema = z.object({
     message: '전에 시도해본 적 있는지 하나만 골라주세요',
   }),
   blocker: z.string().trim().max(1000).optional().or(z.literal('')),
+  urgency: z.enum(URGENCY, {
+    message: '언제 필요하신지 하나만 골라주세요',
+  }),
+  currentSite: z.enum(CURRENT_SITE, {
+    message: '지금 홈페이지 상황을 하나만 골라주세요',
+  }),
   willingnessToPay: z.enum(WILLINGNESS_TO_PAY, {
     message: '한 달에 얼마면 좋을지 하나만 골라주세요',
   }),
