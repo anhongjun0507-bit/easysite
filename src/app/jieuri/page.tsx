@@ -1,23 +1,50 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import { RegisterForm } from './RegisterForm'
 
 const TITLE = '지으리 — 말하면, 지으리'
 const DESCRIPTION =
   '코드 몰라도 됩니다. 채팅으로 직접 웹사이트를 만들고, 막히면 현직 개발자가 대신 고쳐드려요. 사전등록하면 평생 50% 할인 — 선착순 100명.'
 
-export const metadata: Metadata = {
-  // 지으리는 별도 브랜드(jieuri.com 예정) — EasySite 접미사 없이 단독 타이틀.
-  title: { absolute: TITLE },
-  description: DESCRIPTION,
-  alternates: { canonical: '/jieuri' },
-  // 사전등록 단계 — 도메인 연결 전까진 색인 안 함.
-  robots: { index: false, follow: false },
-  openGraph: {
-    type: 'website',
-    locale: 'ko_KR',
-    title: TITLE,
+const JIEURI_ORIGIN = 'https://jieuri.com'
+const EASYSITE_ORIGIN = 'https://easysite-sage.vercel.app'
+
+function onJieuriHost(): boolean {
+  const h = headers()
+  const host = (h.get('x-forwarded-host') ?? h.get('host') ?? '')
+    .toLowerCase()
+    .split(':')[0]
+  return host === 'jieuri.com' || host === 'www.jieuri.com'
+}
+
+// 같은 /jieuri 라우트가 두 호스트로 노출되므로 호스트별로 색인/정본을 분기한다.
+//  - jieuri.com    : index 허용 + canonical·OG = https://jieuri.com
+//  - EasySite 도메인 : noindex 유지(중복 색인 방지), 정본은 jieuri.com 으로 통일
+// (headers() 사용으로 이 라우트는 요청 시 렌더 — 정적 prerender 아님)
+export async function generateMetadata(): Promise<Metadata> {
+  const jieuri = onJieuriHost()
+  return {
+    metadataBase: new URL(jieuri ? JIEURI_ORIGIN : EASYSITE_ORIGIN),
+    title: { absolute: TITLE },
     description: DESCRIPTION,
-  },
+    alternates: { canonical: JIEURI_ORIGIN },
+    robots: jieuri
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
+    openGraph: {
+      type: 'website',
+      locale: 'ko_KR',
+      siteName: '지으리',
+      url: JIEURI_ORIGIN,
+      title: TITLE,
+      description: DESCRIPTION,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: TITLE,
+      description: DESCRIPTION,
+    },
+  }
 }
 
 const empathy = [
