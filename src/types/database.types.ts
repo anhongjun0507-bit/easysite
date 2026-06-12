@@ -52,6 +52,42 @@ export type Database = {
           },
         ]
       }
+      jieuri_preregistrations: {
+        Row: {
+          blocker: string | null
+          business_type: string | null
+          consented_at: string
+          contact: string
+          created_at: string
+          experience: string | null
+          id: string
+          want_type: string | null
+          willingness_to_pay: string | null
+        }
+        Insert: {
+          blocker?: string | null
+          business_type?: string | null
+          consented_at?: string
+          contact: string
+          created_at?: string
+          experience?: string | null
+          id?: string
+          want_type?: string | null
+          willingness_to_pay?: string | null
+        }
+        Update: {
+          blocker?: string | null
+          business_type?: string | null
+          consented_at?: string
+          contact?: string
+          created_at?: string
+          experience?: string | null
+          id?: string
+          want_type?: string | null
+          willingness_to_pay?: string | null
+        }
+        Relationships: []
+      }
       lead_events: {
         Row: {
           created_at: string

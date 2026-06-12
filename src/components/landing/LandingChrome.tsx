@@ -19,6 +19,13 @@ export function LandingChrome({ children }: { children: React.ReactNode }) {
     !(pathname?.startsWith('/wizard/result') ?? false)
   const isAdmin = pathname?.startsWith('/admin') ?? false
   const isPay = pathname?.startsWith('/pay') ?? false
+  // /jieuri 는 별도 브랜드(jieuri.com 예정) — 자체 헤더/푸터를 직접 렌더하므로
+  // EasySite 크롬을 전부 비우고 페이지 트리만 그대로 통과시킨다.
+  const isJieuri = pathname?.startsWith('/jieuri') ?? false
+
+  if (isJieuri) {
+    return <>{children}</>
+  }
 
   if (isWizardForm || isAdmin || isPay) {
     return <main className="flex-1">{children}</main>
