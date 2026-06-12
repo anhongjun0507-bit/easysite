@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useForm, type UseFormRegister } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Check, ChevronDown, CircleCheck, Loader2 } from 'lucide-react'
 import {
   BUSINESS_TYPES,
   WANT_TYPES,
@@ -74,20 +75,10 @@ export function RegisterForm() {
           aria-hidden="true"
           className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white"
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-7 w-7"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
+          <Check className="h-7 w-7" strokeWidth={3} />
         </div>
         <h3 className="mt-5 text-xl font-extrabold text-gray-900 sm:text-2xl">
-          등록 완료! 🙌
+          등록 완료!
         </h3>
         <p className="mx-auto mt-3 max-w-sm text-base leading-relaxed text-gray-700">
           출시되면 가장 먼저 알려드릴게요. 선착순 100명{' '}
@@ -236,9 +227,12 @@ export function RegisterForm() {
                 type="button"
                 onClick={() => setConsentOpen((v) => !v)}
                 aria-expanded={consentOpen}
-                className="ml-2 align-middle text-xs font-medium text-indigo-600 underline underline-offset-2 transition hover:text-indigo-800"
+                className="ml-2 inline-flex items-center gap-0.5 align-middle text-xs font-medium text-indigo-600 transition hover:text-indigo-800"
               >
                 {consentOpen ? '접기' : '내용 보기'}
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${consentOpen ? 'rotate-180' : ''}`}
+                />
               </button>
               {consentOpen && (
                 <dl className="animate-ease-up mt-2 space-y-1 rounded-lg border border-gray-200 bg-gray-50 px-3.5 py-3 text-xs leading-relaxed text-gray-600">
@@ -272,9 +266,12 @@ export function RegisterForm() {
         </div>
 
         {duplicate && (
-          <div className="animate-ease-up rounded-xl border border-amber-200 bg-amber-50 px-4 py-3.5 text-sm leading-relaxed text-amber-900">
-            <b>이미 등록되어 있어요</b> 🙌 이 연락처로는 신청이 끝났어요. 출시되면
-            가장 먼저 알려드릴게요.
+          <div className="animate-ease-up flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3.5 text-sm leading-relaxed text-amber-900">
+            <CircleCheck className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" strokeWidth={2} />
+            <span>
+              <b>이미 등록되어 있어요.</b> 이 연락처로는 신청이 끝났어요. 출시되면
+              가장 먼저 알려드릴게요.
+            </span>
           </div>
         )}
 
@@ -286,7 +283,7 @@ export function RegisterForm() {
           >
             {isSubmitting ? (
               <>
-                <Spinner />
+                <Loader2 className="h-5 w-5 animate-spin" />
                 등록하는 중…
               </>
             ) : (
@@ -400,31 +397,5 @@ function RadioCard({
       </span>
       <span>{value}</span>
     </label>
-  )
-}
-
-function Spinner() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      fill="none"
-      className="h-5 w-5 animate-spin"
-    >
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="3"
-        className="opacity-25"
-      />
-      <path
-        d="M12 2a10 10 0 0 1 10 10"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-    </svg>
   )
 }

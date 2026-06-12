@@ -1,7 +1,20 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import Image from 'next/image'
+import {
+  ArrowRight,
+  Check,
+  ClipboardList,
+  LifeBuoy,
+  MessageSquare,
+  Plug,
+  Rocket,
+  Star,
+  Wallet,
+} from 'lucide-react'
 import { RegisterForm } from './RegisterForm'
+import { HeroDemo } from './HeroDemo'
+import { Reveal } from './Reveal'
 
 const TITLE = '지으리 — 말하면, 지으리'
 const DESCRIPTION =
@@ -50,14 +63,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const empathy = [
   {
+    icon: Wallet,
     pain: '견적 받아보니 몇백만원… 시작도 못 했어요',
     solution: '월 구독으로 부담 없이 시작해요',
   },
   {
+    icon: Plug,
     pain: '해외 노코드 툴 써봤는데 토스 결제·카톡채널·네이버 등록에서 막혔어요',
     solution: '한국형 연동, 처음부터 기본으로 들어가 있어요',
   },
   {
+    icon: LifeBuoy,
     pain: '만들다 막히면 물어볼 데가 없어요',
     solution: '외주 100건+ 현직 개발자가 직접 수정해드려요',
   },
@@ -65,19 +81,19 @@ const empathy = [
 
 const steps = [
   {
+    icon: ClipboardList,
     title: '업종 고르고 질문 몇 개 답하기',
     desc: '딱 5분이면 돼요. 글 쓸 필요 없어요.',
-    icon: ClipboardIcon,
   },
   {
+    icon: MessageSquare,
     title: 'AI가 만든 사이트를 채팅으로 수정',
     desc: '“여기 색 바꿔줘” 하면 바로 바뀌어요.',
-    icon: ChatIcon,
   },
   {
+    icon: Rocket,
     title: '내 도메인으로 바로 출시',
     desc: '복잡한 설정 없이 한 번에 올라가요.',
-    icon: RocketIcon,
   },
 ]
 
@@ -106,14 +122,14 @@ export default function JieuriPage() {
   return (
     <>
       {/* 자체 헤더 (EasySite 글로벌 헤더와 독립) */}
-      <header className="border-b border-gray-100">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+      <header className="sticky top-0 z-30 border-b border-gray-100 bg-white/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
           <span className="text-lg font-extrabold tracking-tight text-gray-900">
             지으리
           </span>
           <a
             href="#register"
-            className="inline-flex h-10 items-center rounded-lg bg-gray-900 px-4 text-sm font-semibold text-white transition hover:bg-gray-700"
+            className="inline-flex h-10 items-center rounded-lg bg-gray-900 px-4 text-sm font-semibold text-white transition hover:bg-gray-800 active:scale-[0.98]"
           >
             사전등록
           </a>
@@ -122,194 +138,212 @@ export default function JieuriPage() {
 
       <main className="flex-1">
         {/* 1. 히어로 */}
-        <section className="bg-hero-mesh">
-          <div className="mx-auto max-w-3xl px-6 pb-16 pt-14 text-center sm:pb-20 sm:pt-20">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-100 bg-indigo-50 px-4 py-1.5 text-sm font-semibold text-indigo-700">
-              🌱 지으리 사전등록 모집 중
-            </span>
-            <h1 className="mt-6 text-[34px] font-extrabold leading-[1.15] tracking-[-0.02em] text-gray-900 sm:text-5xl">
-              코드 몰라도 됩니다.
-            </h1>
-            <h2 className="mt-2 text-3xl font-extrabold leading-[1.15] tracking-[-0.02em] text-indigo-600 sm:text-5xl">
-              말하면, 지으리.
-            </h2>
-            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-gray-600 sm:text-lg">
-              개발자한테 300만원 주고 3주 기다리지 마세요. 채팅으로 직접 만들면 월
-              구독, 막히면 현직 개발자가 대신 고쳐드립니다.
-            </p>
-            <div className="mt-9">
-              <a
-                href="#register"
-                className="cta-glow inline-flex h-14 items-center justify-center rounded-xl bg-indigo-600 px-7 text-base font-bold text-white transition hover:bg-indigo-700 sm:h-16 sm:px-9 sm:text-lg"
-              >
-                사전등록하고 평생 50% 할인받기
-              </a>
+        <section className="overflow-hidden">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 pb-16 pt-12 sm:pb-24 sm:pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
+            {/* 카피 */}
+            <div className="text-center lg:text-left">
+              <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-[13px] font-semibold text-gray-700 shadow-xs">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75 motion-safe:animate-ping" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-500" />
+                </span>
+                지으리 사전등록 모집 중
+              </span>
+
+              <h1 className="mt-7 text-[26px] font-bold leading-tight tracking-[-0.02em] text-gray-900 sm:text-[32px]">
+                코드 몰라도 됩니다.
+              </h1>
+              <p className="mt-1 text-[44px] font-extrabold leading-[1.04] tracking-[-0.035em] text-gray-900 sm:text-[68px]">
+                말하면, <span className="text-indigo-600">지으리.</span>
+              </p>
+
+              <p className="mx-auto mt-6 max-w-xl text-[16px] leading-relaxed text-gray-600 sm:text-[18px] lg:mx-0">
+                개발자한테 300만원 주고 3주 기다리지 마세요. 채팅으로 직접 만들면
+                월 구독, 막히면 현직 개발자가 대신 고쳐드립니다.
+              </p>
+
+              <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap lg:justify-start lg:gap-4">
+                <a
+                  href="#register"
+                  className="group inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-7 text-[16px] font-bold text-white shadow-[0_10px_30px_-10px_rgba(79,70,229,0.6)] transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:bg-indigo-700 active:translate-y-0 active:scale-[0.99] sm:w-auto sm:text-[17px]"
+                >
+                  사전등록하고 평생 50% 할인받기
+                  <ArrowRight className="h-5 w-5 transition-transform duration-200 ease-emphasized group-hover:translate-x-0.5" />
+                </a>
+                <span className="text-[13px] text-gray-500">
+                  선착순 100명 · 딱 한 번만 연락
+                </span>
+              </div>
             </div>
-            <p className="mt-4 text-sm text-gray-500">
-              선착순 100명 · 출시하면 딱 한 번만 연락드려요
-            </p>
+
+            {/* 시그니처 데모 */}
+            <div className="lg:pl-4">
+              <HeroDemo />
+            </div>
           </div>
         </section>
 
         {/* 2. 공감 섹션 */}
-        <section className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
-          <h2 className="text-center text-2xl font-extrabold tracking-[-0.01em] text-gray-900 sm:text-3xl">
-            이런 적, 있으셨죠?
-          </h2>
-          <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-3">
-            {empathy.map((item) => (
-              <div
-                key={item.pain}
-                className="flex flex-col rounded-2xl border border-gray-200 bg-white p-6 shadow-xs"
-              >
-                <svg
-                  aria-hidden="true"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="h-7 w-7 text-gray-200"
-                >
-                  <path d="M7.17 6A5.17 5.17 0 0 0 2 11.17V18h6.83v-6.83H5.5A3.67 3.67 0 0 1 9.17 8V6h-2Zm10 0A5.17 5.17 0 0 0 12 11.17V18h6.83v-6.83H15.5A3.67 3.67 0 0 1 19.17 8V6h-2Z" />
-                </svg>
-                <p className="mt-3 flex-1 text-[15px] font-semibold leading-relaxed text-gray-800">
-                  {item.pain}
-                </p>
-                <div className="mt-5 flex items-start gap-2.5 border-t border-gray-100 pt-4">
-                  <span
-                    aria-hidden="true"
-                    className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-white"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-3 w-3"
-                    >
-                      <path d="M5 12l5 5L20 7" />
-                    </svg>
-                  </span>
-                  <p className="text-[15px] font-bold leading-relaxed text-indigo-700">
-                    {item.solution}
-                  </p>
-                </div>
-              </div>
-            ))}
+        <section className="border-t border-gray-100">
+          <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
+            <Reveal>
+              <h2 className="text-center text-[26px] font-extrabold tracking-[-0.02em] text-gray-900 sm:text-[34px]">
+                이런 적, 있으셨죠?
+              </h2>
+            </Reveal>
+            <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-3">
+              {empathy.map((item, i) => {
+                const Icon = item.icon
+                return (
+                  <Reveal key={item.pain} delay={i * 80}>
+                    <div className="flex h-full flex-col rounded-2xl border border-gray-200/80 bg-white p-6 transition duration-200 ease-emphasized hover:-translate-y-1 hover:border-gray-300 hover:shadow-[0_18px_44px_-26px_rgba(17,24,39,0.35)]">
+                      <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
+                        <Icon className="h-[22px] w-[22px]" strokeWidth={2} />
+                      </span>
+                      <p className="mt-5 flex-1 text-[15.5px] font-semibold leading-relaxed text-gray-800">
+                        {item.pain}
+                      </p>
+                      <div className="mt-5 flex items-start gap-2 border-t border-gray-100 pt-4">
+                        <Check
+                          className="mt-0.5 h-[18px] w-[18px] shrink-0 text-indigo-600"
+                          strokeWidth={2.5}
+                        />
+                        <p className="text-[15.5px] font-bold leading-snug text-gray-900">
+                          {item.solution}
+                        </p>
+                      </div>
+                    </div>
+                  </Reveal>
+                )
+              })}
+            </div>
           </div>
         </section>
 
         {/* 3. 작동 방식 3스텝 */}
-        <section className="border-y border-gray-100 bg-gray-50/60">
-          <div className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
-            <h2 className="text-center text-2xl font-extrabold tracking-[-0.01em] text-gray-900 sm:text-3xl">
-              이렇게 만들어져요
-            </h2>
-            <p className="mt-3 text-center text-base text-gray-600">
-              어렵게 생각 안 하셔도 돼요. 3단계면 끝나요.
-            </p>
-            <ol className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-3 sm:gap-6">
-              {steps.map((step, i) => {
-                const Icon = step.icon
-                return (
-                  <li key={step.title} className="relative text-center sm:text-left">
-                    <div className="flex items-center justify-center gap-3 sm:justify-start">
-                      <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-indigo-600 text-lg font-extrabold text-white shadow-brand">
-                        {i + 1}
-                      </span>
-                      <span
-                        aria-hidden="true"
-                        className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-indigo-600 ring-1 ring-gray-200"
+        <section className="border-t border-gray-100 bg-gray-50/70">
+          <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
+            <Reveal className="text-center">
+              <h2 className="text-[26px] font-extrabold tracking-[-0.02em] text-gray-900 sm:text-[34px]">
+                이렇게 만들어져요
+              </h2>
+              <p className="mt-3 text-[16px] text-gray-600">
+                어렵게 생각 안 하셔도 돼요. 3단계면 끝나요.
+              </p>
+            </Reveal>
+
+            <div className="relative mt-14">
+              <div
+                aria-hidden
+                className="absolute inset-x-0 top-7 hidden h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent sm:block"
+              />
+              <ol className="grid grid-cols-1 gap-12 sm:grid-cols-3 sm:gap-8">
+                {steps.map((step, i) => {
+                  const Icon = step.icon
+                  return (
+                    <li key={step.title}>
+                      <Reveal
+                        delay={i * 100}
+                        className="flex flex-col items-center text-center sm:items-start sm:text-left"
                       >
-                        <Icon />
-                      </span>
-                    </div>
-                    <h3 className="mt-4 text-lg font-bold text-gray-900">
-                      {step.title}
-                    </h3>
-                    <p className="mt-1.5 text-[15px] leading-relaxed text-gray-600">
-                      {step.desc}
-                    </p>
-                  </li>
-                )
-              })}
-            </ol>
+                        <span className="relative inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-gray-200 bg-white text-indigo-600 shadow-xs">
+                          <Icon className="h-6 w-6" strokeWidth={2} />
+                          <span className="absolute -right-1.5 -top-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-indigo-600 text-[11px] font-bold text-white ring-2 ring-gray-50">
+                            {i + 1}
+                          </span>
+                        </span>
+                        <h3 className="mt-5 text-[17px] font-bold text-gray-900">
+                          {step.title}
+                        </h3>
+                        <p className="mt-1.5 text-[15px] leading-relaxed text-gray-600">
+                          {step.desc}
+                        </p>
+                      </Reveal>
+                    </li>
+                  )
+                })}
+              </ol>
+            </div>
           </div>
         </section>
 
         {/* 4. 신뢰 섹션 */}
-        <section className="mx-auto max-w-5xl px-6 py-16 sm:py-20">
-          <div className="flex flex-col items-center text-center">
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-amber-200 bg-amber-50 px-4 py-2">
-              <span aria-hidden="true" className="flex gap-0.5 text-amber-400">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <StarIcon key={i} />
-                ))}
-              </span>
-              <span className="text-sm font-bold text-amber-900">
-                숨고 평점 5.0
-              </span>
-            </div>
-            <h2 className="mt-5 text-2xl font-extrabold tracking-[-0.01em] text-gray-900 sm:text-3xl">
-              이미 이렇게 만들어 드렸어요
-            </h2>
-            <p className="mt-3 max-w-md text-base text-gray-600">
-              말로만 하는 게 아니라, 실제로 만들어 운영 중인 사이트들이에요.
-            </p>
-          </div>
+        <section className="border-t border-gray-100">
+          <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
+            <Reveal className="flex flex-col items-center text-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/70 bg-amber-50 px-3.5 py-1.5">
+                <span className="flex gap-0.5 text-amber-400">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className="h-3.5 w-3.5" fill="currentColor" strokeWidth={0} />
+                  ))}
+                </span>
+                <span className="text-[13px] font-bold text-amber-900">
+                  숨고 평점 5.0
+                </span>
+              </div>
+              <h2 className="mt-5 text-[26px] font-extrabold tracking-[-0.02em] text-gray-900 sm:text-[34px]">
+                이미 이렇게 만들어 드렸어요
+              </h2>
+              <p className="mt-3 max-w-md text-[16px] text-gray-600">
+                말로만 하는 게 아니라, 실제로 만들어 운영 중인 사이트들이에요.
+              </p>
+            </Reveal>
 
-          {/* 제작 사례 — 실제 운영 중인 사이트 스크린샷 (모바일 2열). next/image가 webp로 최적화 */}
-          <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {cases.map((c) => (
-              <figure
-                key={c.image}
-                className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xs"
-              >
-                <div className="relative aspect-[16/10] overflow-hidden bg-gray-50">
-                  <Image
-                    src={c.image}
-                    alt={c.alt}
-                    fill
-                    sizes="(min-width: 640px) 25vw, 50vw"
-                    className="object-cover object-top"
-                  />
-                </div>
-                <figcaption className="px-3 py-3 text-center">
-                  <span className="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
-                    {c.label}
-                  </span>
-                </figcaption>
-              </figure>
-            ))}
+            {/* 제작 사례 — 모바일 2열. next/image webp 최적화 + hover 확대 */}
+            <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5">
+              {cases.map((c, i) => (
+                <Reveal key={c.image} delay={i * 70}>
+                  <figure className="group overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-xs transition duration-200 ease-emphasized hover:-translate-y-1 hover:shadow-[0_18px_44px_-26px_rgba(17,24,39,0.35)]">
+                    <div className="relative aspect-[16/10] overflow-hidden bg-gray-50">
+                      <Image
+                        src={c.image}
+                        alt={c.alt}
+                        fill
+                        sizes="(min-width: 640px) 25vw, 50vw"
+                        className="object-cover object-top transition-transform duration-500 ease-emphasized group-hover:scale-[1.06]"
+                      />
+                    </div>
+                    <figcaption className="px-3 py-3 text-center">
+                      <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-700">
+                        {c.label}
+                      </span>
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* 5. 사전등록 폼 */}
         <section
           id="register"
-          className="scroll-mt-6 border-t border-gray-100 bg-gray-50/60"
+          className="scroll-mt-6 border-t border-gray-100 bg-gray-50/70"
         >
-          <div className="mx-auto max-w-xl px-6 py-16 sm:py-20">
-            <div className="text-center">
-              <h2 className="text-2xl font-extrabold tracking-[-0.01em] text-gray-900 sm:text-3xl">
+          <div className="mx-auto max-w-xl px-6 py-16 sm:py-24">
+            <Reveal className="text-center">
+              <h2 className="text-[26px] font-extrabold tracking-[-0.02em] text-gray-900 sm:text-[34px]">
                 사전등록하고 평생 50% 할인받기
               </h2>
-              <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-gray-600">
-                선착순 100명만 모셔요. 아래 6개만 답해주시면 끝 — 출시되면 가장
-                먼저 알려드릴게요.
+              <p className="mx-auto mt-3 max-w-md text-[16px] leading-relaxed text-gray-600">
+                선착순 100명만 모셔요. 몇 가지만 답해주시면 끝 — 출시되면 가장 먼저
+                알려드릴게요.
               </p>
-            </div>
+            </Reveal>
 
-            <div className="mt-9 rounded-2xl border border-gray-200 bg-white p-6 shadow-xs sm:p-8">
+            <Reveal
+              delay={80}
+              className="mt-10 rounded-2xl border border-gray-200/80 bg-white p-6 shadow-[0_24px_60px_-40px_rgba(17,24,39,0.4)] sm:p-8"
+            >
               <RegisterForm />
-            </div>
+            </Reveal>
           </div>
         </section>
       </main>
 
       {/* 자체 푸터 — 사업자 정보 (개인정보 수집 페이지 신뢰·고지) */}
       <footer className="border-t border-gray-100 bg-white">
-        <div className="mx-auto max-w-5xl px-6 py-10 text-center">
+        <div className="mx-auto max-w-6xl px-6 py-10 text-center">
           <p className="text-base font-extrabold tracking-tight text-gray-900">
             지으리
           </p>
@@ -317,81 +351,16 @@ export default function JieuriPage() {
             프리즘 · 대표 안홍준 · 사업자등록번호 672-35-01596
             <br className="sm:hidden" />
             <span className="hidden sm:inline"> · </span>
-            <a
-              href="tel:01037825418"
-              className="transition hover:text-gray-700"
-            >
+            <a href="tel:01037825418" className="transition hover:text-gray-700">
               010-3782-5418
             </a>
           </p>
           <p className="mt-4 text-xs text-gray-400">
-            © 2026 지으리. 남겨주신 연락처는 출시 안내 목적으로만 사용하고, 딱 한
-            번만 연락드려요.
+            © 2026 지으리. 남겨주신 연락처는 출시 안내 목적으로만 사용하고, 딱 한 번만
+            연락드려요.
           </p>
         </div>
       </footer>
     </>
-  )
-}
-
-/* ── 아이콘 (단색, currentColor) ───────────────────────────── */
-
-function ClipboardIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-5 w-5"
-    >
-      <rect x="8" y="2" width="8" height="4" rx="1" />
-      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-      <path d="M9 12h6M9 16h4" />
-    </svg>
-  )
-}
-
-function ChatIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-5 w-5"
-    >
-      <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7a8.5 8.5 0 0 1-.9-3.8A8.38 8.38 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5Z" />
-    </svg>
-  )
-}
-
-function RocketIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="h-5 w-5"
-    >
-      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09Z" />
-      <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2Z" />
-      <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
-    </svg>
-  )
-}
-
-function StarIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
-      <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14l-5-4.87 7.1-1.01L12 2Z" />
-    </svg>
   )
 }
