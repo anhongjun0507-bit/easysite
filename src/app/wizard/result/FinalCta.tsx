@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 
 export function FinalCta() {
@@ -42,8 +44,8 @@ export function FinalCta() {
           </a>
           <button
             type="button"
-            disabled
-            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 text-sm font-semibold text-gray-500"
+            onClick={() => window.dispatchEvent(new Event('jieuri:open-chat'))}
+            className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-5 text-sm font-semibold text-gray-900 transition hover:border-gray-400 hover:bg-gray-50"
           >
             <svg
               viewBox="0 0 24 24"
@@ -52,12 +54,12 @@ export function FinalCta() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-4 w-4"
+              className="h-4 w-4 text-indigo-600"
               aria-hidden="true"
             >
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
-            <span>AI 챗봇과 더 이야기하기 — 곧 열려요</span>
+            <span>지으리 상담 열기</span>
           </button>
           <Link
             href="/"
