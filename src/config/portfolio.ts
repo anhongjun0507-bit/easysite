@@ -17,6 +17,18 @@ export type PortfolioItem = {
 
 export const portfolio: PortfolioItem[] = [
   {
+    id: 'sellfit',
+    name: 'SELLFIT (쎈셀핏)',
+    url: 'https://sellfit.vercel.app',
+    category: '패션·중고거래',
+    description:
+      '스타일 탐색 기반 AI 매칭으로 중고 패션을 사고팔고 교환하는 플랫폼.',
+    tech_stack: ['Next.js', 'Vercel'],
+    featured: true,
+    image: '/portfolio/sellfit.png',
+    imageAlt: 'SELLFIT 쎈셀핏 — 스타일 탐색·중고 패션 거래 코디 피드 화면',
+  },
+  {
     id: 'prismedu',
     name: '프리즘 입시',
     url: 'https://prismedu.kr',

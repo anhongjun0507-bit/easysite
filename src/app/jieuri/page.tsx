@@ -385,7 +385,7 @@ export default function JieuriPage() {
               ))}
             </div>
 
-            {/* 전체 포트폴리오(9건)로 — 제작 사례 더 보기 */}
+            {/* 전체 포트폴리오(10건)로 — 제작 사례 더 보기 */}
             <Reveal className="mt-10 flex justify-center">
               <Link
                 href="/portfolio"
