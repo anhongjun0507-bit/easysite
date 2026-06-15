@@ -33,7 +33,7 @@ export function AdminNav() {
             href="/admin"
             className="mr-2 text-base font-bold tracking-tight text-gray-900 sm:mr-4 sm:text-lg"
           >
-            EasySite Admin
+            지으리 Admin
           </Link>
           <NavLink href="/admin" active={isOverview}>
             개요

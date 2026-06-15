@@ -25,7 +25,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: '결제',
-  description: 'EasySite 결제 페이지',
+  description: '지으리 결제 페이지',
   robots: { index: false, follow: false },
 }
 
@@ -77,7 +77,7 @@ function Chrome({ children }: { children: ReactNode }) {
             href="/"
             className="text-lg font-bold tracking-tight text-gray-900"
           >
-            EasySite
+            지으리
           </Link>
           <span className="text-xs font-medium text-gray-500">결제 페이지</span>
         </div>

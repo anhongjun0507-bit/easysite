@@ -1,7 +1,7 @@
 {
-  "name": "EasySite",
-  "short_name": "EasySite",
-  "description": "아이디어만 있으면 됩니다. 나머지는 AI가 채워드립니다.",
+  "name": "지으리",
+  "short_name": "지으리",
+  "description": "코드 몰라도 됩니다. 말하면, 지으리.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

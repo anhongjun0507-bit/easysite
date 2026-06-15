@@ -4,16 +4,16 @@ import { RefCapture } from '@/components/RefCapture'
 import './globals.css'
 
 const SITE_URL = 'https://easysite-sage.vercel.app'
-const SITE_NAME = 'EasySite'
-const SITE_TITLE = 'EasySite — 아이디어만 있으면 됩니다'
+const SITE_NAME = '지으리'
+const SITE_TITLE = '지으리 — 말하면, 지으리'
 const SITE_DESCRIPTION =
-  '사이트 만들기 막막하셨죠? 1분 만에 견적 받고, AI가 만든 초안을 바로 보여드려요. 운영 중인 자체 서비스 3개로 검증된 1인 프리랜서가 직접 제작합니다.'
+  '코드 몰라도 됩니다. 채팅으로 웹사이트를 만들고, 막히면 현직 개발자가 대신 고쳐드려요. 1분 만에 견적부터 받아보세요.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: SITE_TITLE,
-    template: '%s | EasySite',
+    template: '%s | 지으리',
   },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
@@ -34,7 +34,14 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     // twitter:image 는 app/twitter-image.tsx 가 자동 주입
   },
-  // icon, apple-icon 는 app/icon.tsx, app/apple-icon.tsx 가 자동 주입
+  icons: {
+    icon: [
+      { url: '/jieuri-icon.svg', type: 'image/svg+xml' },
+      { url: '/jieuri-favicon.ico', sizes: '32x32' },
+    ],
+    shortcut: '/jieuri-favicon.ico',
+    apple: '/jieuri-apple-touch-icon.png',
+  },
   manifest: '/manifest.webmanifest',
   robots: { index: true, follow: true },
 }

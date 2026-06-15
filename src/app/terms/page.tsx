@@ -4,12 +4,12 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: '이용약관',
   description:
-    'EasySite 이용약관. 프리즘(사업자 672-35-01596)이 제공하는 웹사이트 제작 중개·자동 견적 서비스의 이용 조건과 환불·지적재산권 정책을 안내드립니다.',
+    '지으리 이용약관. 프리즘(사업자 672-35-01596)이 제공하는 웹사이트 제작 중개·자동 견적 서비스의 이용 조건과 환불·지적재산권 정책을 안내드립니다.',
   alternates: { canonical: '/terms' },
   openGraph: {
-    title: '이용약관 | EasySite',
+    title: '이용약관 | 지으리',
     description:
-      'EasySite 이용약관. 프리즘(사업자 672-35-01596)이 제공하는 웹사이트 제작 중개·자동 견적 서비스의 이용 조건과 환불·지적재산권 정책을 안내드립니다.',
+      '지으리 이용약관. 프리즘(사업자 672-35-01596)이 제공하는 웹사이트 제작 중개·자동 견적 서비스의 이용 조건과 환불·지적재산권 정책을 안내드립니다.',
     url: '/terms',
   },
 }
@@ -31,7 +31,7 @@ export default function TermsPage() {
             제1조 (목적)
           </h2>
           <p className="mt-3">
-            본 약관은 프리즘(이하 “회사”)이 운영하는 EasySite(이하 “서비스”)의
+            본 약관은 프리즘(이하 “회사”)이 운영하는 지으리(이하 “서비스”)의
             이용 조건과 절차, 회사와 이용자의 권리·의무를 정함을 목적으로 합니다.
           </p>
         </section>
@@ -44,7 +44,7 @@ export default function TermsPage() {
           <ul className="mt-3 list-disc space-y-2 pl-6">
             <li>
               <strong className="font-semibold text-gray-900">서비스</strong>:
-              회사가 운영하는 EasySite 웹사이트(easysite.kr) 및 그에 부속된
+              회사가 운영하는 지으리 웹사이트(easysite.kr) 및 그에 부속된
               위저드·견적·상담 도구 일체.
             </li>
             <li>

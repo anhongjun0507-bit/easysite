@@ -161,7 +161,7 @@ function CallbackError({
       <header className="border-b border-gray-200 bg-white">
         <div className="mx-auto max-w-2xl px-6 py-5 sm:px-8">
           <span className="text-lg font-bold tracking-tight text-gray-900">
-            EasySite
+            지으리
           </span>
         </div>
       </header>

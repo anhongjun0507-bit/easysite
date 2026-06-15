@@ -204,7 +204,7 @@ export function Differentiators() {
           </p>
           {/* h2 weight 700, 그라데이션 제거 */}
           <h2 className="mt-3 text-4xl font-bold leading-[1.22] tracking-[-0.015em] text-gray-900 sm:text-5xl">
-            EasySite는 이렇게 다릅니다
+            지으리는 이렇게 다릅니다
           </h2>
         </div>
 

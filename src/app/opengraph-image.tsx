@@ -6,12 +6,12 @@ import { ImageResponse } from 'next/og'
 // 시안 A — 단색 indigo 미니멀 (사장님 결정, 2026-05-19)
 //   배경:      indigo-600 솔리드 + 후광 블롭 2개
 //   메인 카피: "1분 만에 견적, / AI가 만든 초안까지."  104px / 800
-//   보조:      "easysite.kr · 사장님 사이트 제작"      26px / 500
-//   로고:      흰 점 + "EasySite"  36px / 800
+//   보조:      "지으리 · 사장님 사이트 제작"      26px / 500
+//   로고:      흰 점 + "지으리"  36px / 800
 
 // runtime 은 기본값(nodejs) 사용. 빌드 시 한 번 렌더링되어 정적 PNG 로 캐시됨
 // (edge 런타임은 next start 표준 서버에서 라우팅 불안정 → nodejs 가 안전)
-export const alt = '1분 만에 견적, AI가 만든 초안까지 — EasySite'
+export const alt = '1분 만에 견적, AI가 만든 초안까지 — 지으리'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -35,9 +35,9 @@ async function loadGoogleFont(family: string, weight: number, text: string) {
 const FAMILY = 'Noto+Sans+KR'
 
 // Bold 글리프 — 메인 카피 + 로고
-const BOLD_TEXT = '1분 만에 견적,AI가 든 초안까지.EasySite'
+const BOLD_TEXT = '1분 만에 견적, AI가 만든 초안까지. 지으리'
 // Medium 글리프 — 하단 보조 라인
-const MEDIUM_TEXT = 'easysite.kr · 사장님 사이트 제작'
+const MEDIUM_TEXT = '지으리 · 사장님 사이트 제작'
 
 export default async function OgImage() {
   const [bold, medium] = await Promise.all([
@@ -112,7 +112,7 @@ export default async function OgImage() {
               color: '#ffffff',
             }}
           >
-            EasySite
+            지으리
           </div>
         </div>
 
@@ -147,7 +147,7 @@ export default async function OgImage() {
             fontWeight: 500,
           }}
         >
-          easysite.kr · 사장님 사이트 제작
+          지으리 · 사장님 사이트 제작
         </div>
       </div>
     ),

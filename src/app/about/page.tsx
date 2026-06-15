@@ -4,12 +4,12 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: '소개 — 안홍준',
   description:
-    '프리즘 안홍준 대표 소개. 자체 서비스 3개(prismedu·EasySite·Waylog)를 직접 운영하는 풀스택 개발자. 만드는 단계부터 운영 함정을 피해 설계합니다.',
+    '프리즘 안홍준 대표 소개. 자체 서비스 3개(prismedu·지으리·Waylog)를 직접 운영하는 풀스택 개발자. 만드는 단계부터 운영 함정을 피해 설계합니다.',
   alternates: { canonical: '/about' },
   openGraph: {
-    title: '소개 — 안홍준 | EasySite',
+    title: '소개 — 안홍준 | 지으리',
     description:
-      '프리즘 안홍준 대표 소개. 자체 서비스 3개(prismedu·EasySite·Waylog)를 직접 운영하는 풀스택 개발자. 만드는 단계부터 운영 함정을 피해 설계합니다.',
+      '프리즘 안홍준 대표 소개. 자체 서비스 3개(prismedu·지으리·Waylog)를 직접 운영하는 풀스택 개발자. 만드는 단계부터 운영 함정을 피해 설계합니다.',
     url: '/about',
   },
 }
@@ -31,7 +31,7 @@ const services: Service[] = [
     description: '한국 국제학교 학생을 위한 미국 대학 입시 컨설팅 플랫폼.',
   },
   {
-    name: 'EasySite',
+    name: '지으리',
     url: 'easysite.kr',
     href: '/',
     category: '사이트 제작',
@@ -237,7 +237,7 @@ function ToolsSection() {
     <Section
       roman="III"
       title="도구"
-      helper="실제 EasySite를 만들고 운영하는 데 쓰는 것들이에요."
+      helper="실제 지으리를 만들고 운영하는 데 쓰는 것들이에요."
     >
       <ul className="flex flex-wrap gap-2">
         {tools.map((t) => (
