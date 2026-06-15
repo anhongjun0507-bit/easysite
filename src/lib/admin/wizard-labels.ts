@@ -30,6 +30,19 @@ export const DESIGN_TONE_LABEL_MAP: Record<string, string> = {
   luxury: '럭셔리',
   friendly: '친근',
   auto: '알아서',
+  other: '기타',
+}
+
+/** 추가 기능 복수선택 → 라벨. v2 features {payment,admin,aiChat}. */
+export function labelFeatures(
+  f?: { payment?: boolean; admin?: boolean; aiChat?: boolean } | null,
+): string {
+  if (!f) return '미응답'
+  const on: string[] = []
+  if (f.payment) on.push('온라인 결제')
+  if (f.admin) on.push('관리자 페이지')
+  if (f.aiChat) on.push('AI 챗봇·자동화')
+  return on.length ? on.join(' · ') : '없음'
 }
 
 export const TIMELINE_LABEL_MAP: Record<string, string> = {

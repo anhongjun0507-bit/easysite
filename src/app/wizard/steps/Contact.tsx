@@ -5,7 +5,15 @@ import { useState } from 'react'
 import { StepShell } from '../components/StepShell'
 import { StickyFooter } from '../components/StickyFooter'
 import { contactSchema } from '../lib/schema'
-import type { Contact, WizardState } from '../lib/state'
+import type { Budget, Contact, WizardState } from '../lib/state'
+
+const BUDGET_OPTIONS: Array<{ value: Budget; label: string }> = [
+  { value: 'lt200', label: '200만원 미만' },
+  { value: '200-500', label: '200 ~ 500만원' },
+  { value: '500-1000', label: '500 ~ 1,000만원' },
+  { value: '1000+', label: '1,000만원 이상' },
+  { value: 'unsure', label: '잘 모르겠어요' },
+]
 
 type Props = {
   state: WizardState
@@ -33,6 +41,7 @@ export function ContactStep({
       phone: contact.phone ?? '',
       email: contact.email ?? '',
       kakao: contact.kakao ?? '',
+      budget: contact.budget,
       consent: contact.consent ?? false,
     })
     if (!parsed.success) {
@@ -117,6 +126,35 @@ export function ContactStep({
               if (errors.email) setErrors((e) => ({ ...e, email: undefined }))
             }}
           />
+
+          <div>
+            <p className="text-sm font-semibold text-gray-900">
+              예산{' '}
+              <span className="ml-1 text-xs font-normal text-gray-500">
+                (선택 · 참고용, 견적가에는 반영 안 돼요)
+              </span>
+            </p>
+            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {BUDGET_OPTIONS.map((opt) => {
+                const on = contact.budget === opt.value
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => onPatch({ budget: on ? undefined : opt.value })}
+                    aria-pressed={on}
+                    className={`inline-flex h-11 items-center justify-center rounded-lg border-2 px-2 text-[13px] font-semibold transition sm:text-sm ${
+                      on
+                        ? 'border-indigo-600 bg-indigo-50 text-indigo-900'
+                        : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
 
           <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
             <input

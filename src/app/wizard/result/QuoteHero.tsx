@@ -42,19 +42,42 @@ export function QuoteHero({ quote, businessName }: Props) {
         {/* 가격 = 영혼 */}
         <div className="mx-auto mt-8 max-w-xl rounded-2xl border border-gray-200 bg-white p-7 shadow-md sm:mt-10 sm:p-10">
           <div className="text-center">
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+            {quote.eventActive && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-3 py-1 text-xs font-bold text-white">
+                ⚡ 선착순 런칭 이벤트
+              </span>
+            )}
+            <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
               예상 견적
             </p>
-            <p
-              className="mt-3 font-extrabold tracking-tight text-gray-900"
-              style={{
-                fontSize: 'clamp(40px, 9vw, 64px)',
-                lineHeight: 1.1,
-                letterSpacing: '-0.025em',
-              }}
-            >
-              {formatPriceRange(quote)}
-            </p>
+            {quote.eventActive ? (
+              <>
+                <p className="mt-2 text-base font-semibold text-gray-400 line-through sm:text-lg">
+                  정가 {formatPriceRange(quote.list)}
+                </p>
+                <p
+                  className="mt-1 font-extrabold tracking-tight text-indigo-600"
+                  style={{
+                    fontSize: 'clamp(40px, 9vw, 64px)',
+                    lineHeight: 1.1,
+                    letterSpacing: '-0.025em',
+                  }}
+                >
+                  {formatPriceRange(quote.event)}
+                </p>
+              </>
+            ) : (
+              <p
+                className="mt-3 font-extrabold tracking-tight text-gray-900"
+                style={{
+                  fontSize: 'clamp(40px, 9vw, 64px)',
+                  lineHeight: 1.1,
+                  letterSpacing: '-0.025em',
+                }}
+              >
+                {formatPriceRange(quote.list)}
+              </p>
+            )}
             <p className="mt-2 text-xs text-gray-500 sm:text-sm">
               VAT 별도 · 영업일 24시간 안에 정식 견적서 보내드려요
             </p>

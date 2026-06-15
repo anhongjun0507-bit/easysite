@@ -1,30 +1,28 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
-  AI_ADDON_MANWON,
-  BASE_PRICE_MANWON,
-  LUXURY_MULT,
-  PAYMENT_ADDON_MANWON,
+  ADDON_MANWON,
+  EVENT_ACTIVE,
+  EVENT_BASE_PRICE_MANWON,
+  LIST_BASE_PRICE_MANWON,
   RUSH_PRICE_MULT,
 } from '@/lib/quote/calculate'
 
 export const metadata: Metadata = {
   title: '가격표',
   description:
-    '지으리 가격을 처음부터 공개합니다. 사이트 유형별 시작가와 옵션 가산표를 한눈에 확인하세요.',
+    '지으리 가격을 처음부터 공개합니다. 선착순 런칭 이벤트 할인가와 정가, 옵션 가산표를 한눈에 확인하세요.',
   alternates: { canonical: '/pricing' },
   openGraph: {
     title: '가격표 | 지으리',
     description:
-      '지으리 가격을 처음부터 공개합니다. 사이트 유형별 시작가와 옵션 가산표를 한눈에 확인하세요.',
+      '지으리 가격을 처음부터 공개합니다. 선착순 런칭 이벤트 할인가와 정가, 옵션 가산표를 한눈에 확인하세요.',
     url: '/pricing',
   },
 }
 
 type Category = {
   id: 'company' | 'landing' | 'reservation' | 'shop' | 'custom'
-  /** calculate.ts에서 가격 import. 'custom'은 협의라 가격 표시 X */
-  startPriceManwon: number | null
   name: string
   weekRange: string
   intro: string
@@ -36,12 +34,10 @@ type Category = {
   highlightLabel?: string
 }
 
-// 카드별 기간은 calculate.ts(page count 기반)와 다른 도메인 —
-// 사장님이 카테고리만 보고 가늠할 수 있게 별도 표시값. 위저드 결과는 페이지 수까지 반영해 더 정확.
+// 가격은 calculate.ts 한 곳에서 관리(정가 LIST_ / 이벤트가 EVENT_). 카드는 id로 조회.
 const categories: Category[] = [
   {
     id: 'company',
-    startPriceManwon: BASE_PRICE_MANWON.company,
     name: '회사·가게 소개',
     weekRange: '2~3주',
     intro: '브랜드를 단정하게 보여주고 싶은 회사·가게 사장님',
@@ -49,7 +45,7 @@ const categories: Category[] = [
       '5~8 페이지 구성',
       '모바일 반응형',
       'AI 카피 초안 (회사 소개·메뉴 설명)',
-      '관리자 페이지',
+      '관리자 페이지 (옵션)',
       'Vercel 배포·도메인 연결 안내',
     ],
     wizardIntent: '회사·가게 소개 사이트',
@@ -58,7 +54,6 @@ const categories: Category[] = [
   },
   {
     id: 'landing',
-    startPriceManwon: BASE_PRICE_MANWON.landing,
     name: '랜딩페이지',
     weekRange: '1~2주',
     intro: '신규 서비스·이벤트·예약을 한 페이지에 모아두고 싶을 때',
@@ -73,7 +68,6 @@ const categories: Category[] = [
   },
   {
     id: 'reservation',
-    startPriceManwon: BASE_PRICE_MANWON.reservation,
     name: '예약·회원제',
     weekRange: '4~6주',
     intro: '학원·클래스·뷰티숍·병원 등 예약과 회원 관리가 필요한 곳',
@@ -88,7 +82,6 @@ const categories: Category[] = [
   },
   {
     id: 'shop',
-    startPriceManwon: BASE_PRICE_MANWON.shop,
     name: '쇼핑몰',
     weekRange: '6~8주',
     intro: '상품 등록부터 주문·결제까지 직접 운영하는 쇼핑몰',
@@ -103,7 +96,6 @@ const categories: Category[] = [
   },
   {
     id: 'custom',
-    startPriceManwon: null,
     name: '맞춤 협의',
     weekRange: '협의',
     intro: '위 카테고리에 없는 특수 프로젝트는 직접 상담',
@@ -119,30 +111,36 @@ const categories: Category[] = [
 
 type AddOn = {
   label: string
-  delta: string // 표시 문자열 — "+80만원" / "×1.2" 등
+  /** 정가 표시 */
+  listDelta: string
+  /** 이벤트가 표시 (없으면 할인 없는 배수형) */
+  eventDelta: string | null
   description: string
 }
 
 const addOns: AddOn[] = [
   {
-    label: '결제 기능',
-    delta: `+${PAYMENT_ADDON_MANWON}만원`,
+    label: '온라인 결제',
+    listDelta: `+${ADDON_MANWON.payment.list}만원`,
+    eventDelta: `+${ADDON_MANWON.payment.event}만원`,
     description: '온라인 카드 결제·간편결제 연동. 토스페이먼츠 기준.',
   },
   {
-    label: 'AI 챗봇·자동화',
-    delta: `+${AI_ADDON_MANWON}만원`,
-    description:
-      '사장님 사이트에 24시간 AI 상담 챗봇 추가. 사이트 정보 학습 포함.',
+    label: '관리자 페이지',
+    listDelta: `+${ADDON_MANWON.admin.list}만원`,
+    eventDelta: `+${ADDON_MANWON.admin.event}만원`,
+    description: '사장님이 직접 글·상품·예약을 올리고 고치는 관리 화면.',
   },
   {
-    label: '럭셔리 디자인 톤',
-    delta: `×${LUXURY_MULT}`,
-    description: '디테일·여백·모션을 한 단계 더 신경 쓴 시안. 럭셔리·프리미엄 브랜드용.',
+    label: 'AI 챗봇·자동화',
+    listDelta: `+${ADDON_MANWON.aiChat.list}만원`,
+    eventDelta: `+${ADDON_MANWON.aiChat.event}만원`,
+    description: '사이트에 24시간 AI 상담 챗봇 추가. 사이트 정보 학습 포함.',
   },
   {
     label: '2주 급행',
-    delta: `×${RUSH_PRICE_MULT}`,
+    listDelta: `×${RUSH_PRICE_MULT}`,
+    eventDelta: null,
     description: '일정 우선 처리. 본인 작업 큐에서 최우선으로.',
   },
 ]
@@ -172,9 +170,16 @@ function Hero() {
   return (
     <section className="border-b border-gray-100 bg-white">
       <div className="mx-auto max-w-5xl px-6 py-14 sm:px-8 sm:py-20">
-        <p className="text-xs font-bold uppercase tracking-[0.15em] text-indigo-600">
-          PRICING
-        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="text-xs font-bold uppercase tracking-[0.15em] text-indigo-600">
+            PRICING
+          </p>
+          {EVENT_ACTIVE && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-2.5 py-0.5 text-[11px] font-bold text-white">
+              ⚡ 선착순 런칭 이벤트
+            </span>
+          )}
+        </div>
         <h1
           className="mt-3 font-extrabold text-gray-900"
           style={{
@@ -187,6 +192,7 @@ function Hero() {
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-gray-700 sm:text-lg">
           복잡한 견적 협상 없이, 사이트 유형별 시작가를 그대로 보여드려요.
+          {EVENT_ACTIVE && ' 지금은 런칭 이벤트로 정가보다 할인된 가격이에요.'}{' '}
           정확한 금액은 위저드에서 페이지 수·옵션까지 반영해 ±15% 범위로 산정됩니다.
         </p>
       </div>
@@ -210,7 +216,10 @@ function CategoriesSection() {
 }
 
 function CategoryCard({ category }: { category: Category }) {
-  const isCustom = category.startPriceManwon === null
+  const isCustom = category.id === 'custom'
+  const listPrice = category.id === 'custom' ? null : LIST_BASE_PRICE_MANWON[category.id]
+  const eventPrice =
+    category.id === 'custom' ? null : EVENT_BASE_PRICE_MANWON[category.id]
   const wizardHref = `/wizard?intent=${encodeURIComponent(category.wizardIntent)}`
 
   return (
@@ -234,21 +243,36 @@ function CategoryCard({ category }: { category: Category }) {
         {category.intro}
       </p>
 
-      <div className="mt-5 flex items-baseline gap-2">
+      <div className="mt-5">
         {isCustom ? (
           <span className="text-2xl font-bold text-gray-900">협의</span>
-        ) : (
+        ) : EVENT_ACTIVE ? (
           <>
+            <p className="text-sm font-semibold text-gray-400 line-through">
+              정가 {listPrice}만원~
+            </p>
+            <div className="mt-0.5 flex items-baseline gap-2">
+              <span
+                className="font-extrabold tabular-nums text-indigo-600"
+                style={{ fontSize: 'clamp(32px, 4vw, 40px)', lineHeight: 1 }}
+              >
+                {eventPrice}
+              </span>
+              <span className="text-base font-semibold text-indigo-600">
+                만원~
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="flex items-baseline gap-2">
             <span
               className="font-extrabold tabular-nums text-gray-900"
               style={{ fontSize: 'clamp(32px, 4vw, 40px)', lineHeight: 1 }}
             >
-              {category.startPriceManwon}
+              {listPrice}
             </span>
-            <span className="text-base font-semibold text-gray-500">
-              만원~
-            </span>
-          </>
+            <span className="text-base font-semibold text-gray-500">만원~</span>
+          </div>
         )}
       </div>
       <p className="mt-1 text-xs tabular-nums text-gray-500">
@@ -300,8 +324,21 @@ function AddOnsSection() {
             <div className="flex items-baseline gap-3 sm:w-56 sm:shrink-0">
               <p className="text-base font-bold text-gray-900">{a.label}</p>
             </div>
-            <p className="text-base font-bold tabular-nums text-indigo-700 sm:w-24 sm:shrink-0">
-              {a.delta}
+            <p className="tabular-nums sm:w-32 sm:shrink-0">
+              {a.eventDelta ? (
+                <span className="flex items-baseline gap-2 sm:flex-col sm:items-start sm:gap-0">
+                  <span className="text-xs font-medium text-gray-400 line-through">
+                    {a.listDelta}
+                  </span>
+                  <span className="text-base font-bold text-indigo-700">
+                    {a.eventDelta}
+                  </span>
+                </span>
+              ) : (
+                <span className="text-base font-bold text-indigo-700">
+                  {a.listDelta}
+                </span>
+              )}
             </p>
             <p className="text-sm leading-relaxed text-gray-600 sm:flex-1">
               {a.description}
@@ -356,7 +393,7 @@ function CtaSection() {
             1분 안에, 미리보기까지
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-gray-300 sm:text-base">
-            8개 질문에 답하시면 영업일 24시간 안에 시안과 함께 견적을 보내드려요.
+            6개 질문에 답하시면 영업일 24시간 안에 시안과 함께 견적을 보내드려요.
           </p>
           <div className="mt-7 flex flex-col items-stretch justify-center gap-2 sm:flex-row sm:items-center">
             <Link
@@ -381,7 +418,7 @@ function CtaSection() {
 }
 
 // ─────────────────────────────────────────────────────────
-// 공용 — Section shell + 아이콘 (About 페이지와 톤 일치)
+// 공용 — Section shell + 아이콘
 // ─────────────────────────────────────────────────────────
 function Section({
   roman,

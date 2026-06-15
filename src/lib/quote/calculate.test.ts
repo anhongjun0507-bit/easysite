@@ -1,155 +1,123 @@
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
-import { calculateQuote, formatPriceRange, formatWeeksRange } from './calculate.ts'
+import {
+  calculateQuote,
+  shownPrice,
+  formatPriceRange,
+  formatWeeksRange,
+  EVENT_ACTIVE,
+} from './calculate.ts'
 
-test('회사소개 + 5개 이내 + 옵션 없음 = 기준 200만원 ±15%', () => {
-  const q = calculateQuote({
-    siteType: 'company',
-    pageCount: 'small',
-    payment: 'no',
-    aiChatNeeded: false,
-    designTone: 'modern',
-    timeline: '1m',
-  })
-  // 200 * 1.0 + 0 + 0 = 200
-  assert.equal(q.priceCenterManwon, 200)
-  assert.equal(q.priceMinManwon, 170) // 170 (round to 10)
-  assert.equal(q.priceMaxManwon, 230) // 230
-  // 기간: pageWeeks 2 + 0 + 0 + 0 = 2 → min 1, max 3
-  assert.equal(q.weeksMin, 1)
-  assert.equal(q.weeksMax, 3)
+test('이벤트 진행 중 플래그', () => {
+  assert.equal(EVENT_ACTIVE, true)
+  const q = calculateQuote({ siteType: 'company', pageCount: 'small' })
+  assert.equal(q.eventActive, true)
 })
 
-test('쇼핑몰 + 5~10개 + 결제 + 럭셔리 + 1개월 납기', () => {
+test('★ 핵심 예시 — 쇼핑몰·5~10개·결제·관리자·한달: 정가 425 / 이벤트가 255', () => {
   const q = calculateQuote({
     siteType: 'shop',
     pageCount: 'medium',
-    payment: 'yes',
-    aiChatNeeded: false,
-    designTone: 'luxury',
+    features: { payment: true, admin: true },
     timeline: '1m',
   })
-  // 450 * 1.3 * 1.2 + 80 = 702 + 80 = 782
-  assert.equal(q.priceCenterManwon, 780)
-  // weeks: 3 + 1 + 0 + 0.5 = 4.5 → min 3.5, max 5.5
+  // 정가: 250 × 1.3 + 50 + 50 = 325 + 100 = 425
+  assert.equal(q.list.center, 425)
+  // 이벤트가: 150 × 1.3 + 30 + 30 = 195 + 60 = 255
+  assert.equal(q.event.center, 255)
+  // 기간: page 3 + payment 1 + admin 0.5 = 4.5 → min 3.5 / max 5.5
   assert.equal(q.weeksMin, 3.5)
   assert.equal(q.weeksMax, 5.5)
 })
 
-test('예약·회원제 + AI 챗봇 + 2주 납기 (rush) → 가격×1.3 + AI 가산', () => {
-  const q = calculateQuote({
-    siteType: 'reservation',
-    pageCount: 'medium',
-    payment: 'no',
-    aiChatNeeded: true,
-    designTone: 'modern',
-    timeline: '2w',
-  })
-  // 350 * 1.3 * 1.0 * 1.3 + 0 + 150 = 591.5 + 150 = 741.5 → 740
-  assert.equal(q.priceCenterManwon, 740)
-  // weeks: (3 + 0 + 2 + 0) * 0.7 = 3.5 → min 2.5, max 4.5
-  assert.equal(q.weeksMin, 2.5)
-  assert.equal(q.weeksMax, 4.5)
+test('회사·가게 소개 + 5개 이내 + 옵션 없음: 정가 150 / 이벤트가 100', () => {
+  const q = calculateQuote({ siteType: 'company', pageCount: 'small', timeline: '1m' })
+  assert.equal(q.list.center, 150)
+  assert.equal(q.event.center, 100)
 })
 
-test('랜딩페이지 최소 시나리오 (5개 이내 + 옵션 없음)', () => {
-  const q = calculateQuote({
-    siteType: 'landing',
-    pageCount: 'small',
-    payment: 'no',
-    aiChatNeeded: false,
-  })
-  // 100 * 1.0 = 100
-  assert.equal(q.priceCenterManwon, 100)
-  assert.equal(q.priceMinManwon, 90) // 85 → round to 90
-  assert.equal(q.priceMaxManwon, 110) // 115 → 120? 115/10=11.5→12*10=120. Wait round half to even. Math.round(11.5)=12 → 120. Let's check: 100 * 1.15 = 115. round(115/10)*10 = round(11.5)*10. Math.round(11.5) = 12 → 120. Actually JS Math.round rounds half away from zero so 11.5 → 12. 즉 120.
+test('랜딩페이지 최소: 정가 80 / 이벤트가 50', () => {
+  const q = calculateQuote({ siteType: 'landing', pageCount: 'small' })
+  assert.equal(q.list.center, 80)
+  assert.equal(q.event.center, 50)
 })
 
-test('쇼핑몰 + 10개+ + 결제 + AI + 럭셔리 + 2주 — 최대 시나리오', () => {
+test('디자인 톤은 가격에 영향 없음 (입력에 없음 → 동일)', () => {
+  const base = calculateQuote({ siteType: 'company', pageCount: 'medium' })
+  // company 150×1.3 = 195(정가), 100×1.3 = 130(이벤트). 5만원 단위 그대로.
+  assert.equal(base.list.center, 195)
+  assert.equal(base.event.center, 130)
+})
+
+test('2주 급행 ×1.3 — 전 기능: 정가/이벤트가', () => {
   const q = calculateQuote({
     siteType: 'shop',
-    pageCount: 'large',
-    payment: 'yes',
-    aiChatNeeded: true,
-    designTone: 'luxury',
+    pageCount: 'medium',
+    features: { payment: true, admin: true, aiChat: true },
     timeline: '2w',
   })
-  // 450 * 1.7 * 1.2 * 1.3 + 80 + 150 = 450 * 1.7 = 765 * 1.2 = 918 * 1.3 = 1193.4 + 230 = 1423.4 → 1420
-  assert.equal(q.priceCenterManwon, 1420)
-  // weeks: (5 + 1 + 2 + 0.5) * 0.7 = 8.5 * 0.7 = 5.95 → roundHalf = 6.0 → min 5, max 7
-  assert.equal(q.weeksMin, 5)
-  assert.equal(q.weeksMax, 7)
+  // 정가: 250×1.3×1.3 = 422.5, +50+50+150 = 672.5 → 5만원 단위 675
+  assert.equal(q.list.center, 675)
+  // 이벤트: 150×1.3×1.3 = 253.5, +30+30+80 = 393.5 → 395
+  assert.equal(q.event.center, 395)
+  // 기간: (3 + 1 + 0.5 + 2) × 0.7 = 6.5 × 0.7 = 4.55 → roundHalf 4.5 → min 3.5 / max 5.5
+  assert.equal(q.weeksMin, 3.5)
+  assert.equal(q.weeksMax, 5.5)
 })
 
-test('답변 누락 시 기본값 (회사소개 + unsure 페이지)', () => {
+test('답변 누락 시 기본값 (회사소개 + unsure)', () => {
   const q = calculateQuote({})
-  // company 200 * unsure 1.2 = 240
-  assert.equal(q.priceCenterManwon, 240)
-  // weeks: 3 (unsure) → min 2, max 4
-  assert.equal(q.weeksMin, 2)
-  assert.equal(q.weeksMax, 4)
+  // 정가 150 × 1.2 = 180, 이벤트 100 × 1.2 = 120
+  assert.equal(q.list.center, 180)
+  assert.equal(q.event.center, 120)
 })
 
-test('breakdown — 옵션 없는 경우엔 가산 항목 안 나옴', () => {
-  const q = calculateQuote({
-    siteType: 'company',
-    pageCount: 'small',
-    payment: 'no',
-    aiChatNeeded: false,
-  })
-  const labels = q.breakdown.map((b) => b.label)
-  assert.ok(labels.some((l) => l.includes('기준')))
-  assert.ok(labels.some((l) => l.includes('페이지')))
-  assert.ok(!labels.some((l) => l.includes('럭셔리')))
-  assert.ok(!labels.some((l) => l.includes('결제')))
-  assert.ok(!labels.some((l) => l.includes('AI')))
-  assert.ok(labels.some((l) => l.includes('±15%')))
-})
-
-test('breakdown — 옵션 다 있는 경우 모두 표시', () => {
-  const q = calculateQuote({
-    siteType: 'shop',
-    pageCount: 'large',
-    payment: 'yes',
-    aiChatNeeded: true,
-    designTone: 'luxury',
-    timeline: '2w',
-  })
-  const labels = q.breakdown.map((b) => b.label)
-  assert.ok(labels.some((l) => l.includes('럭셔리')))
-  assert.ok(labels.some((l) => l.includes('빠른 납기')))
-  assert.ok(labels.some((l) => l.includes('결제')))
-  assert.ok(labels.some((l) => l.includes('AI')))
-})
-
-test('formatPriceRange/formatWeeksRange 출력 형태', () => {
+test('breakdown — 관리자 페이지 가산 항목 노출', () => {
   const q = calculateQuote({
     siteType: 'shop',
     pageCount: 'medium',
-    payment: 'yes',
-    aiChatNeeded: false,
-    designTone: 'modern',
+    features: { payment: true, admin: true },
   })
-  // 450 * 1.3 + 80 = 585 + 80 = 665 → 670
-  // min: 565 → 570, max: 765 → 770
-  const priceStr = formatPriceRange(q)
-  assert.match(priceStr, /\d+\s*~\s*\d+만원/)
-  const weeksStr = formatWeeksRange(q)
-  assert.match(weeksStr, /\d+(\.\d)?\s*~\s*\d+(\.\d)?주/)
+  const labels = q.breakdown.map((b) => b.label)
+  assert.ok(labels.some((l) => l.includes('관리자 페이지')))
+  assert.ok(labels.some((l) => l.includes('온라인 결제')))
+  assert.ok(!labels.some((l) => l.includes('럭셔리'))) // 디자인 가산 제거 확인
 })
 
-test('가격은 항상 priceMin ≤ priceCenter ≤ priceMax', () => {
+test('정가 ≥ 이벤트가, min ≤ center ≤ max', () => {
   const matrix = [
     { siteType: 'landing' as const, pageCount: 'small' as const },
-    { siteType: 'shop' as const, pageCount: 'large' as const, payment: 'yes' as const, aiChatNeeded: true, designTone: 'luxury' as const, timeline: '2w' as const },
+    {
+      siteType: 'shop' as const,
+      pageCount: 'large' as const,
+      features: { payment: true, admin: true, aiChat: true },
+      timeline: '2w' as const,
+    },
     { siteType: 'company' as const, pageCount: 'unsure' as const },
-    { siteType: 'reservation' as const, pageCount: 'medium' as const, payment: 'yes' as const },
+    {
+      siteType: 'reservation' as const,
+      pageCount: 'medium' as const,
+      features: { payment: true },
+    },
   ]
   for (const m of matrix) {
     const q = calculateQuote(m)
-    assert.ok(q.priceMinManwon <= q.priceCenterManwon, `min(${q.priceMinManwon}) ≤ center(${q.priceCenterManwon})`)
-    assert.ok(q.priceCenterManwon <= q.priceMaxManwon, `center(${q.priceCenterManwon}) ≤ max(${q.priceMaxManwon})`)
-    assert.ok(q.weeksMin >= 1, `weeksMin ≥ 1, got ${q.weeksMin}`)
-    assert.ok(q.weeksMin <= q.weeksMax)
+    for (const p of [q.list, q.event]) {
+      assert.ok(p.min <= p.center, `min ${p.min} ≤ center ${p.center}`)
+      assert.ok(p.center <= p.max, `center ${p.center} ≤ max ${p.max}`)
+    }
+    assert.ok(q.event.center <= q.list.center, '이벤트가 ≤ 정가')
+    assert.ok(q.weeksMin >= 1 && q.weeksMin <= q.weeksMax)
   }
+})
+
+test('포맷 출력 형태', () => {
+  const q = calculateQuote({
+    siteType: 'shop',
+    pageCount: 'medium',
+    features: { payment: true },
+  })
+  assert.match(formatPriceRange(shownPrice(q)), /\d+\s*~\s*\d+만원/)
+  assert.match(formatPriceRange(q.list), /\d+\s*~\s*\d+만원/)
+  assert.match(formatWeeksRange(q), /\d+(\.\d)?\s*~\s*\d+(\.\d)?주/)
 })

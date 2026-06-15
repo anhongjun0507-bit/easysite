@@ -1,63 +1,75 @@
 /**
- * 견적·기간 산출 로직 — 위저드 8단계 답변을 입력으로 받아 가격 범위와 기간 범위를 계산.
+ * 견적 산출 — 위저드 6단계 답변 → 정가/이벤트가 이중 가격 + 기간.
  * AI 사용 X. 순수 규칙 기반 (CLAUDE.md §2-2 — 숨고 1인 시세 기준).
  *
- * 산식:
- *   base = baseBySiteType
- *   priceCore = base × pageMult × designMult × timelineMult + paymentAddon + aiAddon
- *   range = priceCore × (1 ± 0.15)
+ * 이중 가격:
+ *   - 정가(LIST): 평상시 시세
+ *   - 이벤트가(EVENT): 선착순 런칭 이벤트 할인가
+ *   - EVENT_ACTIVE=false 로 두면 정가만 노출(이벤트 종료 시 상수 하나로 전환).
  *
- *   weeks = pageBaseWeeks + paymentWeeks + aiWeeks + luxuryWeeks
- *   timeline 2w 옵션 시 weeks × 0.7 (최소 1.5주)
- *   minWeeks/maxWeeks = weeks ± 1 (최소 1주)
+ * 산식 (정가·이벤트가 각각 동일 구조):
+ *   core = base[siteType] × pageMult × rushMult + payment + admin + aiChat
+ *   range = core × (1 ± 0.15), 10만원 단위 반올림
+ *   ※ 디자인 톤은 가격에 영향 없음 (v2에서 가산 제거)
  */
 
-import type {
-  DesignTone,
-  PageCount,
-  SiteType,
-  Timeline,
-  YesNoUnsure,
-} from '@/app/wizard/lib/state'
+import type { PageCount, SiteType, Timeline } from '@/app/wizard/lib/state'
+
+/** 선착순 런칭 이벤트 — false 로 바꾸면 정가만 노출(이벤트 종료). */
+export const EVENT_ACTIVE = true
+
+export type QuoteFeatures = {
+  payment?: boolean
+  admin?: boolean
+  aiChat?: boolean
+}
 
 export type QuoteInput = {
   siteType?: SiteType
   pageCount?: PageCount
-  payment?: YesNoUnsure
-  aiChatNeeded?: boolean | 'unsure'
-  designTone?: DesignTone
+  features?: QuoteFeatures
   timeline?: Timeline
 }
 
+export type PriceRange = { min: number; max: number; center: number }
+
 export type QuoteBreakdownItem = {
   label: string
-  /** 곱하기 multiplier 또는 가산액(만원). multiplier는 'x1.3' 형태 라벨로. */
+  /** 곱하기 multiplier 또는 가산액(만원). multiplier는 '×1.3' 형태. */
   value: string
 }
 
 export type QuoteResult = {
-  /** 가격 범위 (만원 단위) */
+  /** 이벤트 진행 중이면 true → 화면에서 정가 취소선 + 이벤트가 강조 */
+  eventActive: boolean
+  /** 정가 범위 (만원) */
+  list: PriceRange
+  /** 이벤트가 범위 (만원) */
+  event: PriceRange
+  /** 하위호환 — 현재 적용가(이벤트 활성 시 이벤트가) 범위. 챗봇·어드민·알림이 사용. */
   priceMinManwon: number
   priceMaxManwon: number
-  /** 중심가 (만원 단위, 반올림) */
   priceCenterManwon: number
-  /** 기간 범위 (주) */
   weeksMin: number
   weeksMax: number
-  /** 산출 근거 — UI 토글에 그대로 표시 */
+  /** 산출 근거 — 현재 적용가(이벤트 활성 시 이벤트가) 기준 */
   breakdown: QuoteBreakdownItem[]
 }
 
-/**
- * 사이트 유형별 기준가 (만원) — 숨고 1인 시세.
- * /pricing 가격표가 이 값을 import하므로, 가격을 바꿀 때 여기 한 곳만 수정.
- */
-export const BASE_PRICE_MANWON: Record<SiteType, number> = {
-  landing: 100,
-  company: 200,
-  reservation: 350,
-  shop: 450,
-  other: 200,
+// ── 사이트 유형별 기준가 (만원) — 정가 / 이벤트가. /pricing·챗봇이 이 값 사용. ──
+export const LIST_BASE_PRICE_MANWON: Record<SiteType, number> = {
+  landing: 80,
+  company: 150,
+  reservation: 200,
+  shop: 250,
+  other: 150, // 기타 — 회사·가게 소개 기준가로 가정(직접입력 내용은 상담 시 조정)
+}
+export const EVENT_BASE_PRICE_MANWON: Record<SiteType, number> = {
+  landing: 50,
+  company: 100,
+  reservation: 130,
+  shop: 150,
+  other: 100,
 }
 
 export const SITE_TYPE_LABEL: Record<SiteType, string> = {
@@ -66,6 +78,19 @@ export const SITE_TYPE_LABEL: Record<SiteType, string> = {
   reservation: '예약·회원제',
   shop: '쇼핑몰',
   other: '기타',
+}
+
+// ── 추가 기능 가산 (만원) — 정가 / 이벤트가 ──
+export const ADDON_MANWON = {
+  payment: { list: 50, event: 30 },
+  admin: { list: 50, event: 30 },
+  aiChat: { list: 150, event: 80 },
+} as const
+
+export const ADDON_LABEL: Record<keyof QuoteFeatures, string> = {
+  payment: '온라인 결제',
+  admin: '관리자 페이지',
+  aiChat: 'AI 챗봇·자동화',
 }
 
 const PAGE_MULT: Record<PageCount, number> = {
@@ -89,93 +114,111 @@ const PAGE_BASE_WEEKS: Record<PageCount, number> = {
   unsure: 3,
 }
 
-/** /pricing 옵션 가산표가 이 값들을 import. 변경 시 한 곳만 수정. */
-export const PAYMENT_ADDON_MANWON = 80
-export const AI_ADDON_MANWON = 150
-const PAYMENT_ADDON_WEEKS = 1
-const AI_ADDON_WEEKS = 2
-const LUXURY_ADDON_WEEKS = 0.5
-export const LUXURY_MULT = 1.2
-export const RUSH_PRICE_MULT = 1.3 // 2주 납기 가산
+export const RUSH_PRICE_MULT = 1.3 // 2주 납기 가산 (디자인 가산은 v2에서 제거)
 const RUSH_WEEKS_MULT = 0.7
+const PAYMENT_ADDON_WEEKS = 1
+const ADMIN_ADDON_WEEKS = 0.5
+const AI_ADDON_WEEKS = 2
 const PRICE_RANGE_PCT = 0.15
 
 function roundTo10(n: number): number {
   return Math.round(n / 10) * 10
 }
-
+function roundTo5(n: number): number {
+  return Math.round(n / 5) * 5
+}
 function roundHalfWeek(n: number): number {
   return Math.round(n * 2) / 2
+}
+
+function corePrice(
+  base: Record<SiteType, number>,
+  tier: 'list' | 'event',
+  args: { siteType: SiteType; pageCount: PageCount; isRush: boolean; f: QuoteFeatures },
+): number {
+  const core =
+    base[args.siteType] *
+    PAGE_MULT[args.pageCount] *
+    (args.isRush ? RUSH_PRICE_MULT : 1.0)
+  let addon = 0
+  if (args.f.payment) addon += ADDON_MANWON.payment[tier]
+  if (args.f.admin) addon += ADDON_MANWON.admin[tier]
+  if (args.f.aiChat) addon += ADDON_MANWON.aiChat[tier]
+  return core + addon
+}
+
+function rangeOf(core: number): PriceRange {
+  return {
+    // 중심가는 5만원 단위(정가/이벤트가 정확 표기), 범위는 10만원 단위
+    min: roundTo10(core * (1 - PRICE_RANGE_PCT)),
+    max: roundTo10(core * (1 + PRICE_RANGE_PCT)),
+    center: roundTo5(core),
+  }
 }
 
 export function calculateQuote(input: QuoteInput): QuoteResult {
   const siteType: SiteType = input.siteType ?? 'company'
   const pageCount: PageCount = input.pageCount ?? 'unsure'
-  const isPayment = input.payment === 'yes'
-  const isAi = input.aiChatNeeded === true
-  const isLuxury = input.designTone === 'luxury'
+  const f: QuoteFeatures = input.features ?? {}
   const isRush = input.timeline === '2w'
+  const args = { siteType, pageCount, isRush, f }
 
-  // ── 가격 ──────────────────────────────────────────
-  const base = BASE_PRICE_MANWON[siteType]
-  const pageMult = PAGE_MULT[pageCount]
-  const designMult = isLuxury ? LUXURY_MULT : 1.0
-  const timelineMult = isRush ? RUSH_PRICE_MULT : 1.0
-  const paymentAddon = isPayment ? PAYMENT_ADDON_MANWON : 0
-  const aiAddon = isAi ? AI_ADDON_MANWON : 0
+  const list = rangeOf(corePrice(LIST_BASE_PRICE_MANWON, 'list', args))
+  const event = rangeOf(corePrice(EVENT_BASE_PRICE_MANWON, 'event', args))
 
-  const priceCore = base * pageMult * designMult * timelineMult + paymentAddon + aiAddon
-  const priceMin = roundTo10(priceCore * (1 - PRICE_RANGE_PCT))
-  const priceMax = roundTo10(priceCore * (1 + PRICE_RANGE_PCT))
-  const priceCenter = roundTo10(priceCore)
-
-  // ── 기간 ──────────────────────────────────────────
-  const pageWeeks = PAGE_BASE_WEEKS[pageCount]
-  const paymentWeeks = isPayment ? PAYMENT_ADDON_WEEKS : 0
-  const aiWeeks = isAi ? AI_ADDON_WEEKS : 0
-  const luxuryWeeks = isLuxury ? LUXURY_ADDON_WEEKS : 0
-  let weeks = pageWeeks + paymentWeeks + aiWeeks + luxuryWeeks
-  if (isRush) {
-    weeks = Math.max(weeks * RUSH_WEEKS_MULT, 1.5)
-  }
+  // ── 기간 ──
+  let weeks =
+    PAGE_BASE_WEEKS[pageCount] +
+    (f.payment ? PAYMENT_ADDON_WEEKS : 0) +
+    (f.admin ? ADMIN_ADDON_WEEKS : 0) +
+    (f.aiChat ? AI_ADDON_WEEKS : 0)
+  if (isRush) weeks = Math.max(weeks * RUSH_WEEKS_MULT, 1.5)
   const weeksMin = Math.max(1, roundHalfWeek(weeks - 1))
   const weeksMax = roundHalfWeek(weeks + 1)
 
-  // ── 근거 ──────────────────────────────────────────
+  // ── 근거 (현재 적용가 기준) ──
+  const tier: 'list' | 'event' = EVENT_ACTIVE ? 'event' : 'list'
+  const baseMap = EVENT_ACTIVE ? EVENT_BASE_PRICE_MANWON : LIST_BASE_PRICE_MANWON
+  const shown = EVENT_ACTIVE ? event : list
   const breakdown: QuoteBreakdownItem[] = [
-    { label: `기준 (${SITE_TYPE_LABEL[siteType]})`, value: `${base}만원` },
-    { label: `페이지 수 (${PAGE_LABEL[pageCount]})`, value: `×${pageMult}` },
+    { label: `기준 (${SITE_TYPE_LABEL[siteType]})`, value: `${baseMap[siteType]}만원` },
+    { label: `페이지 수 (${PAGE_LABEL[pageCount]})`, value: `×${PAGE_MULT[pageCount]}` },
   ]
-  if (isLuxury) breakdown.push({ label: '럭셔리 디자인 톤', value: `×${LUXURY_MULT}` })
   if (isRush)
-    breakdown.push({
-      label: '빠른 납기 (2주 안에)',
-      value: `×${RUSH_PRICE_MULT}`,
-    })
-  if (isPayment)
-    breakdown.push({ label: '결제 기능', value: `+${PAYMENT_ADDON_MANWON}만원` })
-  if (isAi) breakdown.push({ label: 'AI 챗봇·자동화', value: `+${AI_ADDON_MANWON}만원` })
+    breakdown.push({ label: '빠른 납기 (2주 안에)', value: `×${RUSH_PRICE_MULT}` })
+  if (f.payment)
+    breakdown.push({ label: ADDON_LABEL.payment, value: `+${ADDON_MANWON.payment[tier]}만원` })
+  if (f.admin)
+    breakdown.push({ label: ADDON_LABEL.admin, value: `+${ADDON_MANWON.admin[tier]}만원` })
+  if (f.aiChat)
+    breakdown.push({ label: ADDON_LABEL.aiChat, value: `+${ADDON_MANWON.aiChat[tier]}만원` })
   breakdown.push({
-    label: '합산 후 ±15% 범위',
-    value: `${priceMin} ~ ${priceMax}만원`,
+    label: EVENT_ACTIVE ? '이벤트가 ±15% 범위' : '합산 후 ±15% 범위',
+    value: `${shown.min} ~ ${shown.max}만원`,
   })
 
   return {
-    priceMinManwon: priceMin,
-    priceMaxManwon: priceMax,
-    priceCenterManwon: priceCenter,
+    eventActive: EVENT_ACTIVE,
+    list,
+    event,
+    priceMinManwon: shown.min,
+    priceMaxManwon: shown.max,
+    priceCenterManwon: shown.center,
     weeksMin,
     weeksMax,
     breakdown,
   }
 }
 
-/** "180~250만원" 같은 한국어 포맷 */
-export function formatPriceRange(q: QuoteResult): string {
-  if (q.priceMinManwon === q.priceMaxManwon) {
-    return `${formatManwon(q.priceMinManwon)}만원`
-  }
-  return `${formatManwon(q.priceMinManwon)} ~ ${formatManwon(q.priceMaxManwon)}만원`
+/** 화면 강조 가격 = 이벤트 활성 시 이벤트가, 아니면 정가 */
+export function shownPrice(q: QuoteResult): PriceRange {
+  return q.eventActive ? q.event : q.list
+}
+
+/** "180 ~ 250만원" 포맷 */
+export function formatPriceRange(p: PriceRange): string {
+  if (p.min === p.max) return `${formatManwon(p.min)}만원`
+  return `${formatManwon(p.min)} ~ ${formatManwon(p.max)}만원`
 }
 
 export function formatWeeksRange(q: QuoteResult): string {
