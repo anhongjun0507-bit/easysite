@@ -142,20 +142,26 @@ export default function JieuriPage() {
           <span className="text-lg font-extrabold tracking-tight text-gray-900">
             지으리
           </span>
-          <div className="flex items-center gap-1 sm:gap-2">
+          <nav className="flex items-center gap-0.5 sm:gap-1.5">
+            <Link
+              href="/portfolio"
+              className="inline-flex h-10 items-center rounded-lg px-2 text-[13px] font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 sm:px-3 sm:text-sm"
+            >
+              포트폴리오
+            </Link>
             <Link
               href="/wizard"
-              className="inline-flex h-10 items-center rounded-lg px-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 sm:px-3"
+              className="inline-flex h-10 items-center rounded-lg px-2 text-[13px] font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 sm:px-3 sm:text-sm"
             >
               견적 받기
             </Link>
             <a
               href="#register"
-              className="inline-flex h-10 items-center rounded-lg bg-gray-900 px-4 text-sm font-semibold text-white transition hover:bg-gray-800 active:scale-[0.98]"
+              className="inline-flex h-10 items-center rounded-lg bg-gray-900 px-3 text-[13px] font-semibold text-white transition hover:bg-gray-800 active:scale-[0.98] sm:px-4 sm:text-sm"
             >
               사전등록
             </a>
-          </div>
+          </nav>
         </div>
       </header>
 
@@ -415,6 +421,17 @@ export default function JieuriPage() {
                 </Reveal>
               ))}
             </div>
+
+            {/* 전체 포트폴리오(9건)로 — 제작 사례 더 보기 */}
+            <Reveal className="mt-10 flex justify-center">
+              <Link
+                href="/portfolio"
+                className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-[15px] font-bold text-gray-900 transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:border-gray-400 active:translate-y-0 active:scale-[0.99]"
+              >
+                제작 사례 더 보기
+                <ArrowRight className="h-4 w-4 transition-transform duration-200 ease-emphasized group-hover:translate-x-0.5" />
+              </Link>
+            </Reveal>
           </div>
         </section>
 
