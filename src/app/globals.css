@@ -75,6 +75,9 @@ body {
   .animate-ease-up-d3 {
     animation-delay: 180ms;
   }
+  .animate-ease-up-d4 {
+    animation-delay: 240ms;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
