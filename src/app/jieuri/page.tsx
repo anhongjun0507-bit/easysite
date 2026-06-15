@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { headers } from 'next/headers'
+import { SITE_URL } from '@/lib/site'
 import Image from 'next/image'
 import Link from 'next/link'
 import {
@@ -20,59 +20,36 @@ import { StickyCta } from './StickyCta'
 
 const TITLE = '지으리 — 말하면, 지으리'
 const DESCRIPTION =
-  '코드 몰라도 됩니다. 채팅으로 직접 웹사이트를 만들고, 막히면 현직 개발자가 대신 고쳐드려요. 사전등록하면 평생 50% 할인 — 선착순 100명.'
+  '코드 몰라도 됩니다. 지으리는 채팅으로 웹사이트를 만들고, 막히면 현직 개발자가 대신 고쳐드려요. AI 웹사이트 제작 — 사전등록하면 평생 50% 할인(선착순 100명).'
 
-const JIEURI_ORIGIN = 'https://jieuri.com'
-const EASYSITE_ORIGIN = 'https://easysite-sage.vercel.app'
-
-function onJieuriHost(): boolean {
-  const h = headers()
-  const host = (h.get('x-forwarded-host') ?? h.get('host') ?? '')
-    .toLowerCase()
-    .split(':')[0]
-  return host === 'jieuri.com' || host === 'www.jieuri.com'
-}
-
-// 같은 /jieuri 라우트가 두 호스트로 노출되므로 호스트별로 색인/정본을 분기한다.
-//  - jieuri.com    : index 허용 + canonical·OG = https://jieuri.com
-//  - EasySite 도메인 : noindex 유지(중복 색인 방지), 정본은 jieuri.com 으로 통일
-// (headers() 사용으로 이 라우트는 요청 시 렌더 — 정적 prerender 아님)
-export async function generateMetadata(): Promise<Metadata> {
-  const jieuri = onJieuriHost()
-  return {
-    metadataBase: new URL(jieuri ? JIEURI_ORIGIN : EASYSITE_ORIGIN),
-    title: { absolute: TITLE },
+// 모든 호스트에서 정본은 jieuri.com 하나. (구 EasySite 도메인은 src/middleware.ts 에서 301 → jieuri.com)
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: { absolute: TITLE },
+  description: DESCRIPTION,
+  alternates: { canonical: SITE_URL },
+  icons: {
+    icon: [
+      { url: '/jieuri-icon.svg', type: 'image/svg+xml' },
+      { url: '/jieuri-favicon.ico', sizes: '32x32' },
+    ],
+    shortcut: '/jieuri-favicon.ico',
+    apple: '/jieuri-apple-touch-icon.png',
+  },
+  robots: { index: true, follow: true },
+  openGraph: {
+    type: 'website',
+    locale: 'ko_KR',
+    siteName: '지으리',
+    url: SITE_URL,
+    title: TITLE,
     description: DESCRIPTION,
-    alternates: { canonical: JIEURI_ORIGIN },
-    // 파비콘: jieuri.com 호스트에서만 지으리 아이콘 적용.
-    // EasySite 호스트면 undefined → 루트(app/icon.tsx)의 EasySite 파비콘 그대로 상속.
-    icons: jieuri
-      ? {
-          icon: [
-            { url: '/jieuri-icon.svg', type: 'image/svg+xml' },
-            { url: '/jieuri-favicon.ico', sizes: '32x32' },
-          ],
-          shortcut: '/jieuri-favicon.ico',
-          apple: '/jieuri-apple-touch-icon.png',
-        }
-      : undefined,
-    robots: jieuri
-      ? { index: true, follow: true }
-      : { index: false, follow: false },
-    openGraph: {
-      type: 'website',
-      locale: 'ko_KR',
-      siteName: '지으리',
-      url: JIEURI_ORIGIN,
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: TITLE,
-      description: DESCRIPTION,
-    },
-  }
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 }
 
 const empathy = [

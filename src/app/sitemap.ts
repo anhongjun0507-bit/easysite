@@ -1,6 +1,5 @@
 import type { MetadataRoute } from 'next'
-
-const SITE_URL = 'https://easysite-sage.vercel.app'
+import { SITE_URL } from '@/lib/site'
 
 // 법령 페이지 시행일 (terms·privacy) — 사장님 작성 기준일
 const LEGAL_DATE = new Date('2026-05-19')
