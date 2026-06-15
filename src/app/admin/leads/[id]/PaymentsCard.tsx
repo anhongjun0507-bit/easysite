@@ -12,9 +12,7 @@ import {
 } from '@/config/payments'
 import type { Payment } from '@/lib/payments/types'
 import { PaymentLinkCopyButton } from './PaymentLinkCopyButton'
-
-// 사장님이 도메인 연결 후 한 번에 교체 — layout.tsx / actions.ts 와 동일
-const SITE_URL = 'https://easysite-sage.vercel.app'
+import { SITE_URL } from '@/lib/site'
 
 export function PaymentsCard({ payments }: { payments: Payment[] }) {
   return (

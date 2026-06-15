@@ -6,6 +6,7 @@ import { isAdminSessionValid } from '@/lib/admin/auth'
 import { isLeadStatusKey } from '@/lib/admin/status'
 import { createAdminClient } from '@/lib/supabase/admin'
 import type { PaymentType } from '@/lib/payments/types'
+import { SITE_URL } from '@/lib/site'
 
 const UUID_RE = /^[0-9a-f-]{36}$/i
 const MEMO_MAX = 5000
@@ -14,8 +15,6 @@ const PAYMENT_TYPES: ReadonlySet<PaymentType> = new Set<PaymentType>([
   'final',
   'full',
 ])
-// 사장님이 도메인 연결 후 한 번에 교체할 SITE_URL — layout.tsx / chat-notify.ts 와 동일
-const SITE_URL = 'https://easysite-sage.vercel.app'
 
 export type ActionResult = { ok: true } | { ok: false; error: string }
 

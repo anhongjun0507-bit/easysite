@@ -5,9 +5,7 @@
 import { notifyTelegram } from '@/app/wizard/lib/telegram'
 import { PAYMENT_TYPE_LABEL, formatWon } from '@/config/payments'
 import type { PaymentWithLead } from './db'
-
-// 사장님이 도메인 연결 후 한 번에 교체할 SITE_URL (layout / chat-notify 와 동일)
-const SITE_URL = 'https://easysite-sage.vercel.app'
+import { SITE_URL } from '@/lib/site'
 
 const escape = (v: string) =>
   v.replace(

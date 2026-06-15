@@ -4,8 +4,7 @@
  */
 
 import type { ChatLeadContext } from './chat-prompt'
-
-const SITE_URL = 'https://easysite-sage.vercel.app'
+import { SITE_URL } from '@/lib/site'
 
 export type ChatNotifyInput = {
   leadId: string

@@ -1,17 +1,40 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { JsonLd } from '@/components/JsonLd'
+import { SITE_URL, SITE_NAME, SITE_OPERATOR } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: '소개 — 안홍준',
   description:
-    '지으리를 만들고 있는 안홍준입니다. 코드 없이 말로 웹사이트를 만드는 빌더예요. 지금은 개발 중이라 사전등록을 받고 있고, 출시 전까지는 사장님 사이트를 직접 제작(외주)도 해드립니다.',
+    '프리즘 대표 안홍준입니다. 코드 없이 말로 웹사이트를 만드는 AI 빌더 지으리를 만들고 있어요. 지금은 사전등록을 받고, 출시 전까지는 사장님 홈페이지를 직접 제작(외주)도 해드립니다.',
   alternates: { canonical: '/about' },
   openGraph: {
     title: '소개 — 안홍준 | 지으리',
     description:
-      '지으리를 만들고 있는 안홍준입니다. 코드 없이 말로 웹사이트를 만드는 빌더 — 출시 전까지는 직접 제작도 해드립니다.',
+      '프리즘 대표 안홍준입니다. 코드 없이 말로 웹사이트를 만드는 AI 빌더 지으리를 만들고 있어요. 출시 전까지는 직접 제작도 해드립니다.',
     url: '/about',
   },
+}
+
+// /about Person 구조화 데이터 — 안홍준(대표) · 프리즘(운영) · 지으리(브랜드)
+const ABOUT_JSONLD = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: '안홍준',
+  url: `${SITE_URL}/about`,
+  jobTitle: '대표',
+  worksFor: {
+    '@type': 'Organization',
+    name: SITE_OPERATOR,
+    url: SITE_URL,
+    brand: { '@type': 'Brand', name: SITE_NAME },
+  },
+  knowsAbout: [
+    'AI 웹사이트 제작',
+    '채팅으로 홈페이지 만들기',
+    '코드 없이 사이트 제작',
+    '웹사이트 외주 제작',
+  ],
 }
 
 // 직접 만들어 운영 중인 서비스 — "실제로 만들 수 있는 사람"이라는 신뢰 근거
@@ -59,6 +82,7 @@ const tools: string[] = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={ABOUT_JSONLD} />
       <Hero />
       <JieuriSection />
       <ServicesSection />
