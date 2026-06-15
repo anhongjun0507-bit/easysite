@@ -42,7 +42,7 @@ export function Intro({ onStart }: Props) {
         <Bullet icon={Sparkles} delay="animate-ease-up-d1">
           잘 모르겠으면{' '}
           <strong className="font-semibold text-gray-900">&ldquo;잘 모르겠어요&rdquo;</strong>
-          를 골라주세요. 부담 X
+          를 골라주세요. 부담&nbsp;X
         </Bullet>
         <Bullet icon={CloudCheck} delay="animate-ease-up-d2">
           답변은 자동 저장 — 중간에 끊겨도 이어서 가능
