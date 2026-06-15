@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import Image from 'next/image'
+import Link from 'next/link'
 import {
   ArrowRight,
   Check,
@@ -135,18 +136,26 @@ const cases = [
 export default function JieuriPage() {
   return (
     <>
-      {/* 자체 헤더 (EasySite 글로벌 헤더와 독립) */}
+      {/* 자체 헤더 (공용 /home 헤더와 독립) */}
       <header className="sticky top-0 z-30 border-b border-gray-100 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
           <span className="text-lg font-extrabold tracking-tight text-gray-900">
             지으리
           </span>
-          <a
-            href="#register"
-            className="inline-flex h-10 items-center rounded-lg bg-gray-900 px-4 text-sm font-semibold text-white transition hover:bg-gray-800 active:scale-[0.98]"
-          >
-            사전등록
-          </a>
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Link
+              href="/wizard"
+              className="inline-flex h-10 items-center rounded-lg px-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 sm:px-3"
+            >
+              견적 받기
+            </Link>
+            <a
+              href="#register"
+              className="inline-flex h-10 items-center rounded-lg bg-gray-900 px-4 text-sm font-semibold text-white transition hover:bg-gray-800 active:scale-[0.98]"
+            >
+              사전등록
+            </a>
+          </div>
         </div>
       </header>
 
@@ -250,7 +259,71 @@ export default function JieuriPage() {
           </div>
         </section>
 
-        {/* 3. 작동 방식 3스텝 */}
+        {/* 3. 두 갈래 CTA — 직접 만들기(사전등록·메인) vs 지금 맡기기(견적·보조) */}
+        <section className="border-t border-gray-100">
+          <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
+            <Reveal className="text-center">
+              <h2 className="text-[26px] font-extrabold tracking-[-0.02em] text-gray-900 sm:text-[34px]">
+                어떻게 시작할까요?
+              </h2>
+              <p className="mt-3 text-[16px] leading-relaxed text-gray-600">
+                직접 만들지, 지금 맡길지 — 사장님 편한 쪽으로 고르세요.
+              </p>
+            </Reveal>
+
+            <div className="mt-12 grid gap-5 lg:grid-cols-[1.4fr_1fr] lg:items-stretch">
+              {/* 좌: 직접 만들래요 (메인) → 하단 사전등록 폼으로 스크롤 */}
+              <Reveal>
+                <div className="flex h-full flex-col rounded-3xl bg-indigo-600 p-8 text-white shadow-[0_24px_60px_-30px_rgba(79,70,229,0.7)] sm:p-10">
+                  <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[12.5px] font-bold text-white">
+                    <MessageSquare className="h-4 w-4" strokeWidth={2.2} />
+                    곧 출시 · 사전등록 혜택
+                  </span>
+                  <h3 className="mt-6 text-[26px] font-extrabold leading-tight tracking-[-0.02em] sm:text-[32px]">
+                    직접 만들래요
+                  </h3>
+                  <p className="mt-3 max-w-md text-[15.5px] leading-relaxed text-indigo-50">
+                    채팅으로 직접 웹사이트를 만들어요. 막히면 현직 개발자가 대신
+                    고쳐드려요. 지금 사전등록하면 평생 50% 할인 — 선착순 100명.
+                  </p>
+                  <a
+                    href="#register"
+                    className="group mt-8 inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-white px-7 text-[16px] font-bold text-indigo-700 shadow-sm transition duration-200 ease-emphasized hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.99] sm:w-auto sm:self-start"
+                  >
+                    사전등록하고 평생 50% 할인받기
+                    <ArrowRight className="h-5 w-5 transition-transform duration-200 ease-emphasized group-hover:translate-x-0.5" />
+                  </a>
+                </div>
+              </Reveal>
+
+              {/* 우: 지금 맡길래요 (보조) → /wizard (지금 작동하는 AI 견적) */}
+              <Reveal delay={80}>
+                <div className="flex h-full flex-col rounded-3xl border border-gray-200 bg-white p-8 sm:p-10">
+                  <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1.5 text-[12.5px] font-bold text-gray-700">
+                    <ClipboardList className="h-4 w-4 text-indigo-600" strokeWidth={2.2} />
+                    지금 바로 가능
+                  </span>
+                  <h3 className="mt-6 text-[22px] font-bold leading-tight tracking-[-0.02em] text-gray-900 sm:text-[26px]">
+                    지금 맡길래요
+                  </h3>
+                  <p className="mt-3 max-w-md text-[15px] leading-relaxed text-gray-600">
+                    기다리기 어려우면 지금 바로. AI가 1분 만에 견적이랑 시안 초안까지
+                    만들어드려요.
+                  </p>
+                  <Link
+                    href="/wizard"
+                    className="group mt-8 inline-flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-[15px] font-bold text-gray-900 transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:border-gray-400 active:translate-y-0 active:scale-[0.99] sm:w-auto sm:self-start"
+                  >
+                    1분 만에 견적 받기
+                    <ArrowRight className="h-5 w-5 transition-transform duration-200 ease-emphasized group-hover:translate-x-0.5" />
+                  </Link>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. 작동 방식 3스텝 */}
         <section className="border-t border-gray-100 bg-gray-50/70">
           <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
             <Reveal className="text-center">
@@ -297,7 +370,7 @@ export default function JieuriPage() {
           </div>
         </section>
 
-        {/* 4. 신뢰 섹션 */}
+        {/* 5. 신뢰 섹션 — 제작 사례 */}
         <section className="border-t border-gray-100">
           <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
             <Reveal className="flex flex-col items-center text-center">
@@ -345,7 +418,7 @@ export default function JieuriPage() {
           </div>
         </section>
 
-        {/* 5. 사전등록 폼 */}
+        {/* 6. 사전등록 폼 */}
         <section
           id="register"
           className="scroll-mt-6 border-t border-gray-100 bg-gray-50/70"
