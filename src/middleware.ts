@@ -4,7 +4,7 @@ import { NextResponse, type NextRequest } from 'next/server'
 //    (루트 middleware.ts 는 Next 가 무시 → 기존 root 미들웨어는 그동안 동작하지 않았음)
 //
 // 지으리(jieuri)가 전역 기본 브랜드 — 모든 호스트에서 루트(/)는 지으리 사전등록 랜딩을 보여준다.
-// (구브랜드 EasySite 메인 7섹션은 /home 으로 보존 — 견적/위저드/포트폴리오 동선 유지용)
+// (구 EasySite 메인은 폐기 — /home 은 next.config 에서 / 로 리다이렉트)
 // 참고: Supabase updateSession 은 위치 문제로 원래 미동작 상태였고, 여기서도 켜지 않는다
 //       (Supabase 일시중지 시 전체 장애 방지).
 
@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.rewrite(url)
   }
 
-  // 그 외 모든 라우트(/home·/wizard·/pricing·/portfolio·/consult·/pay·/admin·/jieuri 하위 등)는 그대로 통과.
+  // 그 외 모든 라우트(/wizard·/pricing·/portfolio·/consult·/pay·/admin·/jieuri 하위 등)는 그대로 통과.
   return NextResponse.next()
 }
 

@@ -13,13 +13,18 @@ import { Header } from './Header'
 export function LandingChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const segments = useSelectedLayoutSegments()
-  // /jieuri 는 별도 브랜드(jieuri.com) — 자체 헤더/푸터를 직접 렌더하므로 EasySite 크롬을 비운다.
-  // jieuri.com 호스트에선 미들웨어가 / → /jieuri 로 rewrite → URL(usePathname)은 '/'지만
-  // 실제 렌더된 세그먼트는 'jieuri'. 그래서 경로가 아니라 렌더 세그먼트로 판별해야 헤더가 안 샌다.
+  // 루트(/)는 미들웨어가 / → /jieuri 로 rewrite → URL(usePathname)은 '/'지만 렌더 세그먼트는 'jieuri'.
+  // 경로가 아니라 렌더 세그먼트로 판별한다.
+  // 지으리 랜딩은 공용 헤더를 얹어 통합하고(견적/사전등록 동선 일관), 푸터·플로팅은 랜딩 자체 것을 쓴다.
   const isJieuri = segments[0] === 'jieuri'
 
   if (isJieuri) {
-    return <>{children}</>
+    return (
+      <>
+        <Header />
+        {children}
+      </>
+    )
   }
 
   // /wizard·/admin·/pay 영역은 풀스크린 — 랜딩 헤더/푸터·플로팅 모두 숨김.

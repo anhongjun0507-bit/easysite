@@ -4,16 +4,17 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: '소개 — 안홍준',
   description:
-    '프리즘 안홍준 대표 소개. 자체 서비스 3개(prismedu·지으리·Waylog)를 직접 운영하는 풀스택 개발자. 만드는 단계부터 운영 함정을 피해 설계합니다.',
+    '지으리를 만들고 있는 안홍준입니다. 코드 없이 말로 웹사이트를 만드는 빌더예요. 지금은 개발 중이라 사전등록을 받고 있고, 출시 전까지는 사장님 사이트를 직접 제작(외주)도 해드립니다.',
   alternates: { canonical: '/about' },
   openGraph: {
     title: '소개 — 안홍준 | 지으리',
     description:
-      '프리즘 안홍준 대표 소개. 자체 서비스 3개(prismedu·지으리·Waylog)를 직접 운영하는 풀스택 개발자. 만드는 단계부터 운영 함정을 피해 설계합니다.',
+      '지으리를 만들고 있는 안홍준입니다. 코드 없이 말로 웹사이트를 만드는 빌더 — 출시 전까지는 직접 제작도 해드립니다.',
     url: '/about',
   },
 }
 
+// 직접 만들어 운영 중인 서비스 — "실제로 만들 수 있는 사람"이라는 신뢰 근거
 type Service = {
   name: string
   url: string
@@ -31,13 +32,6 @@ const services: Service[] = [
     description: '한국 국제학교 학생을 위한 미국 대학 입시 컨설팅 플랫폼.',
   },
   {
-    name: '지으리',
-    url: 'easysite.kr',
-    href: '/',
-    category: '사이트 제작',
-    description: '사장님 아이디어만으로 견적·시안·운영까지 자동화하는 1인 제작 플랫폼.',
-  },
-  {
     name: 'Waylog',
     url: 'waylog1.vercel.app',
     href: 'https://waylog1.vercel.app',
@@ -48,7 +42,7 @@ const services: Service[] = [
 
 const principles: string[] = [
   '만드는 단계부터 운영 함정을 피해 설계합니다.',
-  '외주가 아닙니다. 만든 사람이 끝까지 책임집니다.',
+  '흔한 외주와 다릅니다. 만든 사람이 끝까지 책임집니다.',
   '가격을 처음부터 공개합니다. 사장님이 가장 답답해하는 부분이라서.',
 ]
 
@@ -66,6 +60,7 @@ export default function AboutPage() {
   return (
     <>
       <Hero />
+      <JieuriSection />
       <ServicesSection />
       <PrinciplesSection />
       <ToolsSection />
@@ -97,11 +92,14 @@ function Hero() {
               안녕하세요, 안홍준입니다
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-gray-700 sm:text-xl">
-              제가 만들고, 제가 직접 운영합니다.
+              코드 없이 말로 웹사이트를 만드는 빌더,{' '}
+              <span className="font-bold text-indigo-700">지으리</span>를 만들고
+              있어요.
             </p>
             <p className="mt-3 max-w-lg text-sm leading-relaxed text-gray-600 sm:text-base">
-              자체 서비스 3개를 운영하면서, 사장님 사이트도 같이 만듭니다.
-              만드는 사람과 운영하는 사람이 같다는 게 외주랑 가장 다른 점이에요.
+              지금은 개발 중이라 먼저 써보실 분들께 사전등록을 받고 있고, 출시
+              전까지는 제가 사장님 사이트를 직접 만들어 드려요. 만든 사람이 직접
+              운영까지 한다는 게 흔한 외주랑 가장 다른 점이에요.
             </p>
           </div>
           <div className="w-full max-w-[260px] shrink-0 md:max-w-[280px]">
@@ -113,8 +111,7 @@ function Hero() {
   )
 }
 
-// 동심원 분광 — C1: 1개 indigo 점에서 6개 호가 우측으로 펼쳐짐.
-// 안쪽 진함 → 바깥쪽 옅음. 외부 라이브러리 0.
+// 동심원 분광 — 하나의 아이디어가 여러 결과물로 펼쳐지는 모습. 외부 라이브러리 0.
 function PrismIllustration() {
   return (
     <svg
@@ -134,15 +131,9 @@ function PrismIllustration() {
         </radialGradient>
       </defs>
 
-      {/* 좌측 광원 점 — 살짝 큰 indigo grad 원 */}
       <circle cx="40" cy="90" r="6" fill="url(#prism-dot)" />
 
-      {/* 6개 동심원 우반 호 — 반지름 30 → 130 */}
-      <g
-        stroke="url(#prism-arc)"
-        fill="none"
-        strokeLinecap="round"
-      >
+      <g stroke="url(#prism-arc)" fill="none" strokeLinecap="round">
         <path d="M 40 60 A 30 30 0 0 1 40 120" strokeWidth="2.6" opacity="0.95" />
         <path d="M 40 40 A 50 50 0 0 1 40 140" strokeWidth="2.2" opacity="0.78" />
         <path d="M 40 20 A 70 70 0 0 1 40 160" strokeWidth="1.9" opacity="0.58" />
@@ -155,12 +146,76 @@ function PrismIllustration() {
 }
 
 // ─────────────────────────────────────────────────────────
-// I. 지금 만들고 있는 것
+// I. 지으리 — 지금 만들고 있는 것 (개발 중 → 사전등록 → 출시 전 직접제작)
+// ─────────────────────────────────────────────────────────
+const jieuriStory: { stage: string; text: string }[] = [
+  {
+    stage: '지금',
+    text: '빌더를 개발하면서, 먼저 써보실 분들 사전등록을 받고 있어요. (선착순 100명 · 평생 50% 할인)',
+  },
+  {
+    stage: '출시 후',
+    text: '채팅만으로 사장님이 직접 사이트를 만들고 수정해요. "여기 색 바꿔줘" 하면 바로 바뀌고요.',
+  },
+  {
+    stage: '출시 전까지',
+    text: '기다리기 어려우면, 제가 직접 만들어 드려요. 1분 견적부터 받아보세요.',
+  },
+]
+
+function JieuriSection() {
+  return (
+    <Section roman="I" title="지으리 — 지금 만들고 있는 것">
+      <div className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-6 sm:p-8">
+        <p className="text-base leading-relaxed text-gray-800 sm:text-lg">
+          <span className="font-bold text-gray-900">지으리</span>는 채팅으로
+          “이렇게 만들어줘” 하면 사이트가 만들어지는 웹사이트 빌더예요. 막히면
+          현직 개발자가 대신 고쳐드리고요.
+        </p>
+
+        <ol className="mt-6 space-y-3">
+          {jieuriStory.map((s) => (
+            <li key={s.stage} className="flex items-start gap-3">
+              <span className="mt-0.5 inline-flex shrink-0 items-center rounded-full bg-indigo-600 px-2.5 py-1 text-[12px] font-bold text-white">
+                {s.stage}
+              </span>
+              <p className="text-sm leading-relaxed text-gray-700 sm:text-base">
+                {s.text}
+              </p>
+            </li>
+          ))}
+        </ol>
+
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <a
+            href="/#register"
+            className="inline-flex h-12 items-center justify-center rounded-xl bg-indigo-600 px-6 text-sm font-bold text-white transition hover:bg-indigo-700 sm:text-[15px]"
+          >
+            사전등록하고 먼저 받기
+          </a>
+          <Link
+            href="/wizard"
+            className="inline-flex h-12 items-center justify-center rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-gray-900 transition hover:border-gray-400 sm:text-[15px]"
+          >
+            지금 견적 받기
+          </Link>
+        </div>
+      </div>
+    </Section>
+  )
+}
+
+// ─────────────────────────────────────────────────────────
+// II. 직접 만들어 운영 중 (신뢰 근거)
 // ─────────────────────────────────────────────────────────
 function ServicesSection() {
   return (
-    <Section roman="I" title="지금 만들고 있는 것">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+    <Section
+      roman="II"
+      title="직접 만들어 운영 중"
+      helper="말로만 하는 게 아니라, 직접 만들어 운영하고 있는 서비스들이에요."
+    >
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
         {services.map((s) => {
           const external = s.href.startsWith('http')
           return (
@@ -197,16 +252,24 @@ function ServicesSection() {
           )
         })}
       </div>
+      <div className="mt-5">
+        <Link
+          href="/portfolio"
+          className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-700 transition hover:text-indigo-900"
+        >
+          제작 사례 더 보기 →
+        </Link>
+      </div>
     </Section>
   )
 }
 
 // ─────────────────────────────────────────────────────────
-// II. 작업 방식
+// III. 작업 방식
 // ─────────────────────────────────────────────────────────
 function PrinciplesSection() {
   return (
-    <Section roman="II" title="작업 방식">
+    <Section roman="III" title="작업 방식">
       <ol className="space-y-3">
         {principles.map((p, i) => (
           <li
@@ -230,12 +293,12 @@ function PrinciplesSection() {
 }
 
 // ─────────────────────────────────────────────────────────
-// III. 도구
+// IV. 도구
 // ─────────────────────────────────────────────────────────
 function ToolsSection() {
   return (
     <Section
-      roman="III"
+      roman="IV"
       title="도구"
       helper="실제 지으리를 만들고 운영하는 데 쓰는 것들이에요."
     >
@@ -254,11 +317,11 @@ function ToolsSection() {
 }
 
 // ─────────────────────────────────────────────────────────
-// IV. 연락
+// V. 연락
 // ─────────────────────────────────────────────────────────
 function ContactSection() {
   return (
-    <Section roman="IV" title="연락" last>
+    <Section roman="V" title="연락" last>
       <div className="rounded-xl border border-gray-200 bg-white p-6">
         <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-3 sm:gap-x-10">
           <dt className="text-xs font-semibold uppercase tracking-wider text-gray-500">
@@ -302,7 +365,7 @@ function ContactSection() {
 }
 
 // ─────────────────────────────────────────────────────────
-// Section shell — 로마숫자 + 제목, 닷츠 톤
+// Section shell — 로마숫자 + 제목
 // ─────────────────────────────────────────────────────────
 function Section({
   roman,

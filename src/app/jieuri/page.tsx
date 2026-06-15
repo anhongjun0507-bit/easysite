@@ -136,35 +136,7 @@ const cases = [
 export default function JieuriPage() {
   return (
     <>
-      {/* 자체 헤더 (공용 /home 헤더와 독립) */}
-      <header className="sticky top-0 z-30 border-b border-gray-100 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
-          <span className="text-lg font-extrabold tracking-tight text-gray-900">
-            지으리
-          </span>
-          <nav className="flex items-center gap-0.5 sm:gap-1.5">
-            <Link
-              href="/portfolio"
-              className="inline-flex h-10 items-center rounded-lg px-2 text-[13px] font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 sm:px-3 sm:text-sm"
-            >
-              포트폴리오
-            </Link>
-            <Link
-              href="/wizard"
-              className="inline-flex h-10 items-center rounded-lg px-2 text-[13px] font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-gray-900 sm:px-3 sm:text-sm"
-            >
-              견적 받기
-            </Link>
-            <a
-              href="#register"
-              className="inline-flex h-10 items-center rounded-lg bg-gray-900 px-3 text-[13px] font-semibold text-white transition hover:bg-gray-800 active:scale-[0.98] sm:px-4 sm:text-sm"
-            >
-              사전등록
-            </a>
-          </nav>
-        </div>
-      </header>
-
+      {/* 헤더는 공용 Header(LandingChrome) 에서 렌더 — 견적/사전등록 동선 통합 */}
       <main className="flex-1">
         {/* 1. 히어로 */}
         <section className="overflow-hidden">
