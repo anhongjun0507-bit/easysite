@@ -24,7 +24,7 @@ export default function AdminLoginPage({
     <section className="mx-auto flex min-h-[100dvh] max-w-md flex-col items-center justify-center px-6 py-12">
       <div className="w-full">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
-          EasySite Admin
+          지으리 Admin
         </p>
         <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-gray-900">
           운영자 로그인

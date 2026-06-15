@@ -22,7 +22,7 @@ export function Footer() {
               href="/"
               className="text-xl font-bold tracking-tight text-white"
             >
-              EasySite
+              지으리
             </Link>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-gray-300">
               아이디어만 있으면 됩니다.
@@ -74,7 +74,7 @@ export function Footer() {
             </Link>
           </div>
           <p className="text-gray-400">
-            © 2026 EasySite. All rights reserved.
+            © 2026 지으리. All rights reserved.
           </p>
         </div>
       </div>

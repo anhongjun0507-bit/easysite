@@ -345,7 +345,7 @@ export function ChatWidget({ leadId }: { leadId: string }) {
         <button
           type="button"
           onClick={openPanel}
-          aria-label="EasySite 상담 챗봇 열기"
+          aria-label="지으리 상담 챗봇 열기"
           className="cta-glow fixed bottom-4 right-4 z-40 inline-flex h-14 w-14 items-center justify-center rounded-full bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 transition hover:bg-indigo-700 sm:bottom-6 sm:right-6 sm:h-16 sm:w-16"
         >
           <svg
@@ -368,14 +368,14 @@ export function ChatWidget({ leadId }: { leadId: string }) {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="EasySite 상담 챗봇"
+          aria-label="지으리 상담 챗봇"
           className="fixed inset-0 z-50 flex flex-col bg-white sm:inset-auto sm:bottom-6 sm:right-6 sm:h-[600px] sm:max-h-[calc(100vh-3rem)] sm:w-[420px] sm:max-w-[calc(100vw-3rem)] sm:rounded-2xl sm:border sm:border-gray-200 sm:shadow-2xl"
         >
           {/* 헤더 */}
           <div className="flex items-start justify-between border-b border-gray-200 px-5 py-4 sm:rounded-t-2xl">
             <div>
               <p className="text-base font-bold text-gray-900">
-                ✨ EasySite 상담
+                ✨ 지으리 상담
               </p>
               <p className="mt-0.5 text-xs text-gray-500">
                 프리즘 안홍준 대표가 직접 설계한 AI예요

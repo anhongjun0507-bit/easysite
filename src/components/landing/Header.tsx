@@ -5,9 +5,9 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 const navLinks = [
-  { href: '/#solutions', label: '차별점', match: 'anchor' as const },
-  { href: '/#how-it-works', label: '제작 과정', match: 'anchor' as const },
-  { href: '/#reviews', label: '후기', match: 'anchor' as const },
+  { href: '/home#solutions', label: '차별점', match: 'anchor' as const },
+  { href: '/home#how-it-works', label: '제작 과정', match: 'anchor' as const },
+  { href: '/home#reviews', label: '후기', match: 'anchor' as const },
   { href: '/pricing', label: '가격표', match: 'path' as const },
   { href: '/portfolio', label: '포트폴리오', match: 'path' as const },
   { href: '/about', label: '소개', match: 'path' as const },
@@ -46,7 +46,7 @@ export function Header() {
           href="/"
           className="shrink-0 text-lg font-bold tracking-tight text-gray-900 sm:text-xl"
         >
-          EasySite
+          지으리
         </Link>
 
         <ul className="hidden items-center gap-2 sm:flex md:gap-3">

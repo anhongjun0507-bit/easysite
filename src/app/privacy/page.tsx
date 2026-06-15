@@ -4,12 +4,12 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: '개인정보처리방침',
   description:
-    'EasySite 개인정보처리방침. 프리즘이 수집하는 개인정보의 항목·목적·보유 기간(3년)·처리 위탁·국외 이전·정보주체 권리를 PIPA 기준으로 안내드립니다.',
+    '지으리 개인정보처리방침. 프리즘이 수집하는 개인정보의 항목·목적·보유 기간(3년)·처리 위탁·국외 이전·정보주체 권리를 PIPA 기준으로 안내드립니다.',
   alternates: { canonical: '/privacy' },
   openGraph: {
-    title: '개인정보처리방침 | EasySite',
+    title: '개인정보처리방침 | 지으리',
     description:
-      'EasySite 개인정보처리방침. 프리즘이 수집하는 개인정보의 항목·목적·보유 기간(3년)·처리 위탁·국외 이전·정보주체 권리를 PIPA 기준으로 안내드립니다.',
+      '지으리 개인정보처리방침. 프리즘이 수집하는 개인정보의 항목·목적·보유 기간(3년)·처리 위탁·국외 이전·정보주체 권리를 PIPA 기준으로 안내드립니다.',
     url: '/privacy',
   },
 }

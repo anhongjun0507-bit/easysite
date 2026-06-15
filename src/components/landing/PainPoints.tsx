@@ -152,7 +152,7 @@ export function PainPoints() {
         {/* Bridge — 그라데이션 제거, solid indigo-700 */}
         <p className="mx-auto mt-12 max-w-xl text-center text-lg font-semibold text-gray-900 sm:mt-14 sm:text-xl">
           맞아요. 그래서{' '}
-          <span className="text-indigo-700">EasySite</span>를 만들었어요.
+          <span className="text-indigo-700">지으리</span>를 만들었어요.
         </p>
       </div>
     </section>

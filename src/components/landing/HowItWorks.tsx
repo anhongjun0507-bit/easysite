@@ -40,7 +40,7 @@ function StepMock({ number }: { number: string }) {
           </div>
           <div className="flex-1 text-left">
             <div className="text-[11px] font-semibold text-gray-900">
-              EasySite
+              지으리
             </div>
             <div className="mt-0.5 text-[11px] leading-snug text-gray-700">
               사장님 사이트 시안이랑 견적이 도착했어요. 메일도 같이 보내드렸어요.

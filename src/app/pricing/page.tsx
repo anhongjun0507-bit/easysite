@@ -11,12 +11,12 @@ import {
 export const metadata: Metadata = {
   title: '가격표',
   description:
-    'EasySite 가격을 처음부터 공개합니다. 사이트 유형별 시작가와 옵션 가산표를 한눈에 확인하세요.',
+    '지으리 가격을 처음부터 공개합니다. 사이트 유형별 시작가와 옵션 가산표를 한눈에 확인하세요.',
   alternates: { canonical: '/pricing' },
   openGraph: {
-    title: '가격표 | EasySite',
+    title: '가격표 | 지으리',
     description:
-      'EasySite 가격을 처음부터 공개합니다. 사이트 유형별 시작가와 옵션 가산표를 한눈에 확인하세요.',
+      '지으리 가격을 처음부터 공개합니다. 사이트 유형별 시작가와 옵션 가산표를 한눈에 확인하세요.',
     url: '/pricing',
   },
 }

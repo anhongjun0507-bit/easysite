@@ -93,7 +93,7 @@ export function ContactStep({
                 <span className="ml-1 text-xs font-normal text-gray-500">(선택)</span>
               </>
             }
-            placeholder="예: easysite_kr"
+            placeholder="예: jieuri_kr"
             value={contact.kakao ?? ''}
             error={errors.kakao}
             onChange={(v) => onPatch({ kakao: v })}
