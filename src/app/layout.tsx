@@ -81,8 +81,9 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.webmanifest',
   robots: { index: true, follow: true },
-  // 검색엔진 사이트 소유확인 — 네이버 서치어드바이저
+  // 검색엔진 사이트 소유확인 — 구글 서치콘솔 + 네이버 서치어드바이저
   verification: {
+    google: 'fnKn21sXGvdYnJrDKjoX7e5vnV5sw8HK5QyLFR6Ph14',
     other: {
       'naver-site-verification': '2ef1b27b4c50f634aaaba45dd00576bb52278bc3',
     },
