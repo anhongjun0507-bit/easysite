@@ -5,7 +5,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { aiCopyResultSchema, type AiCopyResult } from '@/lib/ai/types'
 import { calculateQuote } from '@/lib/quote/calculate'
 import { matchPortfolio } from '@/lib/quote/match-portfolio'
-import type { SiteType, PageCount, YesNoUnsure, DesignTone, Timeline } from '@/app/wizard/lib/state'
+import type { SiteType, PageCount, DesignTone, Timeline } from '@/app/wizard/lib/state'
 import { AISection } from './AISection'
 import { ChatWidget } from './ChatWidget'
 import { FinalCta } from './FinalCta'
@@ -50,8 +50,7 @@ export default async function WizardResultPage({
   const answers = (lead.wizard_answers ?? {}) as {
     siteType?: SiteType
     pageCount?: PageCount
-    payment?: YesNoUnsure
-    aiChat?: { needed?: boolean | 'unsure' }
+    features?: { payment?: boolean; admin?: boolean; aiChat?: boolean }
     designTone?: DesignTone
     timeline?: Timeline
   }
@@ -59,14 +58,7 @@ export default async function WizardResultPage({
   const quote = calculateQuote({
     siteType: answers.siteType,
     pageCount: answers.pageCount,
-    payment: answers.payment,
-    aiChatNeeded:
-      answers.aiChat?.needed === true
-        ? true
-        : answers.aiChat?.needed === 'unsure'
-          ? 'unsure'
-          : false,
-    designTone: answers.designTone,
+    features: answers.features,
     timeline: answers.timeline,
   })
 

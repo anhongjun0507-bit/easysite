@@ -4,39 +4,39 @@ import { useState } from 'react'
 import { ChoiceCard } from '../components/ChoiceCard'
 import { StepShell } from '../components/StepShell'
 import { StickyFooter } from '../components/StickyFooter'
-import type { SiteType, WizardAnswers, WizardState } from '../lib/state'
+import type { DesignTone, WizardAnswers, WizardState } from '../lib/state'
 
 type Props = {
   state: WizardState
   onAnswer: (patch: Partial<WizardAnswers>) => void
 }
 
-const OPTIONS: Array<{ value: Exclude<SiteType, 'other'>; title: string; desc: string }> = [
-  { value: 'company', title: '회사·가게 소개', desc: '브랜드·연락처·오시는 길 같은 기본 정보' },
-  { value: 'shop', title: '쇼핑몰', desc: '상품 진열, 장바구니, 결제까지' },
-  { value: 'reservation', title: '예약·회원제', desc: '예약 받기, 회원가입, 멤버 전용 페이지' },
-  { value: 'landing', title: '랜딩페이지', desc: '한 페이지로 이벤트·캠페인 알리기' },
+const OPTIONS: Array<{ value: Exclude<DesignTone, 'other'>; title: string; desc: string }> = [
+  { value: 'modern', title: '모던·심플', desc: '요즘 회사 사이트 같은 깔끔한 느낌' },
+  { value: 'luxury', title: '럭셔리', desc: '고급, 차분한 색감' },
+  { value: 'friendly', title: '친근', desc: '따뜻하고 부드러운 분위기' },
+  { value: 'auto', title: '알아서 추천해주세요', desc: '업종에 맞게 저희가 골라드릴게요' },
 ]
 
 const inputBox =
   'w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-base text-gray-900 shadow-sm placeholder:text-gray-500 transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/30'
 
-export function Step1SiteType({ state, onAnswer }: Props) {
-  const value = state.answers.siteType
+export function Step4DesignTone({ state, onAnswer }: Props) {
+  const value = state.answers.designTone
   const [etcMode, setEtcMode] = useState(value === 'other')
-  const [etc, setEtc] = useState(state.answers.siteTypeEtc ?? '')
+  const [etc, setEtc] = useState(state.answers.designToneEtc ?? '')
 
   if (etcMode) {
     return (
       <>
         <StepShell
-          question="어떤 사이트가 필요하세요?"
-          helper={<>위 보기에 없으면 어떤 사이트인지 한 줄로 적어주세요.</>}
+          question="디자인은 어떤 톤이 좋으세요?"
+          helper={<>원하는 분위기·참고 사이트를 자유롭게 적어주세요.</>}
         >
           <textarea
             value={etc}
             onChange={(e) => setEtc(e.target.value)}
-            placeholder="예: 예약이랑 쇼핑몰을 합친 형태요"
+            placeholder="예: 애플 사이트처럼 여백 많고 미니멀하게"
             maxLength={120}
             rows={3}
             className={`${inputBox} resize-none leading-relaxed`}
@@ -52,7 +52,7 @@ export function Step1SiteType({ state, onAnswer }: Props) {
         <StickyFooter>
           <button
             type="button"
-            onClick={() => onAnswer({ siteType: 'other', siteTypeEtc: etc.trim() || undefined })}
+            onClick={() => onAnswer({ designTone: 'other', designToneEtc: etc.trim() || undefined })}
             className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-6 text-base font-semibold text-white transition hover:bg-indigo-700"
             style={{ height: 52 }}
           >
@@ -65,25 +65,26 @@ export function Step1SiteType({ state, onAnswer }: Props) {
 
   return (
     <StepShell
-      question="어떤 사이트가 필요하세요?"
-      helper={<>가장 가까운 걸 골라주세요. 정확하지 않아도 OK — 나중에 바꿀 수 있어요.</>}
+      question="디자인은 어떤 톤이 좋으세요?"
+      helper={<>잘 모르시겠으면 “알아서” 골라주세요. 시안 만들 때 다시 확인해드려요. (가격엔 영향 없어요)</>}
     >
       <div className="grid gap-2.5 sm:gap-3">
         {OPTIONS.map((opt, i) => (
           <ChoiceCard
             key={opt.value}
             selected={value === opt.value}
-            prefix={i + 1}
+            prefix={opt.value === 'auto' ? '?' : i + 1}
             title={opt.title}
             description={opt.desc}
-            onClick={() => onAnswer({ siteType: opt.value, siteTypeEtc: undefined })}
+            variant={opt.value === 'auto' ? 'muted' : 'default'}
+            onClick={() => onAnswer({ designTone: opt.value, designToneEtc: undefined })}
           />
         ))}
         <ChoiceCard
           selected={value === 'other'}
           prefix="?"
           title="기타 (직접 입력)"
-          description="위에 없으면 직접 적어주세요"
+          description="원하는 분위기를 직접 적을게요"
           variant="muted"
           onClick={() => setEtcMode(true)}
         />

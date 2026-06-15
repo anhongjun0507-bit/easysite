@@ -2,30 +2,29 @@ import { z } from 'zod'
 
 export const SITE_TYPE = ['company', 'shop', 'reservation', 'landing', 'other'] as const
 export const PAGE_COUNT = ['small', 'medium', 'large', 'unsure'] as const
-export const YES_NO_UNSURE = ['yes', 'no', 'unsure'] as const
-export const DESIGN_TONE = ['modern', 'luxury', 'friendly', 'auto'] as const
+export const DESIGN_TONE = ['modern', 'luxury', 'friendly', 'auto', 'other'] as const
 export const TIMELINE = ['2w', '1m', '2m', 'flex'] as const
 export const BUDGET = ['lt200', '200-500', '500-1000', '1000+', 'unsure'] as const
 
 const phoneRegex = /^[\d\-+()\s]+$/
 
+export const featuresSchema = z.object({
+  payment: z.boolean().optional(),
+  admin: z.boolean().optional(),
+  aiChat: z.boolean().optional(),
+})
+
 export const wizardAnswersSchema = z.object({
   siteType: z.enum(SITE_TYPE).optional(),
+  siteTypeEtc: z.string().trim().max(120).optional(),
+  pageCount: z.enum(PAGE_COUNT).optional(),
+  features: featuresSchema.optional(),
+  designTone: z.enum(DESIGN_TONE).optional(),
+  designToneEtc: z.string().trim().max(120).optional(),
   industry: z.string().trim().max(80).optional(),
   businessName: z.string().trim().max(80).optional(),
   tagline: z.string().trim().max(200).optional(),
-  pageCount: z.enum(PAGE_COUNT).optional(),
-  payment: z.enum(YES_NO_UNSURE).optional(),
-  aiChat: z
-    .union([
-      z.object({ needed: z.literal(true), detail: z.string().trim().max(500).optional() }),
-      z.object({ needed: z.literal(false) }),
-      z.object({ needed: z.literal('unsure') }),
-    ])
-    .optional(),
-  designTone: z.enum(DESIGN_TONE).optional(),
   timeline: z.enum(TIMELINE).optional(),
-  budget: z.enum(BUDGET).optional(),
   rawIntent: z.string().trim().max(200).optional(),
 })
 
@@ -45,6 +44,7 @@ export const contactSchema = z.object({
     .optional()
     .or(z.literal('')),
   kakao: z.string().trim().max(60).optional().or(z.literal('')),
+  budget: z.enum(BUDGET).optional(),
   consent: z
     .boolean()
     .refine((v) => v === true, { message: '개인정보 수집·이용에 동의해 주세요' }),
@@ -72,8 +72,8 @@ export function estimatePageCount(value: SubmitInput['answers']['pageCount']): n
   }
 }
 
-/** 예산 라벨 → min/max(만원) 추정. 숨고 1인 시세 기준 (CLAUDE.md §2-2). */
-export function estimateBudget(value: SubmitInput['answers']['budget']): {
+/** 예산 라벨 → min/max(만원) 추정. 참고용 — 가격 계산엔 미반영. */
+export function estimateBudget(value: SubmitInput['contact']['budget']): {
   min: number | null
   max: number | null
 } {

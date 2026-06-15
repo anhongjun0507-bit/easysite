@@ -20,10 +20,8 @@ import type { Json } from '@/types/database.types'
 import type {
   SiteType,
   PageCount,
-  YesNoUnsure,
   DesignTone,
   Timeline,
-  Budget,
 } from '@/app/wizard/lib/state'
 
 export const runtime = 'nodejs'
@@ -255,25 +253,16 @@ function buildContextFromLead(lead: LeadRow): ChatLeadContext {
   const a = (lead.wizard_answers ?? {}) as {
     siteType?: SiteType
     pageCount?: PageCount
-    payment?: YesNoUnsure
-    aiChat?: { needed?: boolean | 'unsure'; detail?: string }
+    features?: { payment?: boolean; admin?: boolean; aiChat?: boolean }
     designTone?: DesignTone
     timeline?: Timeline
-    budget?: Budget
     tagline?: string
   }
 
   const quote = calculateQuote({
     siteType: a.siteType,
     pageCount: a.pageCount,
-    payment: a.payment,
-    aiChatNeeded:
-      a.aiChat?.needed === true
-        ? true
-        : a.aiChat?.needed === 'unsure'
-          ? 'unsure'
-          : false,
-    designTone: a.designTone,
+    features: a.features,
     timeline: a.timeline,
   })
 
@@ -318,11 +307,10 @@ function buildContextFromLead(lead: LeadRow): ChatLeadContext {
     wizard: {
       siteType: a.siteType,
       pageCount: a.pageCount,
-      payment: a.payment,
-      aiChat: a.aiChat,
+      payment: a.features?.payment ? 'yes' : 'no',
+      aiChat: { needed: !!a.features?.aiChat },
       designTone: a.designTone,
       timeline: a.timeline,
-      budget: a.budget,
     },
     quote: {
       priceMinManwon: quote.priceMinManwon,

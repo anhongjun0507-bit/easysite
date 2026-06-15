@@ -36,9 +36,9 @@ export async function submitWizard(input: SubmitInput): Promise<WizardSubmitResu
   const ref = sanitizeRef(cookies().get(REF_COOKIE)?.value)
 
   // 1. leads insert — RETURNING id 회수
-  const { min: budgetMin, max: budgetMax } = estimateBudget(answers.budget)
+  const { min: budgetMin, max: budgetMax } = estimateBudget(contact.budget)
   // JSON.parse(JSON.stringify(...))로 undefined 제거 → Json 타입 호환
-  const features = JSON.parse(JSON.stringify(buildFeatures(answers))) as Json
+  const features = JSON.parse(JSON.stringify(buildFeatures(answers, contact.budget))) as Json
   const wizardAnswersJson = JSON.parse(JSON.stringify(answers)) as Json
 
   const { data: leadRow, error: insertErr } = await admin
@@ -90,14 +90,18 @@ export async function submitWizard(input: SubmitInput): Promise<WizardSubmitResu
   return { ok: true, leadId }
 }
 
-function buildFeatures(answers: SubmitInput['answers']): Record<string, unknown> {
+function buildFeatures(
+  answers: SubmitInput['answers'],
+  budget?: SubmitInput['contact']['budget'],
+): Record<string, unknown> {
   return {
     siteType: answers.siteType ?? null,
-    payment: answers.payment ?? null,
-    aiChat: answers.aiChat ?? null,
+    siteTypeEtc: answers.siteTypeEtc ?? null,
+    features: answers.features ?? null,
     designTone: answers.designTone ?? null,
+    designToneEtc: answers.designToneEtc ?? null,
     timeline: answers.timeline ?? null,
-    budget: answers.budget ?? null,
+    budget: budget ?? null,
     tagline: answers.tagline ?? null,
     rawIntent: answers.rawIntent ?? null,
   }
@@ -116,13 +120,12 @@ function formatTelegramMessage(leadId: string, input: SubmitInput): string {
     a.businessName ? `<b>상호</b>: ${escape(a.businessName)}` : null,
     a.industry ? `<b>업종</b>: ${escape(a.industry)}` : null,
     ``,
-    `<b>유형</b>: ${labelSiteType(a.siteType)}`,
+    `<b>유형</b>: ${labelSiteType(a.siteType, a.siteTypeEtc)}`,
     `<b>페이지</b>: ${labelPageCount(a.pageCount)}`,
-    `<b>결제</b>: ${labelYesNo(a.payment)}`,
-    `<b>AI 챗봇</b>: ${labelAiChat(a.aiChat)}`,
-    `<b>디자인 톤</b>: ${labelDesignTone(a.designTone)}`,
+    `<b>추가 기능</b>: ${labelFeatures(a.features)}`,
+    `<b>디자인 톤</b>: ${labelDesignTone(a.designTone, a.designToneEtc)}`,
     `<b>납기</b>: ${labelTimeline(a.timeline)}`,
-    `<b>예산</b>: ${labelBudget(a.budget)}`,
+    `<b>예산</b>: ${labelBudget(c.budget)}`,
     a.tagline ? `\n<b>한 줄 소개</b>: ${escape(a.tagline)}` : null,
     ``,
     `lead_id: <code>${leadId}</code>`,
@@ -132,22 +135,28 @@ function formatTelegramMessage(leadId: string, input: SubmitInput): string {
 
 const escape = (v: string) => v.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c] ?? c)
 
-const labelSiteType = (v?: string) =>
-  ({ company: '회사·가게 소개', shop: '쇼핑몰', reservation: '예약·회원제', landing: '랜딩페이지', other: '기타' })[
-    v ?? ''
-  ] ?? '미선택'
+const labelSiteType = (v?: string, etc?: string | null) => {
+  const base =
+    ({ company: '회사·가게 소개', shop: '쇼핑몰', reservation: '예약·회원제', landing: '랜딩페이지', other: '기타' })[
+      v ?? ''
+    ] ?? '미선택'
+  return v === 'other' && etc ? `기타 — ${escape(etc)}` : base
+}
 const labelPageCount = (v?: string) =>
   ({ small: '5개 이내', medium: '5~10개', large: '10개 이상', unsure: '잘 모르겠음' })[v ?? ''] ?? '미선택'
-const labelYesNo = (v?: string) =>
-  ({ yes: '필요', no: '불필요', unsure: '잘 모르겠음' })[v ?? ''] ?? '미선택'
-const labelAiChat = (v: SubmitInput['answers']['aiChat']) => {
-  if (!v) return '미선택'
-  if (v.needed === true) return `필요${v.detail ? ` — ${escape(v.detail)}` : ''}`
-  if (v.needed === false) return '불필요'
-  return '잘 모르겠음'
+const labelFeatures = (f?: { payment?: boolean; admin?: boolean; aiChat?: boolean }) => {
+  if (!f) return '미선택'
+  const on: string[] = []
+  if (f.payment) on.push('온라인 결제')
+  if (f.admin) on.push('관리자 페이지')
+  if (f.aiChat) on.push('AI 챗봇·자동화')
+  return on.length ? on.join(' · ') : '없음'
 }
-const labelDesignTone = (v?: string) =>
-  ({ modern: '모던·심플', luxury: '럭셔리', friendly: '친근', auto: '알아서' })[v ?? ''] ?? '미선택'
+const labelDesignTone = (v?: string, etc?: string | null) => {
+  const base =
+    ({ modern: '모던·심플', luxury: '럭셔리', friendly: '친근', auto: '알아서', other: '기타' })[v ?? ''] ?? '미선택'
+  return v === 'other' && etc ? `기타 — ${escape(etc)}` : base
+}
 const labelTimeline = (v?: string) =>
   ({ '2w': '2주', '1m': '1개월', '2m': '2개월', flex: '여유' })[v ?? ''] ?? '미선택'
 const labelBudget = (v?: string) =>

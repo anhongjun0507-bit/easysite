@@ -7,13 +7,11 @@ import { ProgressBar } from './components/ProgressBar'
 import { ContactStep } from './steps/Contact'
 import { Intro } from './steps/Intro'
 import { Step1SiteType } from './steps/Step1SiteType'
-import { Step2Industry } from './steps/Step2Industry'
-import { Step3Business } from './steps/Step3Business'
-import { Step4PageCount } from './steps/Step4PageCount'
-import { Step5Payment } from './steps/Step5Payment'
-import { Step6AIChat } from './steps/Step6AIChat'
-import { Step7DesignTone } from './steps/Step7DesignTone'
-import { Step8Timeline } from './steps/Step8Timeline'
+import { Step2PageCount } from './steps/Step2PageCount'
+import { Step3Features } from './steps/Step3Features'
+import { Step4DesignTone } from './steps/Step4DesignTone'
+import { Step5Business } from './steps/Step5Business'
+import { Step6Timeline } from './steps/Step6Timeline'
 import { beaconEvent, logEvent } from './lib/events'
 import { mapIntent } from './lib/intent-map'
 import {
@@ -32,7 +30,6 @@ import {
   stepToParam,
 } from './lib/state'
 
-const AUTO_ADVANCE_MS = 700 // 사용자 디테일 #1 — 600~800 사이
 const HESITATING_MS = 30_000
 const STALE_THRESHOLD_MS = 24 * 60 * 60 * 1000 // 24h
 
@@ -64,14 +61,12 @@ export function WizardShell({ initialIntent, initialStepFromUrl }: Props) {
 
     if (isFresh && stored) {
       const restored: WizardState = { ...stored }
-      // URL이 명시한 step이 있고 intro가 아니면 그쪽으로 점프
       if (initialStepFromUrl !== 'intro') {
         restored.currentStep = initialStepFromUrl
       }
       dispatch({ type: 'LOAD', state: restored })
     } else {
       const fresh = createInitialState(initialIntent || undefined)
-      // Hero intent 키워드 매칭 → siteType 자동 + step 2부터
       const mapped = mapIntent(initialIntent)
       if (mapped) {
         fresh.answers.siteType = mapped
@@ -131,21 +126,18 @@ export function WizardShell({ initialIntent, initialStepFromUrl }: Props) {
       logEvent({
         sessionId: stateRef.current.sessionId,
         eventType: 'step_hesitating',
-        payload: {
-          step: stateRef.current.currentStep,
-          dwellMs: HESITATING_MS,
-        },
+        payload: { step: stateRef.current.currentStep, dwellMs: HESITATING_MS },
       })
     }, HESITATING_MS)
     return () => window.clearTimeout(timer)
   }, [state.currentStep, state.sessionId, ready])
 
-  // ───── 페이지 이탈 beacon (mount 시 한 번만 등록) ─────
+  // ───── 페이지 이탈 beacon ─────
   useEffect(() => {
     const onLeave = () => {
       if (completedRef.current) return
       const s = stateRef.current
-      if (s.currentStep === 'intro') return // intro에서 나가는 건 ignore
+      if (s.currentStep === 'intro') return
       beaconEvent({
         sessionId: s.sessionId,
         eventType: 'wizard_abandoned',
@@ -164,39 +156,18 @@ export function WizardShell({ initialIntent, initialStepFromUrl }: Props) {
   }, [])
 
   // ───── 액션 헬퍼 ─────
-  const advance = useCallback(
-    (patch: Partial<WizardAnswers> | null) => {
-      const sessionId = stateRef.current.sessionId
-      const currentStep = stateRef.current.currentStep
-      if (patch) dispatch({ type: 'ANSWER', patch })
-      logEvent({
-        sessionId,
-        eventType: 'step_completed',
-        payload: { step: currentStep, answer: patch ?? null },
-      })
-      dispatch({ type: 'NEXT' })
-    },
-    [],
-  )
-
-  /** single-choice 카드 클릭 → 사용자 시각 피드백 보일 시간 확보 후 다음으로 */
-  const answerAndDelayedAdvance = useCallback(
-    (patch: Partial<WizardAnswers>) => {
-      // 답변은 즉시 반영 (카드 선택 상태 visible)
-      dispatch({ type: 'ANSWER', patch })
-      const sessionId = stateRef.current.sessionId
-      const currentStep = stateRef.current.currentStep
-      window.setTimeout(() => {
-        logEvent({
-          sessionId,
-          eventType: 'step_completed',
-          payload: { step: currentStep, answer: patch },
-        })
-        dispatch({ type: 'NEXT' })
-      }, AUTO_ADVANCE_MS)
-    },
-    [],
-  )
+  /** 답변 기록 + 다음 단계 (single/multi/입력 공통) */
+  const advance = useCallback((patch: Partial<WizardAnswers>) => {
+    const sessionId = stateRef.current.sessionId
+    const currentStep = stateRef.current.currentStep
+    dispatch({ type: 'ANSWER', patch })
+    logEvent({
+      sessionId,
+      eventType: 'step_completed',
+      payload: { step: currentStep, answer: patch },
+    })
+    dispatch({ type: 'NEXT' })
+  }, [])
 
   const goBack = useCallback(() => {
     const prev = toPrev(stateRef.current.currentStep)
@@ -208,7 +179,6 @@ export function WizardShell({ initialIntent, initialStepFromUrl }: Props) {
       sessionId: stateRef.current.sessionId,
       eventType: 'wizard_started',
     })
-    // intent 매핑으로 이미 siteType이 채워져 있으면 step 2부터, 아니면 step 1부터
     const firstStep: StepId = stateRef.current.answers.siteType ? 2 : 1
     dispatch({ type: 'GOTO', step: firstStep })
   }, [])
@@ -228,6 +198,7 @@ export function WizardShell({ initialIntent, initialStepFromUrl }: Props) {
         phone: s.contact.phone ?? '',
         email: s.contact.email || undefined,
         kakao: s.contact.kakao || undefined,
+        budget: s.contact.budget,
         consent: s.contact.consent === true ? true : (false as never),
       },
       sessionId: s.sessionId,
@@ -266,66 +237,12 @@ export function WizardShell({ initialIntent, initialStepFromUrl }: Props) {
 
       <main key={state.currentStep} className="animate-ease-up">
         {state.currentStep === 'intro' && <Intro onStart={onStart} />}
-
-        {state.currentStep === 1 && (
-          <Step1SiteType
-            state={state}
-            onAnswer={(siteType) => answerAndDelayedAdvance({ siteType })}
-          />
-        )}
-        {state.currentStep === 2 && (
-          <Step2Industry
-            state={state}
-            onAnswer={(industry) => advance({ industry })}
-            onSkip={() => advance(null)}
-          />
-        )}
-        {state.currentStep === 3 && (
-          <Step3Business
-            state={state}
-            onAnswer={({ businessName, tagline }) =>
-              advance({
-                businessName: businessName || undefined,
-                tagline: tagline || undefined,
-              })
-            }
-            onSkip={() => advance(null)}
-          />
-        )}
-        {state.currentStep === 4 && (
-          <Step4PageCount
-            state={state}
-            onAnswer={(pageCount) => answerAndDelayedAdvance({ pageCount })}
-          />
-        )}
-        {state.currentStep === 5 && (
-          <Step5Payment
-            state={state}
-            onAnswer={(payment) => answerAndDelayedAdvance({ payment })}
-          />
-        )}
-        {state.currentStep === 6 && (
-          <Step6AIChat
-            state={state}
-            onAnswer={(aiChat) =>
-              aiChat.needed === true
-                ? advance({ aiChat })
-                : answerAndDelayedAdvance({ aiChat })
-            }
-          />
-        )}
-        {state.currentStep === 7 && (
-          <Step7DesignTone
-            state={state}
-            onAnswer={(designTone) => answerAndDelayedAdvance({ designTone })}
-          />
-        )}
-        {state.currentStep === 8 && (
-          <Step8Timeline
-            state={state}
-            onAnswer={({ timeline, budget }) => advance({ timeline, budget })}
-          />
-        )}
+        {state.currentStep === 1 && <Step1SiteType state={state} onAnswer={advance} />}
+        {state.currentStep === 2 && <Step2PageCount state={state} onAnswer={advance} />}
+        {state.currentStep === 3 && <Step3Features state={state} onAnswer={advance} />}
+        {state.currentStep === 4 && <Step4DesignTone state={state} onAnswer={advance} />}
+        {state.currentStep === 5 && <Step5Business state={state} onAnswer={advance} />}
+        {state.currentStep === 6 && <Step6Timeline state={state} onAnswer={advance} />}
         {state.currentStep === 'contact' && (
           <ContactStep
             state={state}

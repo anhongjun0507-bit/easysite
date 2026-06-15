@@ -1,35 +1,37 @@
 /**
  * Wizard 상태 관리 — useReducer + localStorage + URL ?step= 동기화
+ * v2: 질문 6단계 (유형 / 페이지수 / 추가기능(복수) / 디자인톤 / 상호·업종 / 납기) + 연락처.
  *
  * 스키마 변경 시 STORAGE_KEY 버전을 올려 기존 localStorage 무효화.
  */
 
-export const STORAGE_KEY = 'easysite-wizard-v1'
-export const SESSION_KEY = 'easysite-wizard-session-v1'
+export const STORAGE_KEY = 'jieuri-wizard-v2'
+export const SESSION_KEY = 'jieuri-wizard-session-v2'
 
 export type SiteType = 'company' | 'shop' | 'reservation' | 'landing' | 'other'
 export type PageCount = 'small' | 'medium' | 'large' | 'unsure'
-export type YesNoUnsure = 'yes' | 'no' | 'unsure'
-export type DesignTone = 'modern' | 'luxury' | 'friendly' | 'auto'
+export type DesignTone = 'modern' | 'luxury' | 'friendly' | 'auto' | 'other'
 export type Timeline = '2w' | '1m' | '2m' | 'flex'
 export type Budget = 'lt200' | '200-500' | '500-1000' | '1000+' | 'unsure'
 
-export type AiChatAnswer =
-  | { needed: true; detail?: string }
-  | { needed: false }
-  | { needed: 'unsure' }
+/** 추가 기능 복수선택 — 온라인 결제 / 관리자 페이지 / AI 챗봇. 셋 다 false = 필요없음 */
+export type Features = {
+  payment?: boolean
+  admin?: boolean
+  aiChat?: boolean
+}
 
 export type WizardAnswers = {
   siteType?: SiteType
-  industry?: string
-  businessName?: string
-  tagline?: string
+  siteTypeEtc?: string // 유형 '기타' 직접입력
   pageCount?: PageCount
-  payment?: YesNoUnsure
-  aiChat?: AiChatAnswer
+  features?: Features
   designTone?: DesignTone
+  designToneEtc?: string // 디자인 톤 '기타' 직접입력
+  businessName?: string
+  industry?: string
+  tagline?: string
   timeline?: Timeline
-  budget?: Budget
   /** Hero 자유 입력 원본 — 매칭 여부와 무관하게 보존 */
   rawIntent?: string
 }
@@ -39,23 +41,15 @@ export type Contact = {
   phone?: string
   email?: string
   kakao?: string
+  /** 예산 — 참고용(가격 계산에 미반영) */
+  budget?: Budget
   consent?: boolean
 }
 
-export type StepId =
-  | 'intro'
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 'contact'
+export type StepId = 'intro' | 1 | 2 | 3 | 4 | 5 | 6 | 'contact'
 
-export const QUESTION_STEPS: ReadonlyArray<1 | 2 | 3 | 4 | 5 | 6 | 7 | 8> = [
-  1, 2, 3, 4, 5, 6, 7, 8,
+export const QUESTION_STEPS: ReadonlyArray<1 | 2 | 3 | 4 | 5 | 6> = [
+  1, 2, 3, 4, 5, 6,
 ]
 export const TOTAL_QUESTIONS = QUESTION_STEPS.length
 
@@ -76,7 +70,7 @@ export type WizardAction =
   | { type: 'PREV' }
   | { type: 'RESET' }
 
-const STEP_ORDER: StepId[] = ['intro', 1, 2, 3, 4, 5, 6, 7, 8, 'contact']
+const STEP_ORDER: StepId[] = ['intro', 1, 2, 3, 4, 5, 6, 'contact']
 
 export function nextStep(current: StepId): StepId {
   const i = STEP_ORDER.indexOf(current)
@@ -90,7 +84,7 @@ export function prevStep(current: StepId): StepId {
   return STEP_ORDER[i - 1]
 }
 
-/** "3/8" 같은 진행률 정보 (intro/contact는 null) */
+/** "3/6" 같은 진행률 정보 (intro/contact는 null) */
 export function progressOf(
   step: StepId,
 ): { index: number; total: number } | null {
@@ -140,8 +134,8 @@ export function parseStepParam(raw: string | null): StepId {
   if (raw === 'intro') return 'intro'
   if (raw === 'contact') return 'contact'
   const n = Number(raw)
-  if (Number.isInteger(n) && n >= 1 && n <= 8)
-    return n as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+  if (Number.isInteger(n) && n >= 1 && n <= 6)
+    return n as 1 | 2 | 3 | 4 | 5 | 6
   return 'intro'
 }
 

@@ -19,10 +19,8 @@ import {
   PAGE_COUNT_LABEL_MAP,
   SITE_TYPE_LABEL_MAP,
   TIMELINE_LABEL_MAP,
-  YES_NO_UNSURE_LABEL_MAP,
-  labelAiChat,
+  labelFeatures,
   labelOrEmpty,
-  type AiChatAnswer,
 } from '@/lib/admin/wizard-labels'
 import { aiCopyResultSchema, type AiCopyResult } from '@/lib/ai/types'
 import { calculateQuote, type QuoteResult } from '@/lib/quote/calculate'
@@ -31,10 +29,8 @@ import type { PortfolioItem } from '@/config/portfolio'
 import type {
   SiteType,
   PageCount,
-  YesNoUnsure,
   DesignTone,
   Timeline,
-  Budget,
 } from '@/app/wizard/lib/state'
 import {
   getExistingPaymentTypes,
@@ -60,15 +56,15 @@ const UUID_RE = /^[0-9a-f-]{36}$/i
 
 type WizardAnswers = {
   siteType?: SiteType
+  siteTypeEtc?: string
   industry?: string
   businessName?: string
   tagline?: string
   pageCount?: PageCount
-  payment?: YesNoUnsure
-  aiChat?: AiChatAnswer
+  features?: { payment?: boolean; admin?: boolean; aiChat?: boolean }
   designTone?: DesignTone
+  designToneEtc?: string
   timeline?: Timeline
-  budget?: Budget
   rawIntent?: string
 }
 
@@ -100,16 +96,7 @@ export default async function LeadDetailPage({
   const quote = calculateQuote({
     siteType: answers.siteType,
     pageCount: answers.pageCount,
-    payment: answers.payment,
-    aiChatNeeded:
-      answers.aiChat && typeof answers.aiChat === 'object'
-        ? answers.aiChat.needed === true
-          ? true
-          : answers.aiChat.needed === 'unsure'
-            ? 'unsure'
-            : false
-        : false,
-    designTone: answers.designTone,
+    features: answers.features,
     timeline: answers.timeline,
   })
 
@@ -193,7 +180,11 @@ export default async function LeadDetailPage({
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-[3fr_2fr]">
         <div className="space-y-4">
           <BasicInfoCard lead={lead} kakao={kakaoId} />
-          <WizardAnswersCard answers={answers} tagline={tagline} />
+          <WizardAnswersCard
+            answers={answers}
+            tagline={tagline}
+            budget={typeof features.budget === 'string' ? features.budget : null}
+          />
           <QuoteCard quote={quote} />
         </div>
 
@@ -338,17 +329,24 @@ function BasicInfoCard({
 function WizardAnswersCard({
   answers,
   tagline,
+  budget,
 }: {
   answers: WizardAnswers
   tagline: string | null
+  budget: string | null
 }) {
+  const siteType =
+    answers.siteType === 'other' && answers.siteTypeEtc
+      ? { value: `기타 — ${answers.siteTypeEtc}`, missing: false }
+      : labelOrEmpty(SITE_TYPE_LABEL_MAP, answers.siteType)
+  const designTone =
+    answers.designTone === 'other' && answers.designToneEtc
+      ? { value: `기타 — ${answers.designToneEtc}`, missing: false }
+      : labelOrEmpty(DESIGN_TONE_LABEL_MAP, answers.designTone)
   return (
-    <Card title="위저드 답변" helper="사장님이 8단계 위저드에서 직접 고른 답변">
+    <Card title="위저드 답변" helper="사장님이 6단계 위저드에서 직접 고른 답변">
       <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
-        <WizardItem
-          label="사이트 종류"
-          {...labelOrEmpty(SITE_TYPE_LABEL_MAP, answers.siteType)}
-        />
+        <WizardItem label="사이트 종류" {...siteType} />
         <WizardItem
           label="업종"
           value={answers.industry ?? '미응답'}
@@ -369,25 +367,18 @@ function WizardAnswersCard({
           {...labelOrEmpty(PAGE_COUNT_LABEL_MAP, answers.pageCount)}
         />
         <WizardItem
-          label="결제 기능"
-          {...labelOrEmpty(YES_NO_UNSURE_LABEL_MAP, answers.payment)}
+          label="추가 기능"
+          value={labelFeatures(answers.features)}
+          missing={!answers.features}
         />
-        <WizardItem
-          label="AI 챗봇"
-          value={labelAiChat(answers.aiChat)}
-          missing={!answers.aiChat}
-        />
-        <WizardItem
-          label="디자인 톤"
-          {...labelOrEmpty(DESIGN_TONE_LABEL_MAP, answers.designTone)}
-        />
+        <WizardItem label="디자인 톤" {...designTone} />
         <WizardItem
           label="납기"
           {...labelOrEmpty(TIMELINE_LABEL_MAP, answers.timeline)}
         />
         <WizardItem
-          label="예산"
-          {...labelOrEmpty(BUDGET_LABEL_MAP, answers.budget)}
+          label="예산 (참고용)"
+          {...labelOrEmpty(BUDGET_LABEL_MAP, budget)}
         />
       </dl>
     </Card>
