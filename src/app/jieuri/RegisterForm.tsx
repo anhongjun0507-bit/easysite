@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import {
   useForm,
   type UseFormRegister,
@@ -95,6 +96,20 @@ export function RegisterForm() {
           출시되면 가장 먼저 알려드릴게요. 선착순 100명{' '}
           <b className="text-emerald-700">평생 50% 할인</b> 대상에 들어가셨어요.
         </p>
+        <div className="mt-7 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
+          <Link
+            href="/portfolio"
+            className="inline-flex h-12 items-center justify-center rounded-xl border border-gray-300 bg-white px-5 text-sm font-semibold text-gray-900 transition hover:border-gray-400 hover:bg-gray-50"
+          >
+            포트폴리오 보기
+          </Link>
+          <Link
+            href="/wizard"
+            className="inline-flex h-12 items-center justify-center rounded-xl bg-indigo-600 px-5 text-sm font-semibold text-white transition hover:bg-indigo-700"
+          >
+            지금 급하면 견적 받기
+          </Link>
+        </div>
       </div>
     )
   }

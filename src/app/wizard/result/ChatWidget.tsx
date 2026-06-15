@@ -108,6 +108,16 @@ export function ChatWidget({ leadId }: { leadId: string }) {
     }
   }, [messages, leadId])
 
+  // 외부(견적 결과 FinalCta 등)에서 "지으리 상담 열기" → 패널 오픈
+  useEffect(() => {
+    const openFromExternal = () => {
+      setOpen(true)
+      setToastVisible(false)
+    }
+    window.addEventListener('jieuri:open-chat', openFromExternal)
+    return () => window.removeEventListener('jieuri:open-chat', openFromExternal)
+  }, [])
+
   // 5초 후 토스트
   useEffect(() => {
     if (toastDismissed || open) return
