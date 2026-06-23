@@ -31,8 +31,9 @@ export function Hero() {
         gsap.set(['[data-reveal="eyebrow"]', '[data-reveal="sub"]', '[data-reveal="cta"]'], { y: 22 })
 
         let split: SplitText | null = null
-        // 폰트 로드를 기다리지 않음(H1은 <br>로 2줄 고정 → 라인 수 안정) → LCP 단축
-        const run = () => {
+        // 폰트 로드 대기에 400ms 캡 — 느린 망에서도 리빌(=LCP)이 400ms 내 시작. 동적 서브셋이라 평소 더 빠름.
+        const run = async () => {
+          await Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 400))])
           const h1 = h1Ref.current
           if (!h1) return
           split = new SplitText(h1, { type: 'lines', mask: 'lines', linesClass: 'hero-line' })
