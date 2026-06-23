@@ -93,14 +93,15 @@ body {
    지으리 디자인 시스템 v2 — 프리미엄·3D·AI 감성 (토스/클로바 톤)
    ============================================================ */
 
-/* 오로라 메시 배경 — 부드럽게 흐르는 컬러 그라데이션 (라이트) */
+/* 오로라 메시 배경 — 부드럽게 흐르는 컬러 그라데이션 (라이트·MZ 비비드) */
 .bg-aurora {
-  background-color: #fbfbff;
+  background-color: #fafaff;
   background-image:
-    radial-gradient(42% 52% at 12% 8%, rgba(124, 58, 237, 0.20), transparent 60%),
-    radial-gradient(46% 56% at 88% 14%, rgba(56, 189, 248, 0.18), transparent 60%),
-    radial-gradient(54% 62% at 50% 104%, rgba(99, 102, 241, 0.22), transparent 62%);
-  background-size: 180% 180%;
+    radial-gradient(38% 48% at 10% 4%, rgba(124, 58, 237, 0.26), transparent 60%),
+    radial-gradient(42% 52% at 90% 10%, rgba(56, 189, 248, 0.24), transparent 60%),
+    radial-gradient(40% 46% at 80% 88%, rgba(236, 72, 153, 0.16), transparent 60%),
+    radial-gradient(56% 62% at 46% 108%, rgba(99, 102, 241, 0.26), transparent 62%);
+  background-size: 200% 200%;
 }
 @media (prefers-reduced-motion: no-preference) {
   .bg-aurora {
@@ -223,4 +224,31 @@ body {
 }
 .caret {
   animation: caret-blink 1s step-end infinite;
+}
+
+/* 그레인 텍스처 — 프리미엄 질감(자산 0개, 인라인 SVG fractalNoise) */
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 스테이지(쇼케이스) — 딥 인디고 '키노트' 배경 (감각·MZ) */
+.bg-stage-dark {
+  background-color: #07061b;
+  background-image:
+    radial-gradient(48% 40% at 16% 4%, rgba(124, 58, 237, 0.55), transparent 60%),
+    radial-gradient(44% 40% at 86% 0%, rgba(56, 189, 248, 0.40), transparent 60%),
+    radial-gradient(40% 38% at 94% 86%, rgba(236, 72, 153, 0.34), transparent 60%),
+    radial-gradient(64% 56% at 50% 112%, rgba(99, 102, 241, 0.50), transparent 62%);
+}
+
+/* 3D 클러스터 무대 — 자식들이 같은 원근 공간에서 깊이를 갖게 */
+.stage-3d {
+  transform-style: preserve-3d;
+}
+
+/* 부유하는 기기 그림자 */
+.shadow-device {
+  box-shadow:
+    0 60px 110px -30px rgba(2, 3, 30, 0.75),
+    0 24px 50px -28px rgba(2, 3, 30, 0.65);
 }
