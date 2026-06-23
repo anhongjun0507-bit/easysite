@@ -269,6 +269,7 @@ body {
   letter-spacing: 0.04em;
   color: #fff;
   opacity: 0;
+  transition: opacity 0.25s ease;
 }
 /* "View" 상태 — 솔리드 디스크 + 라벨(mix-blend 해제) */
 .cursor-ring.is-view {

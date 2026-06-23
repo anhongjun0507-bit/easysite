@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import { EASE_HOVER, DUR_HOVER } from '@/lib/motion'
 
 /**
  * 커스텀 커서 (데스크탑 전용) — 도트 + 따라오는 링(gsap.quickTo, transform만).
@@ -37,7 +38,7 @@ export function CustomCursor() {
     window.addEventListener('pointermove', onMove, { passive: true })
 
     const HOVER = 'a, button, [data-cursor="hover"]'
-    const setScale = (v: number) => gsap.to(ring, { scale: v, duration: 0.3, ease: 'power3' })
+    const setScale = (v: number) => gsap.to(ring, { scale: v, duration: DUR_HOVER, ease: EASE_HOVER })
 
     const onOver = (e: Event) => {
       const t = e.target as HTMLElement

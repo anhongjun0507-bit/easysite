@@ -8,6 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
 import { ArrowUpRight } from 'lucide-react'
 import { featuredPortfolio } from '@/config/portfolio'
+import { EASE, DUR, DUR_SUB, STAGGER, REVEAL_START } from '@/lib/motion'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText)
 
@@ -54,10 +55,10 @@ export function FeaturedWork() {
             gsap.from(head.children, {
               y: 26,
               opacity: 0,
-              duration: 0.9,
-              stagger: 0.1,
-              ease: 'power3.out',
-              scrollTrigger: { trigger: head, start: 'top 85%', once: true },
+              duration: DUR_SUB,
+              stagger: STAGGER,
+              ease: EASE,
+              scrollTrigger: { trigger: head, start: REVEAL_START, once: true },
             })
           }
 
@@ -68,22 +69,22 @@ export function FeaturedWork() {
             const metaItems = caseEl.querySelectorAll('.case-meta-item')
 
             const tl = gsap.timeline({
-              scrollTrigger: { trigger: caseEl, start: 'top 82%', once: true },
+              scrollTrigger: { trigger: caseEl, start: REVEAL_START, once: true },
             })
             // (1) clip-path 리빌 — 아래→위
             tl.fromTo(
               media,
               { clipPath: 'inset(0 0 100% 0)' },
-              { clipPath: 'inset(0 0 0% 0)', duration: 1.3, ease: 'power4.out' },
+              { clipPath: 'inset(0 0 0% 0)', duration: DUR, ease: EASE },
             )
             // (2) 제목 마스크 리빌
             if (title) {
               const split = new SplitText(title, { type: 'lines', mask: 'lines' })
               splits.push(split)
-              tl.from(split.lines, { yPercent: 100, duration: 1.0, stagger: 0.1, ease: 'power4.out' }, 0.15)
+              tl.from(split.lines, { yPercent: 100, duration: DUR, stagger: STAGGER, ease: EASE }, 0.15)
             }
             // (3) 메타 stagger
-            tl.from(metaItems, { y: 24, opacity: 0, duration: 0.9, stagger: 0.08, ease: 'power3.out' }, 0.25)
+            tl.from(metaItems, { y: 24, opacity: 0, duration: DUR_SUB, stagger: STAGGER, ease: EASE }, 0.25)
 
             // (4) 연속 패럴랙스 (데스크탑만)
             if (isDesktop && inner) {

@@ -7,6 +7,7 @@ import { SplitText } from 'gsap/SplitText'
 import { useLenis } from 'lenis/react'
 import { ArrowRight } from 'lucide-react'
 import { useMagnetic } from '@/hooks/useMagnetic'
+import { EASE, DUR, DUR_SUB, STAGGER, MAGNET } from '@/lib/motion'
 
 gsap.registerPlugin(useGSAP, SplitText)
 
@@ -19,7 +20,7 @@ export function Hero() {
   const root = useRef<HTMLElement>(null)
   const h1Ref = useRef<HTMLHeadingElement>(null)
   const bgRef = useRef<HTMLDivElement>(null)
-  const ctaRef = useMagnetic<HTMLButtonElement>(0.35)
+  const ctaRef = useMagnetic<HTMLButtonElement>(MAGNET)
   const lenis = useLenis()
 
   // 입장 리빌 (폰트 로드 후 SplitText) — useGSAP 자동 cleanup
@@ -39,12 +40,12 @@ export function Hero() {
           split = new SplitText(h1, { type: 'lines', mask: 'lines', linesClass: 'hero-line' })
           gsap.set(h1, { opacity: 1 }) // 라인은 마스크 아래에 숨은 상태라 깜빡임 없음
 
-          const tl = gsap.timeline({ defaults: { ease: 'power4.out' }, delay: 0.2 })
-          tl.from(split.lines, { yPercent: 100, duration: 1.1, stagger: 0.12 })
-            .to('[data-reveal="eyebrow"]', { opacity: 1, y: 0, duration: 0.8 }, 0.05)
-            .to('[data-reveal="sub"]', { opacity: 1, y: 0, duration: 0.9 }, '-=0.65')
-            .to('[data-reveal="cta"]', { opacity: 1, y: 0, duration: 0.9 }, '-=0.75')
-            .to('[data-reveal="scroll"]', { opacity: 1, duration: 0.8 }, '-=0.35')
+          const tl = gsap.timeline({ defaults: { ease: EASE }, delay: 0.2 })
+          tl.from(split.lines, { yPercent: 100, duration: DUR, stagger: STAGGER })
+            .to('[data-reveal="eyebrow"]', { opacity: 1, y: 0, duration: DUR_SUB }, 0.05)
+            .to('[data-reveal="sub"]', { opacity: 1, y: 0, duration: DUR_SUB }, '-=0.65')
+            .to('[data-reveal="cta"]', { opacity: 1, y: 0, duration: DUR_SUB }, '-=0.75')
+            .to('[data-reveal="scroll"]', { opacity: 1, duration: DUR_SUB }, '-=0.35')
         }
         run()
 
