@@ -6,6 +6,8 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
 gsap.registerPlugin(ScrollTrigger)
+// StrictMode 이중 호출 시 revert 타이밍으로 빈 타겟 경고가 날 수 있어 비활성(무해)
+gsap.config({ nullTargetWarn: false })
 
 // 옵션은 모듈 상수로 고정(리렌더마다 새 객체 X)
 const LENIS_OPTIONS = {
@@ -43,9 +45,19 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     lenis?.on('scroll', sync)
     // 도구/디버그용 노출(무해)
     ;(window as unknown as { __lenis?: unknown }).__lenis = lenis
+
+    // 레이아웃/폰트/이미지 안정 후 모든 ScrollTrigger 위치 재계산(stale 트리거 방지)
+    const refresh = () => ScrollTrigger.refresh()
+    const t1 = window.setTimeout(refresh, 400)
+    const t2 = window.setTimeout(refresh, 1200)
+    window.addEventListener('load', refresh)
+
     return () => {
       gsap.ticker.remove(update)
       lenis?.off('scroll', sync)
+      window.clearTimeout(t1)
+      window.clearTimeout(t2)
+      window.removeEventListener('load', refresh)
     }
   }, [enabled])
 

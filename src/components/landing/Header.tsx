@@ -138,8 +138,8 @@ export function Header() {
         id="mobile-menu"
         ref={overlayRef}
         aria-hidden={!open}
-        className={`fixed inset-0 z-50 flex flex-col bg-white transition-opacity duration-300 sm:hidden ${
-          open ? 'opacity-100' : 'pointer-events-none opacity-0'
+        className={`fixed inset-0 z-50 flex flex-col bg-white transition-[opacity,visibility] duration-300 sm:hidden ${
+          open ? 'visible opacity-100' : 'pointer-events-none invisible opacity-0'
         }`}
       >
         <div className="flex items-center justify-between px-6 py-5">

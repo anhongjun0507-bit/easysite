@@ -7,6 +7,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
 import { ArrowUpRight } from 'lucide-react'
 import { useMagnetic } from '@/hooks/useMagnetic'
+import { EASE, DUR, DUR_SUB, STAGGER, REVEAL_START, MAGNET } from '@/lib/motion'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText)
 
@@ -17,25 +18,31 @@ gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText)
 export function ContactSection() {
   const root = useRef<HTMLElement>(null)
   const hRef = useRef<HTMLHeadingElement>(null)
-  const ctaRef = useMagnetic<HTMLAnchorElement>(0.45)
+  const ctaRef = useMagnetic<HTMLAnchorElement>(MAGNET)
 
   useGSAP(
     () => {
+      ScrollTrigger.saveStyles('[data-c-reveal]')
       const mm = gsap.matchMedia()
       mm.add('(prefers-reduced-motion: no-preference)', () => {
         let split: SplitText | null = null
         const run = async () => {
           await Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 400))])
-          if (!hRef.current) return
+          if (!hRef.current || !root.current) return
           split = new SplitText(hRef.current, { type: 'lines', mask: 'lines' })
-          const tl = gsap.timeline({
-            scrollTrigger: { trigger: root.current, start: 'top 72%', once: true },
+          // 초기 숨김 후, 트리거 진입 시 gsap.to 를 명령형으로 재생(ScrollTrigger 진행도와 분리 → stall 회피)
+          gsap.set(split.lines, { yPercent: 100 })
+          gsap.set('[data-c-reveal]', { opacity: 0, y: 24 })
+          ScrollTrigger.create({
+            trigger: root.current,
+            start: REVEAL_START,
+            once: true,
+            invalidateOnRefresh: true,
+            onEnter: () => {
+              gsap.to(split!.lines, { yPercent: 0, duration: DUR, stagger: STAGGER, ease: EASE })
+              gsap.to('[data-c-reveal]', { opacity: 1, y: 0, duration: DUR_SUB, stagger: STAGGER, ease: EASE, delay: 0.15 })
+            },
           })
-          tl.from(split.lines, { yPercent: 100, duration: 1.0, stagger: 0.12, ease: 'power4.out' }).from(
-            '[data-c-reveal]',
-            { y: 24, opacity: 0, duration: 0.85, stagger: 0.1, ease: 'power3.out' },
-            0.25,
-          )
         }
         run()
         return () => split?.revert()
