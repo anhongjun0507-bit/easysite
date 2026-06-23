@@ -4,9 +4,6 @@ import Script from 'next/script'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef } from 'react'
 import {
-  GA_ID,
-  GOOGLE_ADS_ID,
-  GA_GTAG_ID,
   HAS_GTAG,
   HAS_NAVER,
   NAVER_WCS_ID,
@@ -45,25 +42,6 @@ export function Analytics() {
 
   return (
     <>
-      {HAS_GTAG && (
-        <>
-          <Script
-            id="gtag-src"
-            strategy="afterInteractive"
-            src={`https://www.googletagmanager.com/gtag/js?id=${GA_GTAG_ID}`}
-          />
-          <Script id="gtag-init" strategy="afterInteractive">
-            {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              ${GA_ID ? `gtag('config', '${GA_ID}');` : ''}
-              ${GOOGLE_ADS_ID ? `gtag('config', '${GOOGLE_ADS_ID}');` : ''}
-            `}
-          </Script>
-        </>
-      )}
-
       {HAS_NAVER && (
         <Script
           id="naver-wcs"
