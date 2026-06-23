@@ -9,7 +9,7 @@ import {
   StickyBar,
   TrustBadge,
   type LpCase,
-} from '../_components/parts'
+} from '@/components/marketing/parts'
 import { LpRef } from '../_components/LpRef'
 
 const TITLE = '앱 개발 — iOS·안드로이드 1분 견적 / 전문가 상담 | 지으리'

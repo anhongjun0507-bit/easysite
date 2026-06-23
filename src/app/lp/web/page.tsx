@@ -9,7 +9,7 @@ import {
   StickyBar,
   TrustBadge,
   type LpCase,
-} from '../_components/parts'
+} from '@/components/marketing/parts'
 import { LpRef } from '../_components/LpRef'
 
 const TITLE = '웹사이트 제작 — 현직 개발자 1분 무료 견적 | 지으리'
