@@ -127,21 +127,7 @@ body {
   mask-image: radial-gradient(ellipse 78% 60% at 50% 0%, #000 38%, transparent 82%);
 }
 
-/* 글래스모피즘 — 라이트 / 다크 */
-.glass {
-  background: rgba(255, 255, 255, 0.62);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 20px 60px -26px rgba(30, 27, 75, 0.35);
-}
-.glass-dark {
-  background: linear-gradient(160deg, rgba(23, 20, 54, 0.94), rgba(12, 16, 32, 0.94));
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow:
-    0 40px 90px -34px rgba(30, 27, 75, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.07);
-}
+/* (글래스모피즘 .glass/.glass-dark 제거 — backdrop-blur 가 Style&Layout 재계산 주범) */
 
 /* 그라데이션 텍스트 */
 .text-gradient {
@@ -271,10 +257,29 @@ body {
   background: #fff;
 }
 .cursor-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 38px;
   height: 38px;
   border-radius: 9999px;
   border: 1.5px solid #fff;
+}
+.cursor-label {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  opacity: 0;
+}
+/* "View" 상태 — 솔리드 디스크 + 라벨(mix-blend 해제) */
+.cursor-ring.is-view {
+  mix-blend-mode: normal;
+  background: #0a0a0c;
+  border-color: transparent;
+}
+.cursor-ring.is-view .cursor-label {
+  opacity: 1;
 }
 html.has-custom-cursor,
 html.has-custom-cursor * {

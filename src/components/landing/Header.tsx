@@ -2,34 +2,64 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Menu, X } from 'lucide-react'
+import { useLenis } from 'lenis/react'
+import { useMagnetic } from '@/hooks/useMagnetic'
 
-// 공용 헤더 — 루트(지으리 랜딩) 포함 모든 페이지에서 사용.
-// "견적 받기"(보조)·"사전등록"(메인) 두 행동을 항상 노출. 가격은 메뉴에서 제외(페이지는 유지).
-const navLinks = [
-  { href: '/service/website', label: '웹사이트 제작' },
-  { href: '/service/app', label: '앱 개발' },
-  { href: '/portfolio', label: '포트폴리오' },
-  { href: '/about', label: '소개' },
+/**
+ * 스튜디오 네비 — 로고 + Work + 프로젝트 문의(마그네틱).
+ * · 스크롤 시 투명 → 반투명 흰색(blur 금지, 색만) + 높이 축소
+ * · 내부 이동은 홈에서 Lenis 스크롤, 타 페이지에선 /#앵커로 이동
+ * · 모바일: 풀스크린 오버레이(포커스 트랩 + Esc + 스크롤 락)
+ */
+const LINKS = [
+  { hash: '#work', label: 'Work' },
+  { hash: '#contact', label: '프로젝트 문의' },
 ]
 
 export function Header() {
   const pathname = usePathname()
+  const lenis = useLenis()
+  const isHome = pathname === '/'
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const contactRef = useMagnetic<HTMLAnchorElement>(0.4)
+  const overlayRef = useRef<HTMLDivElement>(null)
 
-  // 경로 변경 시 드로어 자동 닫기
+  // 경로 변경 시 닫기
+  useEffect(() => setOpen(false), [pathname])
+
+  // 스크롤 80px 후 배경 등장
   useEffect(() => {
-    setOpen(false)
-  }, [pathname])
+    const onScroll = () => setScrolled(window.scrollY > 80)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
-  // 드로어 열렸을 때 body 스크롤 잠금 + ESC 닫기
+  // 오버레이: 스크롤 락 + Esc + 포커스 트랩
   useEffect(() => {
     if (!open) return
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
+    const focusables = () =>
+      Array.from(overlayRef.current?.querySelectorAll<HTMLElement>('a, button') ?? [])
+    focusables()[0]?.focus()
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false)
+      if (e.key === 'Escape') return setOpen(false)
+      if (e.key !== 'Tab') return
+      const f = focusables()
+      if (f.length === 0) return
+      const first = f[0]
+      const last = f[f.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => {
@@ -38,107 +68,102 @@ export function Header() {
     }
   }, [open])
 
+  function go(hash: string) {
+    return (e: MouseEvent) => {
+      setOpen(false)
+      if (isHome && lenis) {
+        e.preventDefault()
+        lenis.scrollTo(hash, { duration: 1.4, offset: -10 })
+      }
+    }
+  }
+
   return (
-    <header className="sticky top-0 z-40 border-b border-gray-200/60 bg-white/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-6 py-4 sm:px-8 sm:py-5">
-        <Link
-          href="/"
-          className="shrink-0 text-lg font-bold tracking-tight text-gray-900 sm:text-xl"
-        >
-          지으리
-        </Link>
-
-        {/* 데스크톱 네비 — 포트폴리오·소개 + 견적 받기(보조)·사전등록(메인) */}
-        <div className="hidden items-center gap-1 sm:flex md:gap-1.5">
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={isActive ? 'page' : undefined}
-                className={`inline-flex h-11 items-center rounded-md px-3 text-sm font-medium transition ${
-                  isActive
-                    ? 'text-gray-900 underline decoration-indigo-500 decoration-2 underline-offset-[6px]'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                }`}
-              >
-                {link.label}
-              </Link>
-            )
-          })}
-          <Link
-            href="/wizard"
-            className="ml-1 inline-flex h-11 items-center rounded-lg border border-gray-300 px-4 text-sm font-semibold text-gray-900 transition hover:border-gray-400 hover:bg-gray-50"
-          >
-            견적 받기
-          </Link>
-          <a
-            href="/register"
-            className="inline-flex h-11 items-center rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white transition hover:bg-indigo-700"
-          >
-            사전등록
-          </a>
-        </div>
-
-        {/* 모바일 햄버거 — lucide Menu/X */}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? '메뉴 닫기' : '메뉴 열기'}
-          aria-expanded={open}
-          aria-controls="mobile-menu"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-md text-gray-700 transition hover:bg-gray-100 sm:hidden"
-        >
-          {open ? (
-            <X className="h-6 w-6" aria-hidden="true" />
-          ) : (
-            <Menu className="h-6 w-6" aria-hidden="true" />
-          )}
-        </button>
-      </nav>
-
-      {/* 모바일 드로어 — 전체 항목 펼침 */}
-      <div
-        id="mobile-menu"
-        aria-hidden={!open}
-        className={`absolute inset-x-0 top-full overflow-hidden border-b border-gray-200 bg-white shadow-lg transition-all duration-300 ease-out sm:hidden ${
-          open
-            ? 'max-h-96 opacity-100'
-            : 'pointer-events-none max-h-0 opacity-0'
+    <>
+      <header
+        className={`${isHome ? 'fixed' : 'sticky'} inset-x-0 top-0 z-40 transition-[background-color,padding] duration-300 ease-out ${
+          scrolled || open
+            ? 'border-b border-gray-200/70 bg-white/85 py-3'
+            : 'border-b border-transparent py-5'
         }`}
       >
-        <ul className="divide-y divide-gray-100">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                onClick={() => setOpen(false)}
-                aria-current={pathname === link.href ? 'page' : undefined}
-                className="flex h-14 items-center px-6 text-base font-medium text-gray-800 transition hover:bg-gray-50 active:bg-gray-100"
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-          <li className="flex gap-2 px-6 py-4">
-            <Link
-              href="/wizard"
-              onClick={() => setOpen(false)}
-              className="inline-flex h-12 flex-1 items-center justify-center rounded-lg border border-gray-300 px-4 text-sm font-semibold text-gray-900 transition hover:bg-gray-50"
-            >
-              견적 받기
-            </Link>
+        <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 sm:px-8">
+          <Link
+            href="/"
+            data-cursor="hover"
+            className="shrink-0 text-lg font-extrabold tracking-tight text-gray-950 sm:text-xl"
+          >
+            지으리
+          </Link>
+
+          {/* 데스크탑 */}
+          <div className="hidden items-center gap-7 sm:flex">
             <a
-              href="/register"
-              onClick={() => setOpen(false)}
-              className="inline-flex h-12 flex-1 items-center justify-center rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white transition hover:bg-indigo-700"
+              href={`/${LINKS[0].hash}`}
+              onClick={go(LINKS[0].hash)}
+              data-cursor="hover"
+              className="text-[14px] font-semibold text-gray-700 transition-colors hover:text-gray-950"
             >
-              사전등록
+              {LINKS[0].label}
             </a>
-          </li>
-        </ul>
+            <a
+              ref={contactRef}
+              href={`/${LINKS[1].hash}`}
+              onClick={go(LINKS[1].hash)}
+              data-cursor="hover"
+              className="inline-flex items-center rounded-full bg-gray-950 px-5 py-2.5 text-[14px] font-semibold text-white transition-colors hover:bg-gray-800"
+            >
+              {LINKS[1].label}
+            </a>
+          </div>
+
+          {/* 모바일 햄버거 */}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? '메뉴 닫기' : '메뉴 열기'}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-md text-gray-900 sm:hidden"
+          >
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </nav>
+      </header>
+
+      {/* 모바일 풀스크린 오버레이 */}
+      <div
+        id="mobile-menu"
+        ref={overlayRef}
+        aria-hidden={!open}
+        className={`fixed inset-0 z-50 flex flex-col bg-white transition-opacity duration-300 sm:hidden ${
+          open ? 'opacity-100' : 'pointer-events-none opacity-0'
+        }`}
+      >
+        <div className="flex items-center justify-between px-6 py-5">
+          <span className="text-lg font-extrabold tracking-tight text-gray-950">지으리</span>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            aria-label="메뉴 닫기"
+            className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-md text-gray-900"
+          >
+            <X className="h-6 w-6" />
+          </button>
+        </div>
+        <nav className="flex flex-1 flex-col justify-center gap-2 px-8">
+          {LINKS.map((l) => (
+            <a
+              key={l.hash}
+              href={`/${l.hash}`}
+              onClick={go(l.hash)}
+              className="py-3 text-[40px] font-extrabold tracking-[-0.03em] text-gray-950"
+            >
+              {l.label}
+            </a>
+          ))}
+        </nav>
       </div>
-    </header>
+    </>
   )
 }

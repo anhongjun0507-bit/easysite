@@ -5,8 +5,9 @@ import { gsap } from 'gsap'
 
 /**
  * 커스텀 커서 (데스크탑 전용) — 도트 + 따라오는 링(gsap.quickTo, transform만).
- * · a / button / [data-cursor="hover"] 위에서 링 스케일 1 → 2.5 (mix-blend-difference)
- * · pointer:coarse(터치) 또는 prefers-reduced-motion → 비활성, 기본 커서 유지
+ * · a / button / [data-cursor="hover"] → 링 scale 2.5 (mix-blend-difference)
+ * · [data-cursor="view"] → 링이 "View" 라벨 디스크로 전환
+ * · pointer:coarse(터치) / prefers-reduced-motion → 비활성
  */
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null)
@@ -36,14 +37,24 @@ export function CustomCursor() {
     window.addEventListener('pointermove', onMove, { passive: true })
 
     const HOVER = 'a, button, [data-cursor="hover"]'
+    const setScale = (v: number) => gsap.to(ring, { scale: v, duration: 0.3, ease: 'power3' })
+
     const onOver = (e: Event) => {
-      if ((e.target as HTMLElement)?.closest?.(HOVER)) {
-        gsap.to(ring, { scale: 2.5, duration: 0.3, ease: 'power3' })
+      const t = e.target as HTMLElement
+      if (t?.closest?.('[data-cursor="view"]')) {
+        ring.classList.add('is-view')
+        setScale(1.9)
+      } else if (t?.closest?.(HOVER)) {
+        setScale(2.5)
       }
     }
     const onOut = (e: Event) => {
-      if ((e.target as HTMLElement)?.closest?.(HOVER)) {
-        gsap.to(ring, { scale: 1, duration: 0.3, ease: 'power3' })
+      const t = e.target as HTMLElement
+      if (t?.closest?.('[data-cursor="view"]')) {
+        ring.classList.remove('is-view')
+        setScale(1)
+      } else if (t?.closest?.(HOVER)) {
+        setScale(1)
       }
     }
     document.addEventListener('pointerover', onOver)
@@ -54,13 +65,16 @@ export function CustomCursor() {
       document.removeEventListener('pointerover', onOver)
       document.removeEventListener('pointerout', onOut)
       gsap.killTweensOf([dot, ring])
+      ring.classList.remove('is-view')
       document.documentElement.classList.remove('has-custom-cursor')
     }
   }, [])
 
   return (
     <>
-      <div ref={ringRef} aria-hidden className="cursor-ring" />
+      <div ref={ringRef} aria-hidden className="cursor-ring">
+        <span className="cursor-label">View</span>
+      </div>
       <div ref={dotRef} aria-hidden className="cursor-dot" />
     </>
   )

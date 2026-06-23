@@ -19,7 +19,7 @@ export function ProgressBar({ index, total = TOTAL_QUESTIONS, onBack, canGoBack 
   const showEncouragement = index !== null && index >= 6
 
   return (
-    <div className="sticky top-0 z-30 border-b border-gray-200 bg-white/85 backdrop-blur-xl">
+    <div className="sticky top-0 z-30 border-b border-gray-200 bg-white/95">
       <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-3 sm:px-6">
         <button
           type="button"

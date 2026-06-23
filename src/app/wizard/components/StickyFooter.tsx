@@ -13,7 +13,7 @@ type Props = {
 export function StickyFooter({ children }: Props) {
   return (
     <div
-      className="sticky bottom-0 left-0 right-0 z-20 border-t border-gray-200 bg-white/95 backdrop-blur-xl"
+      className="sticky bottom-0 left-0 right-0 z-20 border-t border-gray-200 bg-white/95"
       style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       <div className="mx-auto max-w-2xl px-4 py-3 sm:px-6 sm:py-4">{children}</div>
