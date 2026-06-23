@@ -253,7 +253,7 @@ body {
     0 24px 50px -28px rgba(2, 3, 30, 0.65);
 }
 
-/* ── 커스텀 커서 (Lusion 톤) ───────────────────────────────── */
+/* ── 커스텀 커서 (Lusion 톤, gsap.quickTo + mix-blend-difference) ── */
 .cursor-dot,
 .cursor-ring {
   position: fixed;
@@ -262,44 +262,68 @@ body {
   pointer-events: none;
   z-index: 9999;
   will-change: transform;
+  mix-blend-mode: difference;
 }
 .cursor-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 9999px;
-  background: #4f46e5;
+  background: #fff;
 }
 .cursor-ring {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 9999px;
-  border: 1.5px solid rgba(99, 102, 241, 0.55);
-  background: rgba(99, 102, 241, 0.06);
-  transition:
-    width 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-    height 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-    border-radius 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.25s ease,
-    border-color 0.25s ease;
+  border: 1.5px solid #fff;
 }
-.cursor-ring[data-stick='1'] {
-  background: rgba(99, 102, 241, 0.12);
-  border-color: rgba(99, 102, 241, 0.85);
-}
-html.cursor-none,
-html.cursor-none * {
+html.has-custom-cursor,
+html.has-custom-cursor * {
   cursor: none !important;
 }
 /* 입력 필드는 텍스트 커서 유지(폼 사용성) */
-html.cursor-none input,
-html.cursor-none textarea,
-html.cursor-none [contenteditable='true'] {
+html.has-custom-cursor input,
+html.has-custom-cursor textarea,
+html.has-custom-cursor [contenteditable='true'] {
   cursor: text !important;
 }
 @media (pointer: coarse) {
   .cursor-dot,
   .cursor-ring {
     display: none;
+  }
+}
+
+/* ── 히어로 입장 리빌 (data-reveal) ── */
+/* JS 가 리빌하기 전 기본 숨김 → FOUC/CLS 없음. reduced-motion 이면 즉시 표시 */
+.hero-reveal [data-reveal] {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+.hero-line {
+  will-change: transform;
+}
+
+/* 스크롤 인디케이터 루프 */
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-bob {
+    transform-origin: top center;
+    animation: scroll-bob 2s ease-in-out infinite;
+  }
+}
+@keyframes scroll-bob {
+  0%,
+  100% {
+    transform: scaleY(0.55);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
   }
 }
 
