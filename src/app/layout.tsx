@@ -16,6 +16,8 @@ const pretendard = localFont({
   display: 'swap',
   weight: '45 920',
   variable: '--font-pretendard',
+  // 2MB 가변폰트라 preload 시 LCP 경쟁 → 비프리로드(폴백 즉시 표시 후 swap)
+  preload: false,
 })
 
 const SITE_TITLE = '지으리 — 말하면, 지으리'

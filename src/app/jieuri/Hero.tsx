@@ -31,8 +31,8 @@ export function Hero() {
         gsap.set(['[data-reveal="eyebrow"]', '[data-reveal="sub"]', '[data-reveal="cta"]'], { y: 22 })
 
         let split: SplitText | null = null
-        const run = async () => {
-          await document.fonts.ready
+        // 폰트 로드를 기다리지 않음(H1은 <br>로 2줄 고정 → 라인 수 안정) → LCP 단축
+        const run = () => {
           const h1 = h1Ref.current
           if (!h1) return
           split = new SplitText(h1, { type: 'lines', mask: 'lines', linesClass: 'hero-line' })
