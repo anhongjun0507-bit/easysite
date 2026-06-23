@@ -14,6 +14,8 @@ export function SmoothScroll() {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const lenis = new Lenis({ duration: 1.1, smoothWheel: true })
+    // 디버그/도구용 인스턴스 노출(무해)
+    ;(window as unknown as { __lenis?: Lenis }).__lenis = lenis
 
     let raf = 0
     const loop = (time: number) => {

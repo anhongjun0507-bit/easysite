@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useEffect, useRef, type MouseEvent } from 'react'
 import { ArrowRight, Check, Sparkles, Star } from 'lucide-react'
-import { HeroBackdrop } from './HeroBackdrop'
 
 /**
  * 홈 플래그십 히어로 — 프리미엄·3D·AI 감성(토스/클로바 톤).
@@ -52,15 +51,12 @@ export function Hero() {
   }, [])
 
   return (
-    <section className="relative isolate overflow-hidden bg-aurora">
-      <HeroBackdrop />
-      {/* 가독 스크림 — 좌상단(헤드라인) 화이트, 우하단(카드)은 비비드 유지 */}
+    <section className="relative isolate overflow-hidden">
+      {/* 가독 스크림 — 좌상단(헤드라인) 화이트. 배경은 전역 SiteBackdrop 가 담당 */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.38)_30%,rgba(255,255,255,0)_60%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.78)_0%,rgba(255,255,255,0.32)_32%,rgba(255,255,255,0)_62%)]"
       />
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-grid" />
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-noise opacity-[0.13] mix-blend-soft-light" />
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 pb-16 pt-12 sm:pb-24 sm:pt-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-6">
         {/* ───────── 카피 ───────── */}

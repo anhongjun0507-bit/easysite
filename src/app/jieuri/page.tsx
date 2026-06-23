@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { SITE_URL } from '@/lib/site'
-import Image from 'next/image'
 import Link from 'next/link'
 import {
   ArrowRight,
@@ -10,11 +9,12 @@ import {
   MessageSquare,
   Plug,
   Rocket,
-  Star,
   Wallet,
 } from 'lucide-react'
 import { Hero } from './Hero'
 import { ScrollShowcase } from './ScrollShowcase'
+import { FeaturedWork } from './FeaturedWork'
+import { SiteBackdrop } from './SiteBackdrop'
 import { CustomCursor } from './CustomCursor'
 import { SmoothScroll } from './SmoothScroll'
 import { Reveal } from './Reveal'
@@ -90,30 +90,10 @@ const steps = [
   },
 ]
 
-// 제작 사례 — 실제 운영 사이트 스크린샷(public/portfolio) 재사용.
-// 상호명 텍스트는 강조하지 않고 업종 라벨만 노출(이미지 안에 보이는 상호는 그대로).
-const cases = [
-  { image: '/portfolio/prismedu.png', label: 'AI 서비스', alt: 'AI 서비스 제작 사례 화면' },
-  {
-    image: '/portfolio/conatusipsi.png',
-    label: '교육 플랫폼',
-    alt: '교육 플랫폼 제작 사례 화면',
-  },
-  {
-    image: '/portfolio/digitalst.png',
-    label: '디지털 카탈로그',
-    alt: '디지털 카탈로그 제작 사례 화면',
-  },
-  {
-    image: '/portfolio/kbgroup.png',
-    label: '기업 홈페이지',
-    alt: '기업 홈페이지 제작 사례 화면',
-  },
-]
-
 export default function JieuriPage() {
   return (
     <>
+      <SiteBackdrop />
       <SmoothScroll />
       <CustomCursor />
       {/* 헤더는 공용 Header(LandingChrome) 에서 렌더 — 견적/사전등록 동선 통합 */}
@@ -226,7 +206,7 @@ export default function JieuriPage() {
         </section>
 
         {/* 4. 작동 방식 3스텝 */}
-        <section className="border-t border-gray-100 bg-gray-50/70">
+        <section className="border-t border-gray-100/70">
           <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
             <Reveal className="text-center">
               <h2 className="text-[26px] font-extrabold tracking-[-0.02em] text-gray-900 sm:text-[34px]">
@@ -272,64 +252,8 @@ export default function JieuriPage() {
           </div>
         </section>
 
-        {/* 5. 신뢰 섹션 — 제작 사례 */}
-        <section className="border-t border-gray-100">
-          <div className="mx-auto max-w-6xl px-6 py-16 sm:py-24">
-            <Reveal className="flex flex-col items-center text-center">
-              <div className="inline-flex items-center gap-2 rounded-full border border-amber-200/70 bg-amber-50 px-3.5 py-1.5">
-                <span className="flex gap-0.5 text-amber-400">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="h-3.5 w-3.5" fill="currentColor" strokeWidth={0} />
-                  ))}
-                </span>
-                <span className="text-[13px] font-bold text-amber-900">
-                  숨고 평점 5.0
-                </span>
-              </div>
-              <h2 className="mt-5 text-[26px] font-extrabold tracking-[-0.02em] text-gray-900 sm:text-[34px]">
-                이미 이렇게 만들어 드렸어요
-              </h2>
-              <p className="mt-3 max-w-md text-[16px] text-gray-600">
-                말로만 하는 게 아니라, 실제로 만들어 운영 중인 사이트들이에요.
-              </p>
-            </Reveal>
-
-            {/* 제작 사례 — 모바일 2열. next/image webp 최적화 + hover 확대 */}
-            <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5">
-              {cases.map((c, i) => (
-                <Reveal key={c.image} delay={i * 70}>
-                  <figure className="group overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-xs transition duration-200 ease-emphasized hover:-translate-y-1 hover:shadow-[0_18px_44px_-26px_rgba(17,24,39,0.35)]">
-                    <div className="relative aspect-[16/10] overflow-hidden bg-gray-50">
-                      <Image
-                        src={c.image}
-                        alt={c.alt}
-                        fill
-                        sizes="(min-width: 640px) 25vw, 50vw"
-                        className="object-cover object-top transition-transform duration-500 ease-emphasized group-hover:scale-[1.06]"
-                      />
-                    </div>
-                    <figcaption className="px-3 py-3 text-center">
-                      <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-700">
-                        {c.label}
-                      </span>
-                    </figcaption>
-                  </figure>
-                </Reveal>
-              ))}
-            </div>
-
-            {/* 전체 포트폴리오(10건)로 — 제작 사례 더 보기 */}
-            <Reveal className="mt-10 flex justify-center">
-              <Link
-                href="/portfolio"
-                className="group inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-6 text-[15px] font-bold text-gray-900 transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:border-gray-400 active:translate-y-0 active:scale-[0.99]"
-              >
-                제작 사례 더 보기
-                <ArrowRight className="h-4 w-4 transition-transform duration-200 ease-emphasized group-hover:translate-x-0.5" />
-              </Link>
-            </Reveal>
-          </div>
-        </section>
+        {/* 5. Featured Work — 제작 사례(Lusion 톤 포트폴리오·스크롤 패럴럭스) */}
+        <FeaturedWork />
 
       </main>
 
