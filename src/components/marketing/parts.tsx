@@ -168,7 +168,7 @@ export function CheckPoints({ points }: { points: string[] }) {
 /** 모바일 하단 고정 CTA 바 (데스크톱 숨김) — 항상 노출, JS 불필요 */
 export function StickyBar({ href, label }: { href: string; label: string }) {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-gray-200 bg-white/95 p-3 backdrop-blur sm:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-50 border-t border-gray-200 bg-white/95 p-3 sm:hidden">
       <div className="flex gap-2">
         <a
           href="tel:01037825418"

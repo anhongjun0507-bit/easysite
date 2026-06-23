@@ -25,28 +25,32 @@ export function Hero() {
   // 입장 리빌 (폰트 로드 후 SplitText) — useGSAP 자동 cleanup
   useGSAP(
     () => {
-      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return // CSS가 즉시 표시
+      const mm = gsap.matchMedia()
+      // reduced-motion 이면 콜백 미실행 → CSS [data-reveal] 가 즉시 표시
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.set(['[data-reveal="eyebrow"]', '[data-reveal="sub"]', '[data-reveal="cta"]'], { y: 22 })
 
-      gsap.set(['[data-reveal="eyebrow"]', '[data-reveal="sub"]', '[data-reveal="cta"]'], { y: 22 })
+        let split: SplitText | null = null
+        const run = async () => {
+          await document.fonts.ready
+          const h1 = h1Ref.current
+          if (!h1) return
+          split = new SplitText(h1, { type: 'lines', mask: 'lines', linesClass: 'hero-line' })
+          gsap.set(h1, { opacity: 1 }) // 라인은 마스크 아래에 숨은 상태라 깜빡임 없음
 
-      let split: SplitText | null = null
-      const run = async () => {
-        await document.fonts.ready
-        const h1 = h1Ref.current
-        if (!h1) return
-        split = new SplitText(h1, { type: 'lines', mask: 'lines', linesClass: 'hero-line' })
-        gsap.set(h1, { opacity: 1 }) // 라인은 마스크 아래에 숨은 상태라 깜빡임 없음
+          const tl = gsap.timeline({ defaults: { ease: 'power4.out' }, delay: 0.2 })
+          tl.from(split.lines, { yPercent: 100, duration: 1.1, stagger: 0.12 })
+            .to('[data-reveal="eyebrow"]', { opacity: 1, y: 0, duration: 0.8 }, 0.05)
+            .to('[data-reveal="sub"]', { opacity: 1, y: 0, duration: 0.9 }, '-=0.65')
+            .to('[data-reveal="cta"]', { opacity: 1, y: 0, duration: 0.9 }, '-=0.75')
+            .to('[data-reveal="scroll"]', { opacity: 1, duration: 0.8 }, '-=0.35')
+        }
+        run()
 
-        const tl = gsap.timeline({ defaults: { ease: 'power4.out' }, delay: 0.2 })
-        tl.from(split.lines, { yPercent: 100, duration: 1.1, stagger: 0.12 })
-          .to('[data-reveal="eyebrow"]', { opacity: 1, y: 0, duration: 0.8 }, 0.05)
-          .to('[data-reveal="sub"]', { opacity: 1, y: 0, duration: 0.9 }, '-=0.65')
-          .to('[data-reveal="cta"]', { opacity: 1, y: 0, duration: 0.9 }, '-=0.75')
-          .to('[data-reveal="scroll"]', { opacity: 1, duration: 0.8 }, '-=0.35')
-      }
-      run()
+        return () => split?.revert()
+      })
 
-      return () => split?.revert()
+      return () => mm.revert()
     },
     { scope: root },
   )
@@ -54,19 +58,18 @@ export function Hero() {
   // 배경 마우스 패럴랙스 ±15px (데스크탑·non-reduced)
   useGSAP(
     () => {
-      if (
-        !window.matchMedia('(pointer: fine)').matches ||
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      )
-        return
-      const xTo = gsap.quickTo(bgRef.current, 'x', { duration: 1.2, ease: 'power2' })
-      const yTo = gsap.quickTo(bgRef.current, 'y', { duration: 1.2, ease: 'power2' })
-      const onMove = (e: MouseEvent) => {
-        xTo((e.clientX / window.innerWidth - 0.5) * 30)
-        yTo((e.clientY / window.innerHeight - 0.5) * 30)
-      }
-      window.addEventListener('mousemove', onMove, { passive: true })
-      return () => window.removeEventListener('mousemove', onMove)
+      const mm = gsap.matchMedia()
+      mm.add('(pointer: fine) and (prefers-reduced-motion: no-preference)', () => {
+        const xTo = gsap.quickTo(bgRef.current, 'x', { duration: 1.2, ease: 'power2' })
+        const yTo = gsap.quickTo(bgRef.current, 'y', { duration: 1.2, ease: 'power2' })
+        const onMove = (e: MouseEvent) => {
+          xTo((e.clientX / window.innerWidth - 0.5) * 30)
+          yTo((e.clientY / window.innerHeight - 0.5) * 30)
+        }
+        window.addEventListener('mousemove', onMove, { passive: true })
+        return () => window.removeEventListener('mousemove', onMove)
+      })
+      return () => mm.revert()
     },
     { scope: root },
   )
@@ -98,9 +101,11 @@ export function Hero() {
         <h1
           ref={h1Ref}
           data-reveal="h1"
-          className="mt-6 text-[15.5vw] font-extrabold leading-[0.98] tracking-[-0.045em] text-gray-950 sm:mt-7 sm:text-[clamp(56px,9vw,128px)]"
+          className="mt-5 text-[15vw] font-extrabold leading-[0.9] tracking-[-0.05em] text-gray-950 sm:mt-8 sm:text-[clamp(74px,11.5vw,172px)] sm:leading-[0.86]"
         >
-          경험을 짓습니다.
+          경험을
+          <br />
+          짓습니다.
         </h1>
 
         <p

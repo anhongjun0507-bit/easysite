@@ -11,7 +11,7 @@ export default function LpLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       {/* 슬림 헤더 — 이탈 줄이려 메뉴 없이 로고 + 전화만 */}
-      <header className="sticky top-0 z-40 border-b border-gray-200/60 bg-white/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-gray-200/60 bg-white/95">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
           <Link href="/" className="text-lg font-bold tracking-tight text-gray-900">
             지으리

@@ -41,6 +41,8 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
     const sync = () => ScrollTrigger.update()
     const lenis = lenisRef.current?.lenis
     lenis?.on('scroll', sync)
+    // 도구/디버그용 노출(무해)
+    ;(window as unknown as { __lenis?: unknown }).__lenis = lenis
     return () => {
       gsap.ticker.remove(update)
       lenis?.off('scroll', sync)

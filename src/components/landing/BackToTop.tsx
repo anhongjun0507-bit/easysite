@@ -29,7 +29,7 @@ export function BackToTop() {
       aria-label="페이지 맨 위로 가기"
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
-      className={`fixed bottom-4 right-4 z-30 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-gray-700 shadow-lg ring-1 ring-gray-300 backdrop-blur transition-all duration-300 ease-emphasized hover:bg-gray-50 hover:text-gray-900 sm:bottom-6 sm:right-6 sm:h-12 sm:w-12 ${
+      className={`fixed bottom-4 right-4 z-30 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-gray-700 shadow-lg ring-1 ring-gray-300 transition-all duration-300 ease-emphasized hover:bg-gray-50 hover:text-gray-900 sm:bottom-6 sm:right-6 sm:h-12 sm:w-12 ${
         visible
           ? 'translate-y-0 opacity-100'
           : 'pointer-events-none translate-y-3 opacity-0'

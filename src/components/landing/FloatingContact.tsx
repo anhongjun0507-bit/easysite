@@ -25,7 +25,7 @@ export function FloatingContact() {
       aria-label="전화로 견적 문의: 010-3782-5418"
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
-      className={`fixed bottom-4 left-4 z-30 inline-flex h-10 items-center gap-2 rounded-full bg-gray-900/95 px-3.5 text-[13px] font-semibold text-white shadow-lg shadow-gray-900/20 backdrop-blur transition-all duration-300 ease-emphasized hover:bg-gray-800 sm:bottom-6 sm:left-6 sm:h-12 sm:px-5 sm:text-sm ${
+      className={`fixed bottom-4 left-4 z-30 inline-flex h-10 items-center gap-2 rounded-full bg-gray-900/95 px-3.5 text-[13px] font-semibold text-white shadow-lg shadow-gray-900/20 transition-all duration-300 ease-emphasized hover:bg-gray-800 sm:bottom-6 sm:left-6 sm:h-12 sm:px-5 sm:text-sm ${
         visible
           ? 'translate-y-0 opacity-100'
           : 'pointer-events-none translate-y-3 opacity-0'
