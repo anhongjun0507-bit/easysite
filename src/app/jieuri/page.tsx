@@ -14,7 +14,7 @@ import {
   Wallet,
 } from 'lucide-react'
 import { RegisterForm } from './RegisterForm'
-import { HeroDemo } from './HeroDemo'
+import { Hero } from './Hero'
 import { Reveal } from './Reveal'
 import { StickyCta } from './StickyCta'
 
@@ -114,59 +114,8 @@ export default function JieuriPage() {
     <>
       {/* 헤더는 공용 Header(LandingChrome) 에서 렌더 — 견적/사전등록 동선 통합 */}
       <main className="flex-1">
-        {/* 1. 히어로 */}
-        <section className="overflow-hidden">
-          <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 pb-8 pt-12 sm:pb-10 sm:pt-16 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
-            {/* 카피 */}
-            <div className="text-center lg:text-left">
-              <span className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 text-[13px] font-semibold text-gray-700 shadow-xs">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75 motion-safe:animate-ping" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-500" />
-                </span>
-                지으리 사전등록 모집 중
-              </span>
-
-              <h1 className="mt-7 text-[26px] font-bold leading-tight tracking-[-0.02em] text-gray-900 sm:text-[32px]">
-                코드 몰라도 됩니다.
-              </h1>
-              <p className="mt-1 text-[44px] font-extrabold leading-[1.04] tracking-[-0.035em] text-gray-900 sm:text-[68px]">
-                말하면, <span className="text-indigo-600">지으리.</span>
-              </p>
-
-              <p className="mx-auto mt-6 max-w-xl text-[16px] leading-relaxed text-gray-600 sm:text-[18px] lg:mx-0">
-                개발자한테 300만원 주고 3주 기다리지 마세요. 채팅으로 직접 만들면
-                월 구독, 막히면 현직 개발자가 대신 고쳐드립니다.
-              </p>
-
-              {/* 1차 사전등록(메인) + 2차 견적(보조) — 진입 즉시 두 동선 노출 */}
-              <div className="mt-9 flex flex-col items-center gap-2.5 sm:flex-row sm:flex-wrap lg:justify-start lg:gap-3">
-                <a
-                  href="#register"
-                  className="group inline-flex h-14 w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-7 text-[16px] font-bold text-white shadow-[0_10px_30px_-10px_rgba(79,70,229,0.6)] transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:bg-indigo-700 active:translate-y-0 active:scale-[0.99] sm:w-auto sm:text-[17px]"
-                >
-                  사전등록하고 평생 50% 할인받기
-                  <ArrowRight className="h-5 w-5 transition-transform duration-200 ease-emphasized group-hover:translate-x-0.5" />
-                </a>
-                <Link
-                  href="/wizard"
-                  className="group inline-flex h-14 w-full items-center justify-center gap-1.5 rounded-xl border border-gray-300 bg-white px-6 text-[15px] font-bold text-gray-700 transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:border-gray-400 hover:text-gray-900 active:translate-y-0 sm:w-auto sm:text-[16px]"
-                >
-                  견적 받기
-                  <ArrowRight className="h-4 w-4 transition-transform duration-200 ease-emphasized group-hover:translate-x-0.5" />
-                </Link>
-              </div>
-              <p className="mt-3 text-center text-[13px] text-gray-500 lg:text-left">
-                선착순 100명 · 딱 한 번만 연락
-              </p>
-            </div>
-
-            {/* 시그니처 데모 */}
-            <div className="lg:pl-4">
-              <HeroDemo />
-            </div>
-          </div>
-        </section>
+        {/* 1. 히어로 (플래그십 — 프리미엄·3D·AI) */}
+        <Hero />
 
         {/* 2. 두 갈래 CTA — 진입 직후 선택 노출. 직접 만들기(사전등록) vs 지금 맡기기(견적) */}
         <section className="border-t border-gray-100">

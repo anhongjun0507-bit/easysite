@@ -88,3 +88,139 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============================================================
+   지으리 디자인 시스템 v2 — 프리미엄·3D·AI 감성 (토스/클로바 톤)
+   ============================================================ */
+
+/* 오로라 메시 배경 — 부드럽게 흐르는 컬러 그라데이션 (라이트) */
+.bg-aurora {
+  background-color: #fbfbff;
+  background-image:
+    radial-gradient(42% 52% at 12% 8%, rgba(124, 58, 237, 0.20), transparent 60%),
+    radial-gradient(46% 56% at 88% 14%, rgba(56, 189, 248, 0.18), transparent 60%),
+    radial-gradient(54% 62% at 50% 104%, rgba(99, 102, 241, 0.22), transparent 62%);
+  background-size: 180% 180%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bg-aurora {
+    animation: aurora-drift 20s ease-in-out infinite alternate;
+  }
+}
+@keyframes aurora-drift {
+  0% {
+    background-position: 0% 0%, 100% 0%, 50% 100%;
+  }
+  100% {
+    background-position: 24% 12%, 78% 22%, 38% 82%;
+  }
+}
+
+/* 미세 그리드 — 상단 페이드 마스크로 은은하게 */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(ellipse 78% 60% at 50% 0%, #000 38%, transparent 82%);
+  mask-image: radial-gradient(ellipse 78% 60% at 50% 0%, #000 38%, transparent 82%);
+}
+
+/* 글래스모피즘 — 라이트 / 다크 */
+.glass {
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 20px 60px -26px rgba(30, 27, 75, 0.35);
+}
+.glass-dark {
+  background: linear-gradient(160deg, rgba(23, 20, 54, 0.94), rgba(12, 16, 32, 0.94));
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  box-shadow:
+    0 40px 90px -34px rgba(30, 27, 75, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* 그라데이션 텍스트 */
+.text-gradient {
+  background-image: linear-gradient(100deg, #6366f1, #7c3aed 46%, #38bdf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 글로우 */
+.glow-indigo {
+  box-shadow:
+    0 0 0 1px rgba(99, 102, 241, 0.25),
+    0 18px 50px -12px rgba(79, 70, 229, 0.55);
+}
+
+/* 떠다니는 모션 — 3D 레이어 깊이감 */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-float {
+    animation: floaty 6s ease-in-out infinite;
+  }
+  .animate-float-slow {
+    animation: floaty 9s ease-in-out infinite;
+  }
+}
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+/* CTA 샤인 스윕 */
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+.shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 68%
+  );
+  transform: translateX(-130%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .shine:hover::after {
+    animation: shine-sweep 0.9s ease;
+  }
+}
+@keyframes shine-sweep {
+  to {
+    transform: translateX(130%);
+  }
+}
+
+/* 3D 틸트 */
+.tilt-3d {
+  transform-style: preserve-3d;
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* 타이핑 커서 */
+@keyframes caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+.caret {
+  animation: caret-blink 1s step-end infinite;
+}
