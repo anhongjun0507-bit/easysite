@@ -6,6 +6,7 @@ import { aiCopyResultSchema, type AiCopyResult } from '@/lib/ai/types'
 import { calculateQuote } from '@/lib/quote/calculate'
 import { matchPortfolio } from '@/lib/quote/match-portfolio'
 import type { SiteType, PageCount, DesignTone, Timeline } from '@/app/wizard/lib/state'
+import { ConversionPing } from '@/components/ConversionPing'
 import { AISection } from './AISection'
 import { ChatWidget } from './ChatWidget'
 import { FinalCta } from './FinalCta'
@@ -88,6 +89,8 @@ export default async function WizardResultPage({
 
   return (
     <>
+      {/* 견적 결과 도달 = 핵심 전환(견적완료). leadId 로 새로고침 중복 집계 방지 */}
+      <ConversionPing name="quote" dedupeKey={leadId} />
       <QuoteHero quote={quote} businessName={lead.business_name} />
       <AISection
         leadId={leadId}

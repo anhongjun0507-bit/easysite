@@ -8,6 +8,8 @@ import { Menu, X } from 'lucide-react'
 // 공용 헤더 — 루트(지으리 랜딩) 포함 모든 페이지에서 사용.
 // "견적 받기"(보조)·"사전등록"(메인) 두 행동을 항상 노출. 가격은 메뉴에서 제외(페이지는 유지).
 const navLinks = [
+  { href: '/service/website', label: '웹사이트 제작' },
+  { href: '/service/app', label: '앱 개발' },
   { href: '/portfolio', label: '포트폴리오' },
   { href: '/about', label: '소개' },
 ]

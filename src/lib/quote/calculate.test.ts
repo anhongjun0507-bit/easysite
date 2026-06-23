@@ -42,6 +42,12 @@ test('랜딩페이지 최소: 정가 80 / 이벤트가 50', () => {
   assert.equal(q.event.center, 50)
 })
 
+test('앱 개발 — 5개 이내·옵션 없음: 정가 600 / 이벤트가 400', () => {
+  const q = calculateQuote({ siteType: 'app', pageCount: 'small', timeline: '1m' })
+  assert.equal(q.list.center, 600)
+  assert.equal(q.event.center, 400)
+})
+
 test('디자인 톤은 가격에 영향 없음 (입력에 없음 → 동일)', () => {
   const base = calculateQuote({ siteType: 'company', pageCount: 'medium' })
   // company 150×1.3 = 195(정가), 100×1.3 = 130(이벤트). 5만원 단위 그대로.

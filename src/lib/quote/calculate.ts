@@ -62,6 +62,7 @@ export const LIST_BASE_PRICE_MANWON: Record<SiteType, number> = {
   company: 150,
   reservation: 200,
   shop: 250,
+  app: 600, // 앱 개발 — 웹 대비 고가. 1인 외주 기준 ballpark(실 단가는 상담 시 조정)
   other: 150, // 기타 — 회사·가게 소개 기준가로 가정(직접입력 내용은 상담 시 조정)
 }
 export const EVENT_BASE_PRICE_MANWON: Record<SiteType, number> = {
@@ -69,6 +70,7 @@ export const EVENT_BASE_PRICE_MANWON: Record<SiteType, number> = {
   company: 100,
   reservation: 130,
   shop: 150,
+  app: 400,
   other: 100,
 }
 
@@ -77,6 +79,7 @@ export const SITE_TYPE_LABEL: Record<SiteType, string> = {
   company: '회사·가게 소개',
   reservation: '예약·회원제',
   shop: '쇼핑몰',
+  app: '앱 개발',
   other: '기타',
 }
 

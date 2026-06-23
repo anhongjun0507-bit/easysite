@@ -13,7 +13,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 1.0,
     },
-    // /wizard 는 noindex funnel 페이지이므로 sitemap 에서 제외
+    // /wizard·/lp 는 noindex 이므로 sitemap 에서 제외
+    {
+      url: `${SITE_URL}/service/website`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/service/app`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
     {
       url: `${SITE_URL}/pricing`,
       lastModified: now,

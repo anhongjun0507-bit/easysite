@@ -48,6 +48,9 @@ export function matchPortfolio(input: {
       return compact([byId('ps-company'), byId('digitalst'), byId('prismedu')])
     case 'company':
       return compact([byId('ps-company'), byId('kbgroup'), byId('soc-architects')])
+    case 'app':
+      // 앱 전용 포트폴리오는 없어 플랫폼/서비스 성격 사례로 매칭
+      return compact([byId('sellfit'), byId('conatusipsi'), byId('digitalst')])
     case 'other':
     default:
       // 3) Fallback — 다양한 카테고리 한 개씩

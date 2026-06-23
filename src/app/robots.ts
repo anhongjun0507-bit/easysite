@@ -13,6 +13,8 @@ export default function robots(): MetadataRoute.Robots {
         '/api/*',
         '/wizard',
         '/wizard/result',
+        '/lp',
+        '/lp/*',
       ],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
