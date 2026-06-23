@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { RegisterForm } from './RegisterForm'
 import { Hero } from './Hero'
+import { ScrollShowcase } from './ScrollShowcase'
 import { Reveal } from './Reveal'
 import { StickyCta } from './StickyCta'
 
@@ -116,6 +117,9 @@ export default function JieuriPage() {
       <main className="flex-1">
         {/* 1. 히어로 (플래그십 — 프리미엄·3D·AI) */}
         <Hero />
+
+        {/* 1.5. 스크롤 디바이스 쇼케이스 — 데스크탑·모바일 시연(클로바노트 톤) */}
+        <ScrollShowcase />
 
         {/* 2. 두 갈래 CTA — 진입 직후 선택 노출. 직접 만들기(사전등록) vs 지금 맡기기(견적) */}
         <section className="border-t border-gray-100">

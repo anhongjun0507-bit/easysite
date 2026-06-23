@@ -18,16 +18,17 @@ export function Hero() {
     const r = el.getBoundingClientRect()
     const px = (e.clientX - r.left) / r.width - 0.5
     const py = (e.clientY - r.top) / r.height - 0.5
-    el.style.transform = `perspective(1100px) rotateX(${(-py * 7).toFixed(2)}deg) rotateY(${(px * 9).toFixed(2)}deg)`
+    el.style.transform = `perspective(1000px) rotateX(${(-py * 10).toFixed(2)}deg) rotateY(${(px * 13).toFixed(2)}deg) scale(1.02)`
   }
   function handleLeave() {
     const el = tiltRef.current
-    if (el) el.style.transform = 'perspective(1100px) rotateX(0deg) rotateY(0deg)'
+    if (el) el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)'
   }
 
   return (
     <section className="relative isolate overflow-hidden bg-aurora">
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-grid" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-noise opacity-[0.13] mix-blend-soft-light" />
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 pb-16 pt-12 sm:pb-24 sm:pt-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-6">
         {/* ───────── 카피 ───────── */}
@@ -92,10 +93,16 @@ export function Hero() {
 
         {/* ───────── 3D 데모 ───────── */}
         <div
-          className="relative mx-auto w-full max-w-md [perspective:1100px] lg:max-w-none"
+          className="relative mx-auto w-full max-w-md [perspective:1000px] lg:max-w-none"
           onMouseMove={handleMove}
           onMouseLeave={handleLeave}
         >
+          {/* 언더글로우 — 카드 아래 컬러 헤일로 */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-6 rounded-[44px] bg-gradient-to-br from-indigo-500/30 via-violet-500/25 to-sky-400/30 blur-3xl"
+          />
+
           <div ref={tiltRef} className="tilt-3d relative">
             <div className="glass-dark rounded-[28px] p-3.5 sm:p-4">
               {/* 윈도우 바 */}
@@ -154,20 +161,24 @@ export function Hero() {
                 </span>
               </div>
             </div>
-          </div>
 
-          {/* 떠다니는 깊이 요소 */}
-          <div className="animate-float glass absolute -right-3 -top-3 inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-[12.5px] font-bold text-gray-800 sm:-right-5">
-            <Check className="h-4 w-4 text-emerald-500" strokeWidth={2.6} />
-            배포 완료
-          </div>
-          <div className="animate-float-slow glass absolute -bottom-4 -left-3 inline-flex items-center gap-2 rounded-2xl px-3 py-2 sm:-left-6">
-            <span className="text-[11.5px] font-bold text-gray-700">AI 컬러</span>
-            <span className="flex gap-1">
-              <span className="h-3.5 w-3.5 rounded-full bg-amber-400" />
-              <span className="h-3.5 w-3.5 rounded-full bg-rose-400" />
-              <span className="h-3.5 w-3.5 rounded-full bg-indigo-500" />
-            </span>
+            {/* 떠다니는 깊이 요소 — 카드와 같은 3D 공간(translateZ)에서 앞으로 튀어나옴 */}
+            <div className="absolute -right-3 -top-3 sm:-right-5" style={{ transform: 'translateZ(70px)' }}>
+              <div className="animate-float glass inline-flex items-center gap-1.5 rounded-2xl px-3 py-2 text-[12.5px] font-bold text-gray-800 shadow-xl">
+                <Check className="h-4 w-4 text-emerald-500" strokeWidth={2.6} />
+                배포 완료
+              </div>
+            </div>
+            <div className="absolute -bottom-4 -left-3 sm:-left-6" style={{ transform: 'translateZ(96px)' }}>
+              <div className="animate-float-slow glass inline-flex items-center gap-2 rounded-2xl px-3 py-2 shadow-xl">
+                <span className="text-[11.5px] font-bold text-gray-700">AI 컬러</span>
+                <span className="flex gap-1">
+                  <span className="h-3.5 w-3.5 rounded-full bg-amber-400" />
+                  <span className="h-3.5 w-3.5 rounded-full bg-rose-400" />
+                  <span className="h-3.5 w-3.5 rounded-full bg-indigo-500" />
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
