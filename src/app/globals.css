@@ -252,3 +252,105 @@ body {
     0 60px 110px -30px rgba(2, 3, 30, 0.75),
     0 24px 50px -28px rgba(2, 3, 30, 0.65);
 }
+
+/* ── 커스텀 커서 (Lusion 톤) ───────────────────────────────── */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+}
+.cursor-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  background: #4f46e5;
+}
+.cursor-ring {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(99, 102, 241, 0.55);
+  background: rgba(99, 102, 241, 0.06);
+  transition:
+    width 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    height 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+.cursor-ring[data-stick='1'] {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: rgba(99, 102, 241, 0.85);
+}
+html.cursor-none,
+html.cursor-none * {
+  cursor: none !important;
+}
+/* 입력 필드는 텍스트 커서 유지(폼 사용성) */
+html.cursor-none input,
+html.cursor-none textarea,
+html.cursor-none [contenteditable='true'] {
+  cursor: text !important;
+}
+@media (pointer: coarse) {
+  .cursor-dot,
+  .cursor-ring {
+    display: none;
+  }
+}
+
+/* ── Lenis 스무스 스크롤 ───────────────────────────────────── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* ── 히어로 입장 — 스태거 텍스트 리빌(블러 포커스인) ──────────── */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-stagger > * {
+    animation: hero-rise 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .hero-stagger > *:nth-child(2) {
+    animation-delay: 70ms;
+  }
+  .hero-stagger > *:nth-child(3) {
+    animation-delay: 140ms;
+  }
+  .hero-stagger > *:nth-child(4) {
+    animation-delay: 210ms;
+  }
+  .hero-stagger > *:nth-child(5) {
+    animation-delay: 280ms;
+  }
+  .hero-stagger > *:nth-child(6) {
+    animation-delay: 350ms;
+  }
+  .hero-stagger > *:nth-child(7) {
+    animation-delay: 410ms;
+  }
+}

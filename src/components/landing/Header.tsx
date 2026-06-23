@@ -74,7 +74,7 @@ export function Header() {
             견적 받기
           </Link>
           <a
-            href="/#register"
+            href="/register"
             className="inline-flex h-11 items-center rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white transition hover:bg-indigo-700"
           >
             사전등록
@@ -130,7 +130,7 @@ export function Header() {
               견적 받기
             </Link>
             <a
-              href="/#register"
+              href="/register"
               onClick={() => setOpen(false)}
               className="inline-flex h-12 flex-1 items-center justify-center rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white transition hover:bg-indigo-700"
             >
