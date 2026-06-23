@@ -14,9 +14,6 @@ import {
 import { Hero } from './Hero'
 import { ScrollShowcase } from './ScrollShowcase'
 import { FeaturedWork } from './FeaturedWork'
-import { SiteBackdrop } from './SiteBackdrop'
-import { CustomCursor } from './CustomCursor'
-import { SmoothScroll } from './SmoothScroll'
 import { Reveal } from './Reveal'
 import { StickyCta } from './StickyCta'
 
@@ -93,9 +90,6 @@ const steps = [
 export default function JieuriPage() {
   return (
     <>
-      <SiteBackdrop />
-      <SmoothScroll />
-      <CustomCursor />
       {/* 헤더는 공용 Header(LandingChrome) 에서 렌더 — 견적/사전등록 동선 통합 */}
       <main className="flex-1">
         {/* 1. 히어로 (플래그십 — 프리미엄·3D·AI) */}

@@ -45,7 +45,11 @@ export function FeaturedWork() {
   }, [])
 
   return (
-    <section className="relative border-t border-gray-100/70" aria-label="제작 사례 — Featured Work">
+    <section
+      id="work"
+      className="relative scroll-mt-20 border-t border-gray-100/70"
+      aria-label="제작 사례 — Featured Work"
+    >
       <div className="mx-auto max-w-6xl px-6 py-20 sm:py-28">
         <Reveal>
           <p className="text-[12px] font-bold uppercase tracking-[0.28em] text-indigo-600">

@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { LandingChrome } from '@/components/landing/LandingChrome'
+import { SmoothScrollProvider } from '@/components/SmoothScrollProvider'
+import { CustomCursor } from '@/components/CustomCursor'
 import { RefCapture } from '@/components/RefCapture'
 import { Analytics } from '@/components/Analytics'
 import { GtagScripts } from '@/components/GtagScripts'
@@ -109,7 +111,10 @@ export default function RootLayout({
         <JsonLd data={ORG_JSONLD} />
         <RefCapture />
         <Analytics />
-        <LandingChrome>{children}</LandingChrome>
+        <CustomCursor />
+        <SmoothScrollProvider>
+          <LandingChrome>{children}</LandingChrome>
+        </SmoothScrollProvider>
       </body>
     </html>
   )
