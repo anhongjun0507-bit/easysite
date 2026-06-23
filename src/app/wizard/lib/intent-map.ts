@@ -10,6 +10,7 @@ const CHIP_MAP: Record<string, SiteType> = {
 
 /** 자유 입력 키워드 매칭 — 우선순위 순서 유지 */
 const KEYWORD_MAP: Array<{ type: SiteType; keywords: string[] }> = [
+  { type: 'app', keywords: ['앱', '어플', '애플리케이션', '안드로이드', '아이폰'] },
   { type: 'shop', keywords: ['쇼핑', '커머스', '상품', '판매', '스토어', '몰'] },
   {
     type: 'reservation',

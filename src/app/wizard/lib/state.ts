@@ -8,7 +8,7 @@
 export const STORAGE_KEY = 'jieuri-wizard-v2'
 export const SESSION_KEY = 'jieuri-wizard-session-v2'
 
-export type SiteType = 'company' | 'shop' | 'reservation' | 'landing' | 'other'
+export type SiteType = 'company' | 'shop' | 'reservation' | 'landing' | 'app' | 'other'
 export type PageCount = 'small' | 'medium' | 'large' | 'unsure'
 export type DesignTone = 'modern' | 'luxury' | 'friendly' | 'auto' | 'other'
 export type Timeline = '2w' | '1m' | '2m' | 'flex'

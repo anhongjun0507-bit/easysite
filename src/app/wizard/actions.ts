@@ -137,7 +137,7 @@ const escape = (v: string) => v.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&
 
 const labelSiteType = (v?: string, etc?: string | null) => {
   const base =
-    ({ company: '회사·가게 소개', shop: '쇼핑몰', reservation: '예약·회원제', landing: '랜딩페이지', other: '기타' })[
+    ({ company: '회사·가게 소개', shop: '쇼핑몰', reservation: '예약·회원제', landing: '랜딩페이지', app: '앱 개발', other: '기타' })[
       v ?? ''
     ] ?? '미선택'
   return v === 'other' && etc ? `기타 — ${escape(etc)}` : base

@@ -20,6 +20,7 @@ import {
   type PreregisterInput,
 } from './lib/schema'
 import { submitPreregistration } from './actions'
+import { trackConversion } from '@/lib/tracking/analytics'
 
 const inputBase =
   'h-12 w-full rounded-lg border-0 bg-white px-3.5 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'
@@ -70,6 +71,8 @@ export function RegisterForm() {
     const res = await submitPreregistration(values)
     if (res.ok) {
       setDone(true)
+      // 사전등록 완료 = 전환. 같은 연락처 중복 제출은 1회만 집계
+      trackConversion('register', { dedupeKey: values.contact })
       return
     }
     if (res.reason === 'duplicate') {

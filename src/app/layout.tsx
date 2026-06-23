@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { LandingChrome } from '@/components/landing/LandingChrome'
 import { RefCapture } from '@/components/RefCapture'
+import { Analytics } from '@/components/Analytics'
 import { JsonLd } from '@/components/JsonLd'
 import { SITE_URL, SITE_NAME, SITE_OPERATOR } from '@/lib/site'
 import './globals.css'
@@ -105,6 +106,7 @@ export default function RootLayout({
       <body className="relative isolate flex min-h-screen flex-col antialiased">
         <JsonLd data={ORG_JSONLD} />
         <RefCapture />
+        <Analytics />
         <LandingChrome>{children}</LandingChrome>
       </body>
     </html>

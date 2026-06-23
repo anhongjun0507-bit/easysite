@@ -9,6 +9,7 @@ export const SITE_TYPE_LABEL_MAP: Record<string, string> = {
   shop: '쇼핑몰',
   reservation: '예약·회원제',
   landing: '랜딩페이지',
+  app: '앱 개발',
   other: '기타',
 }
 

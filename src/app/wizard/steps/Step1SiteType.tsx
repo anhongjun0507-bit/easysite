@@ -16,6 +16,7 @@ const OPTIONS: Array<{ value: Exclude<SiteType, 'other'>; title: string; desc: s
   { value: 'shop', title: '쇼핑몰', desc: '상품 진열, 장바구니, 결제까지' },
   { value: 'reservation', title: '예약·회원제', desc: '예약 받기, 회원가입, 멤버 전용 페이지' },
   { value: 'landing', title: '랜딩페이지', desc: '한 페이지로 이벤트·캠페인 알리기' },
+  { value: 'app', title: '앱 개발', desc: 'iOS·안드로이드 모바일 앱' },
 ]
 
 const inputBox =
@@ -30,7 +31,7 @@ export function Step1SiteType({ state, onAnswer }: Props) {
     return (
       <>
         <StepShell
-          question="어떤 사이트가 필요하세요?"
+          question="어떤 걸 만들까요?"
           helper={<>위 보기에 없으면 어떤 사이트인지 한 줄로 적어주세요.</>}
         >
           <textarea

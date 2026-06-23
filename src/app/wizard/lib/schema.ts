@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const SITE_TYPE = ['company', 'shop', 'reservation', 'landing', 'other'] as const
+export const SITE_TYPE = ['company', 'shop', 'reservation', 'landing', 'app', 'other'] as const
 export const PAGE_COUNT = ['small', 'medium', 'large', 'unsure'] as const
 export const DESIGN_TONE = ['modern', 'luxury', 'friendly', 'auto', 'other'] as const
 export const TIMELINE = ['2w', '1m', '2m', 'flex'] as const
