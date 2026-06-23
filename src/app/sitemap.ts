@@ -15,6 +15,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     // /wizard·/lp 는 noindex 이므로 sitemap 에서 제외
     {
+      url: `${SITE_URL}/register`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: `${SITE_URL}/service/website`,
       lastModified: now,
       changeFrequency: 'monthly',

@@ -211,12 +211,12 @@ function JieuriSection() {
         </ol>
 
         <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-          <a
-            href="/#register"
+          <Link
+            href="/register"
             className="inline-flex h-12 items-center justify-center rounded-xl bg-indigo-600 px-6 text-sm font-bold text-white transition hover:bg-indigo-700 sm:text-[15px]"
           >
             사전등록하고 먼저 받기
-          </a>
+          </Link>
           <Link
             href="/wizard"
             className="inline-flex h-12 items-center justify-center rounded-xl border border-gray-300 bg-white px-6 text-sm font-bold text-gray-900 transition hover:border-gray-400 sm:text-[15px]"

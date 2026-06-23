@@ -1,8 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useRef, type MouseEvent } from 'react'
+import { useEffect, useRef, type MouseEvent } from 'react'
 import { ArrowRight, Check, Sparkles, Star } from 'lucide-react'
+import { HeroBackdrop } from './HeroBackdrop'
 
 /**
  * 홈 플래그십 히어로 — 프리미엄·3D·AI 감성(토스/클로바 톤).
@@ -25,14 +26,45 @@ export function Hero() {
     if (el) el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)'
   }
 
+  // 스크롤 패럴럭스 — 데모 클러스터가 떠오르며 멀어짐(깊이 연출).
+  // reduced-motion 비활성. 마우스 틸트는 내부 tiltRef 라 충돌 없음.
+  const clusterRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const el = clusterRef.current
+    if (!el) return
+    let raf = 0
+    const onScroll = () => {
+      if (raf) return
+      raf = requestAnimationFrame(() => {
+        raf = 0
+        const p = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 0.85)))
+        el.style.transform = `translateY(${(p * -48).toFixed(1)}px)`
+        el.style.opacity = `${(1 - p * 0.55).toFixed(3)}`
+      })
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [])
+
   return (
     <section className="relative isolate overflow-hidden bg-aurora">
+      <HeroBackdrop />
+      {/* 가독 스크림 — 좌상단(헤드라인) 화이트, 우하단(카드)은 비비드 유지 */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.82)_0%,rgba(255,255,255,0.38)_30%,rgba(255,255,255,0)_60%)]"
+      />
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-grid" />
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-noise opacity-[0.13] mix-blend-soft-light" />
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 pb-16 pt-12 sm:pb-24 sm:pt-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-6">
         {/* ───────── 카피 ───────── */}
-        <div className="text-center lg:text-left">
+        <div className="hero-stagger text-center lg:text-left">
           <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200/70 bg-white/70 px-3.5 py-1.5 text-[13px] font-semibold text-indigo-700 shadow-xs backdrop-blur">
             <Sparkles className="h-4 w-4" strokeWidth={2.2} />
             AI 웹사이트 빌더 · 사전등록 모집 중
@@ -71,13 +103,13 @@ export function Hero() {
 
           {/* CTA */}
           <div className="mt-8 flex flex-col items-center gap-2.5 sm:flex-row sm:flex-wrap lg:justify-start lg:gap-3">
-            <a
-              href="#register"
+            <Link
+              href="/register"
               className="shine glow-indigo group inline-flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-7 text-[16px] font-bold text-white transition duration-200 ease-emphasized hover:-translate-y-0.5 hover:bg-indigo-700 active:translate-y-0 sm:w-auto sm:text-[17px]"
             >
               사전등록하고 평생 50% 할인
               <ArrowRight className="h-5 w-5 transition-transform duration-200 ease-emphasized group-hover:translate-x-0.5" />
-            </a>
+            </Link>
             <Link
               href="/wizard"
               className="glass group inline-flex h-14 w-full items-center justify-center gap-1.5 rounded-2xl px-6 text-[15px] font-bold text-gray-800 transition duration-200 ease-emphasized hover:-translate-y-0.5 active:translate-y-0 sm:w-auto sm:text-[16px]"
@@ -93,6 +125,7 @@ export function Hero() {
 
         {/* ───────── 3D 데모 ───────── */}
         <div
+          ref={clusterRef}
           className="relative mx-auto w-full max-w-md [perspective:1000px] lg:max-w-none"
           onMouseMove={handleMove}
           onMouseLeave={handleLeave}

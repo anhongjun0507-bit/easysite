@@ -13,9 +13,10 @@ import {
   Star,
   Wallet,
 } from 'lucide-react'
-import { RegisterForm } from './RegisterForm'
 import { Hero } from './Hero'
 import { ScrollShowcase } from './ScrollShowcase'
+import { CustomCursor } from './CustomCursor'
+import { SmoothScroll } from './SmoothScroll'
 import { Reveal } from './Reveal'
 import { StickyCta } from './StickyCta'
 
@@ -113,6 +114,8 @@ const cases = [
 export default function JieuriPage() {
   return (
     <>
+      <SmoothScroll />
+      <CustomCursor />
       {/* 헤더는 공용 Header(LandingChrome) 에서 렌더 — 견적/사전등록 동선 통합 */}
       <main className="flex-1">
         {/* 1. 히어로 (플래그십 — 프리미엄·3D·AI) */}
@@ -136,8 +139,8 @@ export default function JieuriPage() {
             <div className="mt-12 grid gap-5 lg:grid-cols-[1.4fr_1fr] lg:items-stretch">
               {/* 좌: 직접 만들래요 — 카드 전체 클릭 → 사전등록 폼 */}
               <Reveal>
-                <a
-                  href="#register"
+                <Link
+                  href="/register"
                   className="group flex h-full flex-col rounded-3xl bg-indigo-600 p-8 text-white shadow-[0_24px_60px_-30px_rgba(79,70,229,0.7)] transition duration-200 ease-emphasized hover:-translate-y-1 active:translate-y-0 active:scale-[0.99] sm:p-10"
                 >
                   <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-[12.5px] font-bold text-white">
@@ -155,7 +158,7 @@ export default function JieuriPage() {
                     사전등록
                     <ArrowRight className="h-5 w-5 transition-transform duration-200 ease-emphasized group-hover:translate-x-0.5" />
                   </span>
-                </a>
+                </Link>
               </Reveal>
 
               {/* 우: 지금 맡길래요 — 카드 전체 클릭 → /wizard (지금 작동하는 AI 견적) */}
@@ -328,30 +331,6 @@ export default function JieuriPage() {
           </div>
         </section>
 
-        {/* 6. 사전등록 폼 */}
-        <section
-          id="register"
-          className="scroll-mt-6 border-t border-gray-100 bg-gray-50/70"
-        >
-          <div className="mx-auto max-w-xl px-6 py-16 sm:py-24">
-            <Reveal className="text-center">
-              <h2 className="text-[26px] font-extrabold tracking-[-0.02em] text-gray-900 sm:text-[34px]">
-                사전등록하고 평생 50% 할인받기
-              </h2>
-              <p className="mx-auto mt-3 max-w-md text-[16px] leading-relaxed text-gray-600">
-                선착순 100명만 모셔요. 몇 가지만 답해주시면 끝 — 출시되면 가장 먼저
-                알려드릴게요.
-              </p>
-            </Reveal>
-
-            <Reveal
-              delay={80}
-              className="mt-10 rounded-2xl border border-gray-200/80 bg-white p-6 shadow-[0_24px_60px_-40px_rgba(17,24,39,0.4)] sm:p-8"
-            >
-              <RegisterForm />
-            </Reveal>
-          </div>
-        </section>
       </main>
 
       <StickyCta />
