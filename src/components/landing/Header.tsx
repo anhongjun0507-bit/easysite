@@ -71,9 +71,11 @@ export function Header() {
   function go(hash: string) {
     return (e: MouseEvent) => {
       setOpen(false)
-      if (isHome && lenis) {
+      // 현재 페이지에 대상 섹션이 있으면 Lenis 스크롤, 없으면 /#앵커로 이동
+      const target = document.querySelector(hash)
+      if (target && lenis) {
         e.preventDefault()
-        lenis.scrollTo(hash, { duration: 1.4, offset: -10 })
+        lenis.scrollTo(target as HTMLElement, { duration: 1.4, offset: -10 })
       }
     }
   }
