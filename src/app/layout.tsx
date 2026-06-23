@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next'
-import localFont from 'next/font/local'
 import { LandingChrome } from '@/components/landing/LandingChrome'
 import { SmoothScrollProvider } from '@/components/SmoothScrollProvider'
 import { CustomCursor } from '@/components/CustomCursor'
@@ -9,16 +8,8 @@ import { GtagScripts } from '@/components/GtagScripts'
 import { JsonLd } from '@/components/JsonLd'
 import { SITE_URL, SITE_NAME, SITE_OPERATOR } from '@/lib/site'
 import './globals.css'
-
-// Pretendard 자체호스팅 — CDN @import(렌더 블로킹 764ms) 제거. swap + preload 로 FCP/LCP 개선.
-const pretendard = localFont({
-  src: './fonts/PretendardVariable.woff2',
-  display: 'swap',
-  weight: '45 920',
-  variable: '--font-pretendard',
-  // 2MB 가변폰트라 preload 시 LCP 경쟁 → 비프리로드(폴백 즉시 표시 후 swap)
-  preload: false,
-})
+// Pretendard 동적 서브셋(자체호스팅) — unicode-range 조각 woff2. 실제 쓰인 글자 범위만 다운로드(2MB→수십KB).
+import './pretendard-subset.css'
 
 const SITE_TITLE = '지으리 — 말하면, 지으리'
 const SITE_DESCRIPTION =
@@ -116,7 +107,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="ko" className={pretendard.variable}>
+    <html lang="ko">
       <body className="relative isolate flex min-h-screen flex-col antialiased">
         <GtagScripts />
         <JsonLd data={ORG_JSONLD} />
