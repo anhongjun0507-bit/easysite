@@ -138,3 +138,12 @@ export const portfolio: PortfolioItem[] = [
 export const featuredPortfolio: PortfolioItem[] = portfolio.filter(
   (p) => p.featured,
 )
+
+// 메인 #work 케이스 스터디 — 강한 3개만 큐레이션(프리미엄/어워드 관점).
+// 순서대로 노출(SELLFIT 톱). portfolio 원본·featured·이미지 자산은 그대로 두고
+// (/portfolio·위저드 매칭에서 계속 쓰임) 여기 목록에서만 선별한다.
+const CASE_STUDY_IDS = ['sellfit', 'ps-company', 'prismedu'] as const
+
+export const caseStudies: PortfolioItem[] = CASE_STUDY_IDS.map((id) =>
+  portfolio.find((p) => p.id === id),
+).filter((p): p is PortfolioItem => Boolean(p))

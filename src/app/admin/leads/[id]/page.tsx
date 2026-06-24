@@ -86,6 +86,17 @@ export default async function LeadDetailPage({
   const answers = (lead.wizard_answers ?? {}) as WizardAnswers
   // tagline/rawIntent 등 features에 따로 저장된 항목 보강 (wizard/actions.ts 참조)
   const features = (lead.features ?? {}) as Record<string, unknown>
+  // consult(프로젝트 문의) 리드 — 위저드와 다른 카드로 표시
+  const isConsult = features.kind === 'consult'
+  const consultKakao =
+    typeof features.kakao === 'string' && features.kakao.trim()
+      ? features.kakao.trim()
+      : null
+  const kakao = kakaoId ?? consultKakao
+  const marketing =
+    features.marketing && typeof features.marketing === 'object'
+      ? (features.marketing as Record<string, unknown>)
+      : null
   const tagline =
     typeof answers.tagline === 'string'
       ? answers.tagline
@@ -166,7 +177,7 @@ export default async function LeadDetailPage({
           <QuickActions
             phone={lead.contact_phone}
             email={lead.contact_email}
-            kakao={kakaoId}
+            kakao={kakao}
           />
           <LeadStatusSelect leadId={lead.id} initialStatus={lead.status} />
           <PaymentRequestModal
@@ -179,13 +190,33 @@ export default async function LeadDetailPage({
       {/* ───── 본문 2-cols (lg+) / 1-col 스택 ───── */}
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-[3fr_2fr]">
         <div className="space-y-4">
-          <BasicInfoCard lead={lead} kakao={kakaoId} />
-          <WizardAnswersCard
-            answers={answers}
-            tagline={tagline}
-            budget={typeof features.budget === 'string' ? features.budget : null}
-          />
-          <QuoteCard quote={quote} />
+          <BasicInfoCard lead={lead} kakao={kakao} />
+          {isConsult ? (
+            <ConsultCard
+              projectType={
+                typeof features.projectType === 'string'
+                  ? features.projectType
+                  : null
+              }
+              budget={typeof features.budget === 'string' ? features.budget : null}
+              timeline={
+                typeof features.timeline === 'string' ? features.timeline : null
+              }
+              message={lead.notes}
+              marketing={marketing}
+            />
+          ) : (
+            <>
+              <WizardAnswersCard
+                answers={answers}
+                tagline={tagline}
+                budget={
+                  typeof features.budget === 'string' ? features.budget : null
+                }
+              />
+              <QuoteCard quote={quote} />
+            </>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -405,6 +436,76 @@ function WizardItem({
         {value}
       </dd>
     </div>
+  )
+}
+
+function ConsultCard({
+  projectType,
+  budget,
+  timeline,
+  message,
+  marketing,
+}: {
+  projectType: string | null
+  budget: string | null
+  timeline: string | null
+  message: string | null
+  marketing: Record<string, unknown> | null
+}) {
+  const mktEntries = marketing
+    ? Object.entries(marketing).filter(
+        ([, v]) => typeof v === 'string' && v.trim(),
+      )
+    : []
+  return (
+    <Card title="문의 내용" helper="프로젝트 문의 폼에서 받은 자격검증 응답">
+      <dl className="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
+        <FieldRow label="프로젝트 유형">
+          <span className={projectType ? '' : 'text-gray-400'}>
+            {projectType ?? '미응답'}
+          </span>
+        </FieldRow>
+        <FieldRow label="예산대">
+          <span className={budget ? '' : 'text-gray-400'}>{budget ?? '미응답'}</span>
+        </FieldRow>
+        <FieldRow label="일정">
+          <span className={timeline ? '' : 'text-gray-400'}>
+            {timeline ?? '미응답'}
+          </span>
+        </FieldRow>
+      </dl>
+
+      {message && (
+        <div className="mt-4">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+            문의 메시지
+          </p>
+          <p className="mt-1 whitespace-pre-wrap rounded-lg bg-gray-50 px-3.5 py-3 text-sm leading-relaxed text-gray-800">
+            {message}
+          </p>
+        </div>
+      )}
+
+      {mktEntries.length > 0 && (
+        <div className="mt-4">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+            광고 유입 (gclid·utm)
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {mktEntries.map(([k, v]) => (
+              <span
+                key={k}
+                className="inline-flex items-center rounded-md border border-gray-200 bg-gray-50 px-2 py-1 font-mono text-[11px] text-gray-700"
+              >
+                <span className="font-semibold text-gray-500">{k}</span>
+                <span className="mx-1 text-gray-300">=</span>
+                {String(v)}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </Card>
   )
 }
 

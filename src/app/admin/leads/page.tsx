@@ -2,12 +2,17 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { requireAdmin } from '@/lib/admin/auth'
 import {
-  formatBudgetRange,
+  countNewLeads,
   formatCardDate,
   formatListDate,
-  labelSiteType,
+  leadBudgetLabel,
+  leadChannel,
+  leadTimelineLabel,
+  leadTypeLabel,
+  LEAD_CHANNEL_LABEL,
   LEADS_PAGE_SIZE,
   listLeads,
+  type LeadChannel,
   type LeadListItem,
 } from '@/lib/admin/leads'
 import {
@@ -33,6 +38,13 @@ function pickStr(v: string | string[] | undefined): string {
   return v ?? ''
 }
 
+// 채널 칩 색상
+const CHANNEL_CHIP: Record<LeadChannel, string> = {
+  consult: 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200',
+  wizard: 'bg-sky-50 text-sky-700 ring-1 ring-sky-200',
+  other: 'bg-gray-100 text-gray-600 ring-1 ring-gray-200',
+}
+
 export default async function AdminLeadsPage({
   searchParams,
 }: {
@@ -42,23 +54,25 @@ export default async function AdminLeadsPage({
 
   const q = pickStr(searchParams.q).trim()
   const statusRaw = pickStr(searchParams.status)
+  const channelRaw = pickStr(searchParams.channel)
   const sortRaw = pickStr(searchParams.sort)
   const pageRaw = pickStr(searchParams.page)
 
   const status: LeadStatusKey | undefined = isLeadStatusKey(statusRaw)
     ? statusRaw
     : undefined
+  const channel: LeadChannel | undefined =
+    channelRaw === 'consult' || channelRaw === 'wizard' ? channelRaw : undefined
   const sort: 'newest' | 'oldest' = sortRaw === 'oldest' ? 'oldest' : 'newest'
   const pageNum = Math.max(1, Number.parseInt(pageRaw, 10) || 1)
 
-  const { rows, total, page, totalPages } = await listLeads({
-    q,
-    status,
-    sort,
-    page: pageNum,
-  })
+  const [{ rows, total, page, totalPages }, newCount] = await Promise.all([
+    listLeads({ q, status, channel, sort, page: pageNum }),
+    countNewLeads(),
+  ])
 
-  const hasFilter = Boolean(q) || Boolean(status) || sort !== 'newest'
+  const hasFilter =
+    Boolean(q) || Boolean(status) || Boolean(channel) || sort !== 'newest'
   const rangeStart = total === 0 ? 0 : (page - 1) * LEADS_PAGE_SIZE + 1
   const rangeEnd = Math.min(total, page * LEADS_PAGE_SIZE)
 
@@ -68,9 +82,14 @@ export default async function AdminLeadsPage({
         <p className="text-xs font-bold uppercase tracking-[0.15em] text-indigo-600">
           리드
         </p>
-        <h1 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl">
-          전체 리드
-        </h1>
+        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">전체 리드</h1>
+          {newCount > 0 && (
+            <span className="inline-flex h-6 items-center rounded-full bg-indigo-600 px-2.5 text-xs font-bold tabular-nums text-white">
+              신규 {newCount}건
+            </span>
+          )}
+        </div>
         <p className="mt-2 text-sm tabular-nums text-gray-500">
           {total > 0
             ? `${rangeStart}–${rangeEnd} / 총 ${total}건 · 페이지 ${page}/${totalPages}`
@@ -81,6 +100,7 @@ export default async function AdminLeadsPage({
       <LeadsToolbar
         q={q}
         status={status ?? 'all'}
+        channel={channel ?? 'all'}
         sort={sort}
       />
 
@@ -96,9 +116,10 @@ export default async function AdminLeadsPage({
                   <Th>생성일</Th>
                   <Th>이름</Th>
                   <Th>연락처</Th>
-                  <Th>사이트 종류</Th>
-                  <Th>업종</Th>
-                  <Th>견적 범위</Th>
+                  <Th>유형</Th>
+                  <Th>예산</Th>
+                  <Th>일정</Th>
+                  <Th>유입</Th>
                   <Th>상태</Th>
                 </tr>
               </thead>
@@ -122,7 +143,12 @@ export default async function AdminLeadsPage({
           <Pagination
             page={page}
             totalPages={totalPages}
-            params={{ q, status: status ?? '', sort: sort === 'newest' ? '' : sort }}
+            params={{
+              q,
+              status: status ?? '',
+              channel: channel ?? '',
+              sort: sort === 'newest' ? '' : sort,
+            }}
           />
         </>
       )}
@@ -142,15 +168,38 @@ function Th({ children }: { children: React.ReactNode }) {
   )
 }
 
+function ChannelChip({ source }: { source: string | null }) {
+  const ch = leadChannel(source)
+  return (
+    <span
+      title={source ?? undefined}
+      className={`inline-flex h-6 items-center rounded-full px-2 text-[11px] font-semibold ${CHANNEL_CHIP[ch]}`}
+    >
+      {LEAD_CHANNEL_LABEL[ch]}
+    </span>
+  )
+}
+
 function LeadTableRow({ row }: { row: LeadListItem }) {
   const href = `/admin/leads/${row.id}`
   const ariaLabel = `${row.contact_name ?? '이름 미입력'} 상세 보기`
+  const isNew = row.status === 'new'
 
   return (
-    <tr className="group/row transition-colors hover:bg-gray-50">
+    <tr
+      className={`group/row transition-colors hover:bg-gray-50 ${
+        isNew ? 'bg-indigo-50/40' : ''
+      }`}
+    >
       <Td>
         <CellLink href={href} aria-label={ariaLabel}>
-          <span className="tabular-nums text-gray-600">
+          <span className="flex items-center gap-1.5 tabular-nums text-gray-600">
+            {isNew && (
+              <span
+                aria-hidden="true"
+                className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500"
+              />
+            )}
             {formatListDate(row.created_at)}
           </span>
         </CellLink>
@@ -161,9 +210,7 @@ function LeadTableRow({ row }: { row: LeadListItem }) {
             {row.contact_name ?? '이름 미입력'}
           </span>
           {row.business_name && (
-            <span className="block text-xs text-gray-500">
-              {row.business_name}
-            </span>
+            <span className="block text-xs text-gray-500">{row.business_name}</span>
           )}
         </CellLink>
       </Td>
@@ -176,19 +223,22 @@ function LeadTableRow({ row }: { row: LeadListItem }) {
       </Td>
       <Td>
         <CellLink href={href} aria-label={ariaLabel}>
-          <span className="text-gray-700">{labelSiteType(row.features)}</span>
+          <span className="text-gray-700">{leadTypeLabel(row.features)}</span>
         </CellLink>
       </Td>
       <Td>
         <CellLink href={href} aria-label={ariaLabel}>
-          <span className="text-gray-700">{row.industry ?? '—'}</span>
+          <span className="tabular-nums text-gray-700">{leadBudgetLabel(row)}</span>
         </CellLink>
       </Td>
       <Td>
         <CellLink href={href} aria-label={ariaLabel}>
-          <span className="tabular-nums text-gray-700">
-            {formatBudgetRange(row.estimated_price_min, row.estimated_price_max)}
-          </span>
+          <span className="text-gray-700">{leadTimelineLabel(row.features)}</span>
+        </CellLink>
+      </Td>
+      <Td>
+        <CellLink href={href} aria-label={ariaLabel}>
+          <ChannelChip source={row.source} />
         </CellLink>
       </Td>
       <Td>
@@ -201,9 +251,7 @@ function LeadTableRow({ row }: { row: LeadListItem }) {
 }
 
 function Td({ children }: { children: React.ReactNode }) {
-  return (
-    <td className="border-b border-gray-100 align-middle">{children}</td>
-  )
+  return <td className="border-b border-gray-100 align-middle">{children}</td>
 }
 
 function CellLink({
@@ -223,14 +271,25 @@ function CellLink({
 }
 
 function LeadCard({ row }: { row: LeadListItem }) {
+  const isNew = row.status === 'new'
   return (
     <Link
       href={`/admin/leads/${row.id}`}
-      className="flex min-h-[88px] flex-col gap-1.5 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition-colors hover:border-gray-300 active:bg-gray-50"
+      className={`flex min-h-[88px] flex-col gap-1.5 rounded-2xl border p-4 shadow-sm transition-colors active:bg-gray-50 ${
+        isNew
+          ? 'border-indigo-200 bg-indigo-50/40 hover:border-indigo-300'
+          : 'border-gray-200 bg-white hover:border-gray-300'
+      }`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-base font-semibold text-gray-900">
+          <p className="flex items-center gap-1.5 truncate text-base font-semibold text-gray-900">
+            {isNew && (
+              <span
+                aria-hidden="true"
+                className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500"
+              />
+            )}
             {row.contact_name ?? '이름 미입력'}
           </p>
           <p className="mt-0.5 truncate text-sm tabular-nums text-gray-600">
@@ -239,11 +298,20 @@ function LeadCard({ row }: { row: LeadListItem }) {
         </div>
         <StatusChip status={row.status} />
       </div>
-      <div className="flex items-center justify-between text-xs tabular-nums text-gray-500">
-        <span>
-          견적 {formatBudgetRange(row.estimated_price_min, row.estimated_price_max)}
-        </span>
-        <span>{formatCardDate(row.created_at)}</span>
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-gray-600">
+        <ChannelChip source={row.source} />
+        <span className="text-gray-700">{leadTypeLabel(row.features)}</span>
+        <span className="text-gray-300">·</span>
+        <span className="tabular-nums text-gray-700">{leadBudgetLabel(row)}</span>
+        {leadTimelineLabel(row.features) !== '—' && (
+          <>
+            <span className="text-gray-300">·</span>
+            <span className="text-gray-700">{leadTimelineLabel(row.features)}</span>
+          </>
+        )}
+      </div>
+      <div className="text-xs tabular-nums text-gray-400">
+        {formatCardDate(row.created_at)}
       </div>
     </Link>
   )
@@ -269,9 +337,7 @@ function EmptyState({ hasFilter }: { hasFilter: boolean }) {
         <p className="text-base font-semibold text-gray-900">
           조건에 맞는 리드가 없어요
         </p>
-        <p className="mt-1 text-sm text-gray-500">
-          검색어나 필터를 바꿔보세요.
-        </p>
+        <p className="mt-1 text-sm text-gray-500">검색어나 필터를 바꿔보세요.</p>
         <Link
           href="/admin/leads"
           className="mt-4 inline-flex h-10 items-center rounded-md border border-gray-300 bg-white px-4 text-sm font-semibold text-gray-700 transition hover:border-gray-400 hover:text-gray-900"
@@ -283,11 +349,9 @@ function EmptyState({ hasFilter }: { hasFilter: boolean }) {
   }
   return (
     <div className="mt-8 rounded-2xl border border-dashed border-gray-300 bg-white p-10 text-center">
-      <p className="text-base font-semibold text-gray-900">
-        아직 리드가 없어요
-      </p>
+      <p className="text-base font-semibold text-gray-900">아직 리드가 없어요</p>
       <p className="mt-1 text-sm text-gray-500">
-        위저드 링크를 숨고에 공유해보세요. 첫 견적 요청이 들어오면 여기에 표시돼요.
+        문의 폼·위저드로 첫 문의가 들어오면 여기에 표시돼요.
       </p>
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
         <Link
@@ -316,7 +380,7 @@ function Pagination({
 }: {
   page: number
   totalPages: number
-  params: { q: string; status: string; sort: string }
+  params: { q: string; status: string; channel: string; sort: string }
 }) {
   if (totalPages <= 1) return null
 
@@ -324,6 +388,7 @@ function Pagination({
     const sp = new URLSearchParams()
     if (params.q) sp.set('q', params.q)
     if (params.status) sp.set('status', params.status)
+    if (params.channel) sp.set('channel', params.channel)
     if (params.sort) sp.set('sort', params.sort)
     if (p > 1) sp.set('page', String(p))
     const qs = sp.toString()

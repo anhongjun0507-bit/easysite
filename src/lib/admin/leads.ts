@@ -11,6 +11,7 @@ export type LeadListItem = {
   estimated_price_min: number | null
   estimated_price_max: number | null
   status: string
+  source: string | null
   features: Record<string, unknown> | null
 }
 
@@ -19,7 +20,6 @@ export type LeadDetail = LeadListItem & {
   page_count: number | null
   wizard_answers: Record<string, unknown> | null
   notes: string | null
-  source: string | null
   updated_at: string
   admin_memo: string | null
   ai_menu_structure: unknown
@@ -47,6 +47,7 @@ export type LeadDetailWithConversations = {
 export type LeadListQuery = {
   q?: string
   status?: LeadStatusKey
+  channel?: LeadChannel
   sort?: 'newest' | 'oldest'
   page?: number
 }
@@ -62,7 +63,7 @@ export type LeadListResult = {
 export const LEADS_PAGE_SIZE = 20
 
 const LIST_COLS =
-  'id, created_at, business_name, contact_name, contact_phone, industry, estimated_price_min, estimated_price_max, status, features'
+  'id, created_at, business_name, contact_name, contact_phone, industry, estimated_price_min, estimated_price_max, status, source, features'
 
 export async function listLeads(query: LeadListQuery): Promise<LeadListResult> {
   const admin = createAdminClient()
@@ -80,6 +81,10 @@ export async function listLeads(query: LeadListQuery): Promise<LeadListResult> {
   if (query.status && isLeadStatusKey(query.status)) {
     q = q.eq('status', query.status)
   }
+
+  // 유입 채널 필터 — source 접두로 판별(consult / wizard-v1).
+  if (query.channel === 'consult') q = q.like('source', 'consult%')
+  else if (query.channel === 'wizard') q = q.like('source', 'wizard%')
 
   if (query.q) {
     // PostgREST OR — 쉼표·괄호는 split 문자라 안전하게 제거
@@ -107,7 +112,7 @@ export async function listLeads(query: LeadListQuery): Promise<LeadListResult> {
   }
 }
 
-const DETAIL_COLS = `${LIST_COLS}, contact_email, page_count, wizard_answers, notes, source, updated_at, admin_memo, ai_menu_structure, ai_hero_copy, ai_about_draft, ai_colors, ai_generated_at, chat_notified_at`
+const DETAIL_COLS = `${LIST_COLS}, contact_email, page_count, wizard_answers, notes, updated_at, admin_memo, ai_menu_structure, ai_hero_copy, ai_about_draft, ai_colors, ai_generated_at, chat_notified_at`
 
 export async function getLead(id: string): Promise<LeadDetail | null> {
   const admin = createAdminClient()
@@ -172,6 +177,64 @@ const SITE_TYPE_LABEL: Record<string, string> = {
 export function labelSiteType(features: Record<string, unknown> | null): string {
   const v = features && typeof features.siteType === 'string' ? features.siteType : ''
   return SITE_TYPE_LABEL[v] ?? '—'
+}
+
+// ── 채널·통합 라벨 — consult(문의)·wizard 리드를 한 목록에서 일관되게 보이게 ──
+
+export type LeadChannel = 'consult' | 'wizard' | 'other'
+
+/** 유입 채널 — source 접두로 판별(consult / wizard-v1). */
+export function leadChannel(source: string | null): LeadChannel {
+  const s = source ?? ''
+  if (s.startsWith('consult')) return 'consult'
+  if (s.startsWith('wizard')) return 'wizard'
+  return 'other'
+}
+
+export const LEAD_CHANNEL_LABEL: Record<LeadChannel, string> = {
+  consult: '문의',
+  wizard: '위저드',
+  other: '기타',
+}
+
+/** 유형 — consult: 프로젝트 유형(projectType), wizard: 사이트 종류, 없으면 '—'. */
+export function leadTypeLabel(features: Record<string, unknown> | null): string {
+  if (features && typeof features.projectType === 'string' && features.projectType) {
+    return features.projectType
+  }
+  return labelSiteType(features)
+}
+
+/** 예산 — consult: 예산 밴드(features.budget), 그 외: 견적 추정 범위. */
+export function leadBudgetLabel(row: {
+  features: Record<string, unknown> | null
+  estimated_price_min: number | null
+  estimated_price_max: number | null
+}): string {
+  const f = row.features
+  if (f && f.kind === 'consult' && typeof f.budget === 'string' && f.budget) {
+    return f.budget
+  }
+  return formatBudgetRange(row.estimated_price_min, row.estimated_price_max)
+}
+
+/** 일정 — consult 리드만 표시(features.timeline). 그 외 '—'. */
+export function leadTimelineLabel(features: Record<string, unknown> | null): string {
+  const f = features
+  if (f && f.kind === 'consult' && typeof f.timeline === 'string' && f.timeline) {
+    return f.timeline
+  }
+  return '—'
+}
+
+/** 신규(new) 리드 수 — 목록 헤더 강조용(필터 무관 전체). */
+export async function countNewLeads(): Promise<number> {
+  const admin = createAdminClient()
+  const { count } = await admin
+    .from('leads')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'new')
+  return count ?? 0
 }
 
 /** 견적 범위 — 만원 단위. min/max 둘 다 없으면 "미정". */
