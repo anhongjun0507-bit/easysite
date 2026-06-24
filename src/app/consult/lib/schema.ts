@@ -45,7 +45,9 @@ export const consultSchema = z.object({
     .or(z.literal('')),
   projectType: z.enum(PROJECT_TYPES, { message: '어떤 프로젝트인지 선택해 주세요' }),
   budget: z.enum(BUDGET_BANDS, { message: '예산 범위를 선택해 주세요' }),
-  timeline: z.enum(TIMELINES).optional().or(z.literal('')),
+  // 선택 항목. 미선택 시 react-hook-form 이 라디오 그룹에 null 을 주므로 null 도 허용해야 한다
+  // (nullish 없이 optional 만 두면 null 을 거부해 "Invalid input" 으로 정상 제출을 막는다).
+  timeline: z.enum(TIMELINES).or(z.literal('')).nullish(),
   kakao: z.string().trim().max(60).optional().or(z.literal('')),
   message: z.string().trim().max(500).optional().or(z.literal('')),
   consent: z
