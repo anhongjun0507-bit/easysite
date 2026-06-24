@@ -7,12 +7,13 @@ import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { SplitText } from 'gsap/SplitText'
 import { ArrowUpRight } from 'lucide-react'
-import { featuredPortfolio } from '@/config/portfolio'
+import { caseStudies } from '@/config/portfolio'
 import { EASE, DUR, DUR_SUB, STAGGER, REVEAL_START } from '@/lib/motion'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText)
 
-const WORKS = featuredPortfolio.slice(0, 6)
+// 강한 3개로 큐레이션된 케이스(SELLFIT·PS Company·프리즘 입시). config/portfolio 의 caseStudies 참조.
+const WORKS = caseStudies
 
 /**
  * 케이스 스터디 (#work) — Lusion 톤. 실제 운영 사이트(config/portfolio) 재사용.

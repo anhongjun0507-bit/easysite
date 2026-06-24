@@ -7,10 +7,11 @@ import { LEAD_STATUS_KEYS, LEAD_STATUS_LABEL } from '@/lib/admin/status'
 type Props = {
   q: string
   status: string
+  channel: string
   sort: 'newest' | 'oldest'
 }
 
-export function LeadsToolbar({ q, status, sort }: Props) {
+export function LeadsToolbar({ q, status, channel, sort }: Props) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [qInput, setQInput] = useState(q)
@@ -52,6 +53,18 @@ export function LeadsToolbar({ q, status, sort }: Props) {
         className="h-10 flex-1 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
       />
       <div className="flex gap-2">
+        <select
+          value={channel}
+          onChange={(e) =>
+            apply({ channel: e.target.value === 'all' ? null : e.target.value })
+          }
+          aria-label="유입 채널 필터"
+          className="h-10 rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+        >
+          <option value="all">전체 채널</option>
+          <option value="consult">문의</option>
+          <option value="wizard">위저드</option>
+        </select>
         <select
           value={status}
           onChange={(e) =>

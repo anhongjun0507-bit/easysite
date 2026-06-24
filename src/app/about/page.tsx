@@ -6,12 +6,12 @@ import { SITE_URL, SITE_NAME, SITE_OPERATOR } from '@/lib/site'
 export const metadata: Metadata = {
   title: '소개 — 안홍준',
   description:
-    '프리즘 대표 안홍준입니다. 코드 없이 말로 웹사이트를 만드는 AI 빌더 지으리를 만들고 있어요. 지금은 사전등록을 받고, 출시 전까지는 사장님 홈페이지를 직접 제작(외주)도 해드립니다.',
+    '프리즘 안홍준이 운영하는 인터랙티브 디지털 스튜디오, 지으리. 브랜드의 첫인상이 되는 웹사이트를 직접 설계·디자인·개발하고, 만든 사람이 출시 후 운영까지 책임집니다.',
   alternates: { canonical: '/about' },
   openGraph: {
     title: '소개 — 안홍준 | 지으리',
     description:
-      '프리즘 대표 안홍준입니다. 코드 없이 말로 웹사이트를 만드는 AI 빌더 지으리를 만들고 있어요. 출시 전까지는 직접 제작도 해드립니다.',
+      '프리즘 안홍준이 운영하는 인터랙티브 디지털 스튜디오, 지으리. 디자인부터 모션·개발까지 한 흐름으로 만듭니다.',
     url: '/about',
   },
 }
@@ -30,10 +30,10 @@ const ABOUT_JSONLD = {
     brand: { '@type': 'Brand', name: SITE_NAME },
   },
   knowsAbout: [
-    'AI 웹사이트 제작',
-    '채팅으로 홈페이지 만들기',
-    '코드 없이 사이트 제작',
-    '웹사이트 외주 제작',
+    '인터랙티브 웹 제작',
+    '브랜드 웹사이트 디자인',
+    '웹·모션 개발',
+    '웹사이트 제작',
   ],
 }
 
@@ -116,14 +116,13 @@ function Hero() {
               안녕하세요, 안홍준입니다
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-gray-700 sm:text-xl">
-              코드 없이 말로 웹사이트를 만드는 빌더,{' '}
-              <span className="font-bold text-indigo-700">지으리</span>를 만들고
+              보는 순간 기억에 남는 인터랙티브 웹을 만드는 스튜디오,{' '}
+              <span className="font-bold text-indigo-700">지으리</span>를 운영하고
               있어요.
             </p>
             <p className="mt-3 max-w-lg text-sm leading-relaxed text-gray-600 sm:text-base">
-              지금은 개발 중이라 먼저 써보실 분들께 사전등록을 받고 있고, 출시
-              전까지는 제가 사장님 사이트를 직접 만들어 드려요. 만든 사람이 직접
-              운영까지 한다는 게 흔한 외주랑 가장 다른 점이에요.
+              디자인부터 모션, 개발까지 한 사람이 끝까지 맡습니다. 만든 사람이
+              직접 운영·관리까지 한다는 게 흔한 외주와 가장 다른 점이에요.
             </p>
           </div>
           <div className="w-full max-w-[260px] shrink-0 md:max-w-[280px]">
@@ -170,31 +169,31 @@ function PrismIllustration() {
 }
 
 // ─────────────────────────────────────────────────────────
-// I. 지으리 — 지금 만들고 있는 것 (개발 중 → 사전등록 → 출시 전 직접제작)
+// I. 지으리 — 우리가 하는 일 (스튜디오 작업 흐름: 설계 → 디자인·모션 → 개발·운영)
 // ─────────────────────────────────────────────────────────
 const jieuriStory: { stage: string; text: string }[] = [
   {
-    stage: '지금',
-    text: '빌더를 개발하면서, 먼저 써보실 분들 사전등록을 받고 있어요. (선착순 100명 · 평생 50% 할인)',
+    stage: '설계',
+    text: '비즈니스 목표부터 짚어, 무엇을 보여주고 무엇을 덜어낼지 먼저 정합니다.',
   },
   {
-    stage: '출시 후',
-    text: '채팅만으로 사장님이 직접 사이트를 만들고 수정해요. "여기 색 바꿔줘" 하면 바로 바뀌고요.',
+    stage: '디자인·모션',
+    text: '브랜드 톤에 맞는 비주얼과 인터랙션으로, 스크롤 한 번에 기억에 남게 만듭니다.',
   },
   {
-    stage: '출시 전까지',
-    text: '기다리기 어려우면, 제가 직접 만들어 드려요. 1분 견적부터 받아보세요.',
+    stage: '개발·운영',
+    text: '직접 개발해 끝까지 다듬고, 출시 후 운영·관리까지 만든 사람이 책임집니다.',
   },
 ]
 
 function JieuriSection() {
   return (
-    <Section roman="I" title="지으리 — 지금 만들고 있는 것">
+    <Section roman="I" title="지으리 — 우리가 하는 일">
       <div className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-6 sm:p-8">
         <p className="text-base leading-relaxed text-gray-800 sm:text-lg">
-          <span className="font-bold text-gray-900">지으리</span>는 채팅으로
-          “이렇게 만들어줘” 하면 사이트가 만들어지는 웹사이트 빌더예요. 막히면
-          현직 개발자가 대신 고쳐드리고요.
+          <span className="font-bold text-gray-900">지으리</span>는 브랜드의
+          첫인상이 되는 웹사이트를 만드는 인터랙티브 디지털 스튜디오예요.
+          전략·디자인·모션·개발을 한 흐름으로 풀어, 보는 순간 남는 경험을 짓습니다.
         </p>
 
         <ol className="mt-6 space-y-3">
