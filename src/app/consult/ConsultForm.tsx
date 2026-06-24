@@ -1,51 +1,25 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { REF_COOKIE } from '@/lib/tracking/ref'
-import { consultSchema, type ConsultInput } from './lib/schema'
-import { submitConsult } from './actions'
+import { useConsultForm } from './useConsultForm'
+import { PillGroup } from './PillGroup'
+import { PROJECT_TYPES, BUDGET_BANDS, TIMELINES } from './lib/schema'
 
 const inputBase =
   'h-12 w-full rounded-lg border-0 bg-white px-3.5 text-base text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 transition placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500'
 
 export function ConsultForm() {
-  const [done, setDone] = useState<null | { name: string }>(null)
-  const [serverError, setServerError] = useState<string | null>(null)
-  const [ref, setRef] = useState<string | null>(null)
-
   const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<ConsultInput>({
-    resolver: zodResolver(consultSchema),
-    defaultValues: {
-      name: '',
-      phone: '',
-      kakao: '',
-      businessName: '',
-      message: '',
-      consent: false,
+    form: {
+      register,
+      formState: { errors, isSubmitting },
     },
-  })
-
-  useEffect(() => {
-    try {
-      setRef(window.sessionStorage.getItem(REF_COOKIE))
-    } catch {
-      // sessionStorage 접근 불가 시 무시
-    }
-  }, [])
-
-  async function onSubmit(values: ConsultInput) {
-    setServerError(null)
-    const res = await submitConsult(values)
-    if (res.ok) setDone({ name: values.name })
-    else setServerError(res.error)
-  }
+    hpRef,
+    done,
+    serverError,
+    ref,
+    submit,
+  } = useConsultForm()
 
   if (done) {
     return (
@@ -67,11 +41,11 @@ export function ConsultForm() {
           </svg>
         </div>
         <h2 className="mt-5 text-xl font-bold text-gray-900 sm:text-2xl">
-          {done.name}님, 신청 접수됐어요!
+          {done.name}님, 문의 접수됐어요!
         </h2>
         <p className="mx-auto mt-3 max-w-md text-base leading-relaxed text-gray-700">
-          영업일 기준 <b>24시간 안에</b> 안홍준 대표가 직접 연락드릴게요.
-          급하시면 아래 번호로 바로 전화 주셔도 됩니다.
+          영업일 기준 <b>24시간 안에</b> 안홍준 대표가 직접 연락드릴게요. 급하시면 아래
+          번호로 바로 전화 주셔도 됩니다.
         </p>
         <a
           href="tel:01037825418"
@@ -84,7 +58,7 @@ export function ConsultForm() {
             href="/portfolio"
             className="text-sm font-medium text-gray-500 underline underline-offset-4 hover:text-gray-900"
           >
-            기다리는 동안 만든 사이트 9곳 둘러보기
+            기다리는 동안 작업 사례 둘러보기
           </Link>
         </div>
       </div>
@@ -92,7 +66,7 @@ export function ConsultForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+    <form onSubmit={submit} noValidate className="space-y-5">
       {ref && (
         <div className="rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm font-medium text-indigo-800">
           {ref === 'soomgo'
@@ -101,27 +75,17 @@ export function ConsultForm() {
         </div>
       )}
 
-      <Field
-        label="성함"
-        required
-        error={errors.name?.message}
-        hint="뭐라고 불러드리면 될까요?"
-      >
+      <Field label="성함" required error={errors.name?.message} hint="뭐라고 불러드리면 될까요?">
         <input
           {...register('name')}
           type="text"
           autoComplete="name"
-          placeholder="예: 김사장"
+          placeholder="예: 김대표"
           className={inputBase}
         />
       </Field>
 
-      <Field
-        label="연락처"
-        required
-        error={errors.phone?.message}
-        hint="문자·전화로 연락드려요."
-      >
+      <Field label="연락처" required error={errors.phone?.message} hint="문자·전화로 연락드려요.">
         <input
           {...register('phone')}
           type="tel"
@@ -132,27 +96,67 @@ export function ConsultForm() {
         />
       </Field>
 
+      <PillGroup
+        tone="light"
+        label="어떤 프로젝트인가요?"
+        required
+        error={errors.projectType?.message}
+        options={PROJECT_TYPES}
+        registration={register('projectType')}
+      />
+
+      <PillGroup
+        tone="light"
+        label="예산은 어느 정도 생각하세요?"
+        required
+        hint="대략이면 충분해요. 정하지 못했으면 '미정'으로 두셔도 됩니다."
+        error={errors.budget?.message}
+        options={BUDGET_BANDS}
+        registration={register('budget')}
+      />
+
+      <PillGroup
+        tone="light"
+        label="일정"
+        hint="선택 — 언제쯤 필요하세요?"
+        error={errors.timeline?.message}
+        options={TIMELINES}
+        registration={register('timeline')}
+      />
+
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <Field label="카카오톡 ID" error={errors.kakao?.message} hint="선택 — 카톡이 편하시면">
+        <Field label="회사·상호명" error={errors.company?.message} hint="선택 — 있으시면">
           <input
-            {...register('kakao')}
+            {...register('company')}
             type="text"
+            autoComplete="organization"
             placeholder="선택 사항"
             className={inputBase}
           />
         </Field>
-        <Field label="상호·가게 이름" error={errors.businessName?.message} hint="선택 — 있으시면">
+        <Field label="이메일" error={errors.email?.message} hint="선택 — 제안서 받으실 주소">
           <input
-            {...register('businessName')}
-            type="text"
+            {...register('email')}
+            type="email"
+            inputMode="email"
+            autoComplete="email"
             placeholder="선택 사항"
             className={inputBase}
           />
         </Field>
       </div>
 
+      <Field label="카카오톡 ID" error={errors.kakao?.message} hint="선택 — 카톡이 편하시면">
+        <input
+          {...register('kakao')}
+          type="text"
+          placeholder="선택 사항"
+          className={inputBase}
+        />
+      </Field>
+
       <Field
-        label="어떤 사이트가 필요하세요?"
+        label="어떤 걸 만들고 싶으세요?"
         error={errors.message?.message}
         hint="선택 — 한 줄이면 충분해요. 잘 모르시겠으면 비워두셔도 됩니다."
       >
@@ -160,10 +164,18 @@ export function ConsultForm() {
           {...register('message')}
           rows={3}
           maxLength={500}
-          placeholder="예: 우리 카페 예약 받는 사이트요. 메뉴랑 오시는 길도 넣고 싶어요."
+          placeholder="예: 브랜드 소개와 예약을 함께 담은 사이트를 구상 중이에요."
           className={`${inputBase} h-auto resize-none py-3`}
         />
       </Field>
+
+      {/* honeypot — 사람에겐 보이지 않는 칸(봇 탐지용). 비워둬야 정상. */}
+      <div aria-hidden="true" className="pointer-events-none absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
+        <label>
+          이 칸은 비워두세요
+          <input ref={hpRef} type="text" tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
 
       <div>
         <label className="flex items-start gap-3">
@@ -199,7 +211,7 @@ export function ConsultForm() {
         disabled={isSubmitting}
         className="cta-glow inline-flex h-14 w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-6 text-base font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60 sm:text-[17px]"
       >
-        {isSubmitting ? '신청하는 중…' : '상담 신청하기'}
+        {isSubmitting ? '보내는 중…' : '문의 보내기'}
       </button>
 
       <p className="text-center text-xs text-gray-500">
@@ -224,16 +236,22 @@ function Field({
 }) {
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-800">
-        {label}
-        {required && <span className="ml-1 text-indigo-600">*</span>}
-        {!required && (
-          <span className="ml-1.5 text-xs font-normal text-gray-400">선택</span>
-        )}
+      <label className="block">
+        <span className="block text-sm font-semibold text-gray-800">
+          {label}
+          {required && <span className="ml-1 text-indigo-600">*</span>}
+          {!required && (
+            <span className="ml-1.5 text-xs font-normal text-gray-400">선택</span>
+          )}
+        </span>
+        {hint && <span className="mt-0.5 block text-xs text-gray-500">{hint}</span>}
+        <span className="mt-1.5 block">{children}</span>
       </label>
-      {hint && <p className="mt-0.5 text-xs text-gray-500">{hint}</p>}
-      <div className="mt-1.5">{children}</div>
-      {error && <p className="mt-1.5 text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-1.5 text-sm text-red-600">
+          {error}
+        </p>
+      )}
     </div>
   )
 }

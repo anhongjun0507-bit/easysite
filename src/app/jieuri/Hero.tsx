@@ -81,6 +81,11 @@ export function Hero() {
     else document.querySelector('#work')?.scrollIntoView({ behavior: 'smooth' })
   }
 
+  const goToContact = () => {
+    if (lenis) lenis.scrollTo('#contact', { duration: 1.4 })
+    else document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <section
       ref={root}
@@ -117,7 +122,7 @@ export function Hero() {
           보는 순간 기억에 남는 인터랙티브 웹을 만듭니다 — 디자인부터 모션, 개발까지.
         </p>
 
-        <div data-reveal="cta" className="mt-11">
+        <div data-reveal="cta" className="mt-11 flex flex-wrap items-center gap-3">
           <button
             ref={ctaRef}
             type="button"
@@ -126,6 +131,15 @@ export function Hero() {
             className="group inline-flex items-center gap-2.5 rounded-full bg-gray-950 px-8 py-4 text-[15px] font-semibold text-white transition-colors duration-300 hover:bg-gray-800 sm:text-[16px]"
           >
             작업 보기
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-1" />
+          </button>
+          <button
+            type="button"
+            onClick={goToContact}
+            data-cursor="hover"
+            className="group inline-flex items-center gap-2 rounded-full border border-gray-300 px-7 py-4 text-[15px] font-semibold text-gray-900 transition-colors duration-300 hover:border-gray-950 sm:text-[16px]"
+          >
+            프로젝트 문의
             <ArrowRight className="h-4 w-4 transition-transform duration-300 ease-out group-hover:translate-x-1" />
           </button>
         </div>

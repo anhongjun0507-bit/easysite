@@ -13,13 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 1.0,
     },
-    // /wizard·/lp 는 noindex 이므로 sitemap 에서 제외
-    {
-      url: `${SITE_URL}/register`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
+    // /wizard·/lp 는 noindex, /register 는 폐기(→ /#contact 리다이렉트) 이므로 sitemap 에서 제외
     {
       url: `${SITE_URL}/service/website`,
       lastModified: now,

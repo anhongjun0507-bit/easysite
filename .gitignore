@@ -156,3 +156,4 @@ next-env.d.ts
 
 # Portfolio source assets (GIFs → processed into public/portfolio/*.png)
 /images/
+.env*
