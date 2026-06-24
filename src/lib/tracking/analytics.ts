@@ -6,7 +6,7 @@
 //   - 스크립트 로드는 components/Analytics.tsx 가 담당한다.
 
 /** 전환 액션 이름 — 광고 최적화의 기준이 되는 핵심 행동 */
-export type ConversionName = 'quote' | 'register'
+export type ConversionName = 'quote' | 'register' | 'consult'
 
 export const GA_ID = process.env.NEXT_PUBLIC_GA_ID || '' // GA4 측정 ID (G-XXXXXXXXXX)
 export const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || '' // 구글애즈 ID (AW-XXXXXXXXX)
@@ -17,6 +17,7 @@ export const NAVER_WCS_ID = process.env.NEXT_PUBLIC_NAVER_WCS_ID || '' // 네이
 const GOOGLE_ADS_CONVERSIONS: Record<ConversionName, string> = {
   quote: process.env.NEXT_PUBLIC_GOOGLE_ADS_CONV_QUOTE || '',
   register: process.env.NEXT_PUBLIC_GOOGLE_ADS_CONV_REGISTER || '',
+  consult: process.env.NEXT_PUBLIC_GOOGLE_ADS_CONV_CONSULT || '',
 }
 
 // 네이버 전환 유형 코드 — 광고관리시스템에서 설정한 값과 맞춰야 한다.
@@ -24,6 +25,7 @@ const GOOGLE_ADS_CONVERSIONS: Record<ConversionName, string> = {
 const NAVER_CONV_TYPE: Record<ConversionName, string> = {
   quote: '2', // 견적 신청
   register: '1', // 사전등록(회원가입 성격)
+  consult: '2', // 프로젝트 문의(신청/예약 성격)
 }
 
 /** gtag.js 로더에 쓸 대표 ID — GA4 우선, 없으면 구글애즈 ID */
