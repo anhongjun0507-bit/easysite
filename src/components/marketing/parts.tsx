@@ -112,7 +112,7 @@ export function StepsRow({ steps }: { steps: LpStep[] }) {
 
 export type LpPrice = { label: string; price: string; note: string }
 
-/** 가격 투명성 카드 — 이벤트가 기준 ballpark */
+/** 가격 투명성 카드 — 정가 시작가 ballpark */
 export function PriceTable({ rows }: { rows: LpPrice[] }) {
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
