@@ -11,12 +11,12 @@ import {
 export const metadata: Metadata = {
   title: '가격표',
   description:
-    '지으리 AI 웹사이트 제작 가격을 처음부터 공개합니다. 코드 없이 채팅으로 홈페이지를 만드는 비용 — 선착순 런칭 이벤트 할인가·정가·옵션 가산표를 한눈에 확인하세요.',
+    '지으리의 웹사이트 제작·앱 개발 가격을 처음부터 공개합니다. 사이트 유형별 시작가·옵션 가산표를 한눈에 — 인터랙티브 디지털 스튜디오의 투명한 가격 기준.',
   alternates: { canonical: '/pricing' },
   openGraph: {
     title: '가격표 | 지으리',
     description:
-      '지으리 AI 웹사이트 제작 가격을 처음부터 공개합니다. 코드 없이 채팅으로 홈페이지를 만드는 비용 — 선착순 런칭 이벤트 할인가·정가·옵션 가산표를 한눈에 확인하세요.',
+      '지으리의 웹사이트 제작·앱 개발 가격을 처음부터 공개합니다. 사이트 유형별 시작가·옵션 가산표를 한눈에 — 인터랙티브 디지털 스튜디오의 투명한 가격 기준.',
     url: '/pricing',
   },
 }
@@ -113,7 +113,7 @@ type AddOn = {
   label: string
   /** 정가 표시 */
   listDelta: string
-  /** 이벤트가 표시 (없으면 할인 없는 배수형) */
+  /** 이벤트가 표시 (없으면 배수형 가산) */
   eventDelta: string | null
   description: string
 }
@@ -192,7 +192,7 @@ function Hero() {
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-gray-700 sm:text-lg">
           복잡한 견적 협상 없이, 사이트 유형별 시작가를 그대로 보여드려요.
-          {EVENT_ACTIVE && ' 지금은 런칭 이벤트로 정가보다 할인된 가격이에요.'}{' '}
+          {EVENT_ACTIVE && ' 지금은 런칭 기념가로 안내하고 있어요.'}{' '}
           정확한 금액은 위저드에서 페이지 수·옵션까지 반영해 ±15% 범위로 산정됩니다.
         </p>
       </div>
