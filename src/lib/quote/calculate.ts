@@ -15,8 +15,8 @@
 
 import type { PageCount, SiteType, Timeline } from '@/app/wizard/lib/state'
 
-/** 선착순 런칭 이벤트 — false 로 바꾸면 정가만 노출(이벤트 종료). */
-export const EVENT_ACTIVE = true
+/** 런칭 이벤트 — 종료. false = 정가만 노출(할인/이벤트 프레임 없음). */
+export const EVENT_ACTIVE = false
 
 export type QuoteFeatures = {
   payment?: boolean

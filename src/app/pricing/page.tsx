@@ -1,163 +1,114 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import {
-  ADDON_MANWON,
-  EVENT_ACTIVE,
-  EVENT_BASE_PRICE_MANWON,
-  LIST_BASE_PRICE_MANWON,
-  RUSH_PRICE_MULT,
-} from '@/lib/quote/calculate'
 
 export const metadata: Metadata = {
-  title: '가격표',
+  title: '가격 안내',
   description:
-    '지으리의 웹사이트 제작·앱 개발 가격을 처음부터 공개합니다. 사이트 유형별 시작가·옵션 가산표를 한눈에 — 인터랙티브 디지털 스튜디오의 투명한 가격 기준.',
+    '지으리의 웹사이트 제작·앱 개발 비용 안내. 만드는 범위와 깊이에 따라 프로젝트별 맞춤 견적을 드립니다 — 무엇을 어떻게 진행하는지 보고 바로 문의하세요.',
   alternates: { canonical: '/pricing' },
   openGraph: {
-    title: '가격표 | 지으리',
+    title: '가격 안내 | 지으리',
     description:
-      '지으리의 웹사이트 제작·앱 개발 가격을 처음부터 공개합니다. 사이트 유형별 시작가·옵션 가산표를 한눈에 — 인터랙티브 디지털 스튜디오의 투명한 가격 기준.',
+      '웹사이트 제작·앱 개발 비용 — 프로젝트 규모에 맞춘 맞춤 견적. 인터랙티브 디지털 스튜디오, 지으리.',
     url: '/pricing',
   },
 }
 
-type Category = {
-  id: 'company' | 'landing' | 'reservation' | 'shop' | 'custom'
+// 제공 범위 — 가격 숫자 없이 "무엇을 만드나"만. 규모는 프로젝트별 맞춤 견적.
+type Scope = {
   name: string
   weekRange: string
   intro: string
-  /** 4~5개. '약속'으로 해석될 수 있는 항목(호스팅·도메인) 회피 */
   includes: string[]
-  /** wizard?intent=... 로 위저드 사이트유형 프리셋 */
-  wizardIntent: string
   highlight?: boolean
   highlightLabel?: string
 }
 
-// 가격은 calculate.ts 한 곳에서 관리(정가 LIST_ / 이벤트가 EVENT_). 카드는 id로 조회.
-const categories: Category[] = [
+const scopes: Scope[] = [
   {
-    id: 'company',
-    name: '회사·가게 소개',
+    name: '회사·브랜드 웹사이트',
     weekRange: '2~3주',
-    intro: '브랜드를 단정하게 보여주고 싶은 회사·가게 사장님',
+    intro: '브랜드를 단정하게 보여주고 싶은 회사·가게',
     includes: [
       '5~8 페이지 구성',
       '모바일 반응형',
-      'AI 카피 초안 (회사 소개·메뉴 설명)',
+      '카피·콘텐츠 초안 지원',
       '관리자 페이지 (옵션)',
       'Vercel 배포·도메인 연결 안내',
     ],
-    wizardIntent: '회사·가게 소개 사이트',
     highlight: true,
     highlightLabel: '가장 일반적',
   },
   {
-    id: 'landing',
-    name: '랜딩페이지',
+    name: '랜딩·캠페인',
     weekRange: '1~2주',
     intro: '신규 서비스·이벤트·예약을 한 페이지에 모아두고 싶을 때',
     includes: [
       '1~2 페이지 구성',
       '모바일 반응형',
-      'AI 카피 초안 (헤드라인 3안)',
+      '카피·콘텐츠 초안 지원',
       '문의 폼·신청 버튼',
-      '빠른 출시 (최소 1주)',
+      '핵심 메시지에 집중한 구성',
     ],
-    wizardIntent: '랜딩페이지',
   },
   {
-    id: 'reservation',
     name: '예약·회원제',
     weekRange: '4~6주',
     intro: '학원·클래스·뷰티숍·병원 등 예약과 회원 관리가 필요한 곳',
-    includes: [
-      '회원가입·로그인',
-      '캘린더 예약',
-      '알림 발송',
-      '관리자 대시보드',
-      '모바일 반응형',
-    ],
-    wizardIntent: '예약 회원제 사이트',
+    includes: ['회원가입·로그인', '캘린더 예약', '알림 발송', '관리자 대시보드', '모바일 반응형'],
   },
   {
-    id: 'shop',
-    name: '쇼핑몰',
+    name: '커머스·쇼핑몰',
     weekRange: '6~8주',
     intro: '상품 등록부터 주문·결제까지 직접 운영하는 쇼핑몰',
-    includes: [
-      '상품 등록·관리',
-      '카트·주문 흐름',
-      '회원 관리',
-      '결제 연동 (옵션)',
-      '모바일 반응형',
-    ],
-    wizardIntent: '쇼핑몰',
+    includes: ['상품 등록·관리', '카트·주문 흐름', '회원 관리', '결제 연동 (옵션)', '모바일 반응형'],
   },
   {
-    id: 'custom',
-    name: '맞춤 협의',
-    weekRange: '협의',
-    intro: '위 카테고리에 없는 특수 프로젝트는 직접 상담',
+    name: '앱·웹앱 개발',
+    weekRange: '8주~',
+    intro: 'iOS·안드로이드 앱, 또는 설치 없이 쓰는 웹앱이 필요할 때',
     includes: [
-      '예: 사내 도구, 회사 내부 시스템',
-      '예: 대시보드·통계 화면',
-      '예: 외부 시스템 연동',
+      'React Native 기반 크로스플랫폼',
+      '로그인·푸시 알림',
+      '관리자·데이터 연동',
+      '웹·앱 동시 대응 (옵션)',
+      '스토어 출시 안내',
+    ],
+  },
+  {
+    name: '인터랙티브·맞춤',
+    weekRange: '협의',
+    intro: '스크롤·모션 인터랙션이 핵심이거나, 위 유형에 없는 특수 프로젝트',
+    includes: [
+      '스크롤·모션 인터랙션 설계',
+      '브랜드 감각의 비주얼·전환',
+      '사내 도구·대시보드',
+      '외부 시스템 연동',
       '범위 정리 후 견적 산정',
     ],
-    wizardIntent: '맞춤형 사이트',
   },
 ]
 
-type AddOn = {
-  label: string
-  /** 정가 표시 */
-  listDelta: string
-  /** 이벤트가 표시 (없으면 배수형 가산) */
-  eventDelta: string | null
-  description: string
-}
-
-const addOns: AddOn[] = [
-  {
-    label: '온라인 결제',
-    listDelta: `+${ADDON_MANWON.payment.list}만원`,
-    eventDelta: `+${ADDON_MANWON.payment.event}만원`,
-    description: '온라인 카드 결제·간편결제 연동. 토스페이먼츠 기준.',
-  },
-  {
-    label: '관리자 페이지',
-    listDelta: `+${ADDON_MANWON.admin.list}만원`,
-    eventDelta: `+${ADDON_MANWON.admin.event}만원`,
-    description: '사장님이 직접 글·상품·예약을 올리고 고치는 관리 화면.',
-  },
-  {
-    label: 'AI 챗봇·자동화',
-    listDelta: `+${ADDON_MANWON.aiChat.list}만원`,
-    eventDelta: `+${ADDON_MANWON.aiChat.event}만원`,
-    description: '사이트에 24시간 AI 상담 챗봇 추가. 사이트 정보 학습 포함.',
-  },
-  {
-    label: '2주 급행',
-    listDelta: `×${RUSH_PRICE_MULT}`,
-    eventDelta: null,
-    description: '일정 우선 처리. 본인 작업 큐에서 최우선으로.',
-  },
+const addOns: { label: string; description: string }[] = [
+  { label: '온라인 결제', description: '카드·간편결제 연동. 토스페이먼츠 기준.' },
+  { label: '관리자 페이지', description: '직접 글·상품·예약을 올리고 고치는 관리 화면.' },
+  { label: 'AI 챗봇·자동화', description: '사이트에 24시간 AI 상담 챗봇 추가. 사이트 정보 학습 포함.' },
+  { label: '빠른 일정', description: '일정 우선 처리 — 작업 큐에서 최우선으로.' },
 ]
 
-const trustPoints: string[] = [
-  '숨고 1인 프리랜서 시세 기준',
-  '운영자가 직접 제작합니다 (중간 단계 없음)',
-  '프리즘 안홍준 대표가 처음부터 끝까지 책임집니다',
+const principles: string[] = [
+  '프로젝트의 범위·기능·일정에 따라 비용이 달라져, 규모에 맞춰 정확히 견적 드립니다.',
+  '운영자가 직접 설계·디자인·개발합니다 — 중간 단계 없이.',
+  '프리즘 안홍준 대표가 처음부터 끝까지, 출시 후 운영까지 책임집니다.',
 ]
 
 export default function PricingPage() {
   return (
     <>
       <Hero />
-      <CategoriesSection />
+      <ScopeSection />
       <AddOnsSection />
-      <WhyThisPriceSection />
+      <PrinciplesSection />
       <CtaSection />
     </>
   )
@@ -170,179 +121,100 @@ function Hero() {
   return (
     <section className="border-b border-gray-100 bg-white">
       <div className="mx-auto max-w-5xl px-6 py-14 sm:px-8 sm:py-20">
-        <div className="flex flex-wrap items-center gap-2">
-          <p className="text-xs font-bold uppercase tracking-[0.15em] text-indigo-600">
-            PRICING
-          </p>
-          {EVENT_ACTIVE && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-2.5 py-0.5 text-[11px] font-bold text-white">
-              ⚡ 선착순 런칭 이벤트
-            </span>
-          )}
-        </div>
+        <p className="text-xs font-bold uppercase tracking-[0.15em] text-indigo-600">PRICING</p>
         <h1
           className="mt-3 font-extrabold text-gray-900"
-          style={{
-            fontSize: 'clamp(28px, 5vw, 44px)',
-            lineHeight: 1.2,
-            letterSpacing: '-0.02em',
-          }}
+          style={{ fontSize: 'clamp(28px, 5vw, 44px)', lineHeight: 1.2, letterSpacing: '-0.02em' }}
         >
-          가격을 처음부터 공개합니다
+          프로젝트 규모에 맞춰 견적을 드립니다
         </h1>
         <p className="mt-4 max-w-2xl text-base leading-relaxed text-gray-700 sm:text-lg">
-          복잡한 견적 협상 없이, 사이트 유형별 시작가를 그대로 보여드려요.
-          {EVENT_ACTIVE && ' 지금은 런칭 기념가로 안내하고 있어요.'}{' '}
-          정확한 금액은 위저드에서 페이지 수·옵션까지 반영해 ±15% 범위로 산정됩니다.
+          웹사이트부터 앱·인터랙티브 경험까지 — 만들 것의 범위와 깊이에 따라 비용이 달라집니다.
+          아래에서 무엇을 어떻게 진행하는지 보시고, 프로젝트를 들려주시면 규모에 맞춰 정확히 견적
+          드릴게요.
         </p>
+        <div className="mt-7">
+          <Link
+            href="/#contact"
+            className="inline-flex h-12 items-center justify-center rounded-lg bg-indigo-600 px-6 text-base font-semibold text-white transition hover:bg-indigo-700"
+          >
+            프로젝트 문의하기
+            <Arrow />
+          </Link>
+        </div>
       </div>
     </section>
   )
 }
 
 // ─────────────────────────────────────────────────────────
-// I. 카테고리별 시작가
+// I. 무엇을 만드나
 // ─────────────────────────────────────────────────────────
-function CategoriesSection() {
+function ScopeSection() {
   return (
-    <Section roman="I" title="유형별 시작가">
+    <Section roman="I" title="무엇을 만드나" helper="유형별 제공 범위예요. 정확한 비용은 프로젝트 규모에 맞춰 견적 드립니다.">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {categories.map((c) => (
-          <CategoryCard key={c.id} category={c} />
+        {scopes.map((s) => (
+          <ScopeCard key={s.name} scope={s} />
         ))}
       </div>
     </Section>
   )
 }
 
-function CategoryCard({ category }: { category: Category }) {
-  const isCustom = category.id === 'custom'
-  const listPrice = category.id === 'custom' ? null : LIST_BASE_PRICE_MANWON[category.id]
-  const eventPrice =
-    category.id === 'custom' ? null : EVENT_BASE_PRICE_MANWON[category.id]
-  const wizardHref = `/wizard?intent=${encodeURIComponent(category.wizardIntent)}`
-
+function ScopeCard({ scope }: { scope: Scope }) {
   return (
     <div
       className={`relative flex h-full flex-col rounded-2xl border bg-white p-6 transition ${
-        category.highlight
+        scope.highlight
           ? 'border-indigo-500 ring-2 ring-indigo-500/15 sm:p-7'
-          : 'border-gray-200 sm:p-7 hover:border-gray-300'
+          : 'border-gray-200 hover:border-gray-300 sm:p-7'
       }`}
     >
-      {category.highlight && category.highlightLabel && (
+      {scope.highlight && scope.highlightLabel && (
         <span className="absolute -top-3 left-6 inline-flex h-6 items-center rounded-full bg-indigo-600 px-3 text-[11px] font-bold uppercase tracking-wider text-white">
-          ★ {category.highlightLabel}
+          ★ {scope.highlightLabel}
         </span>
       )}
 
-      <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
-        {category.name}
-      </h3>
-      <p className="mt-1.5 text-sm leading-relaxed text-gray-600">
-        {category.intro}
-      </p>
-
-      <div className="mt-5">
-        {isCustom ? (
-          <span className="text-2xl font-bold text-gray-900">협의</span>
-        ) : EVENT_ACTIVE ? (
-          <>
-            <p className="text-sm font-semibold text-gray-400 line-through">
-              정가 {listPrice}만원~
-            </p>
-            <div className="mt-0.5 flex items-baseline gap-2">
-              <span
-                className="font-extrabold tabular-nums text-indigo-600"
-                style={{ fontSize: 'clamp(32px, 4vw, 40px)', lineHeight: 1 }}
-              >
-                {eventPrice}
-              </span>
-              <span className="text-base font-semibold text-indigo-600">
-                만원~
-              </span>
-            </div>
-          </>
-        ) : (
-          <div className="flex items-baseline gap-2">
-            <span
-              className="font-extrabold tabular-nums text-gray-900"
-              style={{ fontSize: 'clamp(32px, 4vw, 40px)', lineHeight: 1 }}
-            >
-              {listPrice}
-            </span>
-            <span className="text-base font-semibold text-gray-500">만원~</span>
-          </div>
-        )}
-      </div>
-      <p className="mt-1 text-xs tabular-nums text-gray-500">
-        · 예상 기간 {category.weekRange}
+      <h3 className="text-lg font-bold text-gray-900 sm:text-xl">{scope.name}</h3>
+      <p className="mt-1.5 text-sm leading-relaxed text-gray-600">{scope.intro}</p>
+      <p className="mt-4 text-xs font-semibold tabular-nums uppercase tracking-wider text-indigo-600">
+        예상 기간 · {scope.weekRange}
       </p>
 
       <ul className="mt-5 flex-1 space-y-2 border-t border-gray-100 pt-5">
-        {category.includes.map((item) => (
+        {scope.includes.map((item) => (
           <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
             <Check />
             <span>{item}</span>
           </li>
         ))}
       </ul>
-
-      <Link
-        href={wizardHref}
-        className={`mt-6 inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm font-semibold transition ${
-          category.highlight
-            ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-            : 'border border-gray-300 bg-white text-gray-800 hover:border-gray-400 hover:text-gray-900'
-        }`}
-      >
-        {isCustom ? '맞춤 견적 받기' : '1분 위저드로 정확 견적'}
-        <Arrow />
-      </Link>
     </div>
   )
 }
 
 // ─────────────────────────────────────────────────────────
-// II. 옵션 가산
+// II. 함께 만들 수 있는 것
 // ─────────────────────────────────────────────────────────
 function AddOnsSection() {
   return (
     <Section
       roman="II"
-      title="옵션 가산"
-      helper="필요한 기능만 골라서 올리시면 돼요. 위저드에서도 같은 가산이 적용됩니다."
+      title="함께 만들 수 있는 것"
+      helper="필요한 기능만 골라서 올리시면 돼요. 범위에 따라 견적에 반영됩니다."
     >
       <ul className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
         {addOns.map((a, i) => (
           <li
             key={a.label}
-            className={`flex flex-col gap-2 px-5 py-5 sm:flex-row sm:items-center sm:gap-6 sm:px-6 ${
+            className={`flex flex-col gap-1.5 px-5 py-5 sm:flex-row sm:items-center sm:gap-6 sm:px-6 ${
               i > 0 ? 'border-t border-gray-100' : ''
             }`}
           >
-            <div className="flex items-baseline gap-3 sm:w-56 sm:shrink-0">
-              <p className="text-base font-bold text-gray-900">{a.label}</p>
-            </div>
-            <p className="tabular-nums sm:w-32 sm:shrink-0">
-              {a.eventDelta ? (
-                <span className="flex items-baseline gap-2 sm:flex-col sm:items-start sm:gap-0">
-                  <span className="text-xs font-medium text-gray-400 line-through">
-                    {a.listDelta}
-                  </span>
-                  <span className="text-base font-bold text-indigo-700">
-                    {a.eventDelta}
-                  </span>
-                </span>
-              ) : (
-                <span className="text-base font-bold text-indigo-700">
-                  {a.listDelta}
-                </span>
-              )}
-            </p>
-            <p className="text-sm leading-relaxed text-gray-600 sm:flex-1">
-              {a.description}
-            </p>
+            <p className="text-base font-bold text-gray-900 sm:w-56 sm:shrink-0">{a.label}</p>
+            <p className="text-sm leading-relaxed text-gray-600 sm:flex-1">{a.description}</p>
           </li>
         ))}
       </ul>
@@ -351,13 +223,13 @@ function AddOnsSection() {
 }
 
 // ─────────────────────────────────────────────────────────
-// III. 왜 이 가격인가
+// III. 견적은 이렇게 정합니다
 // ─────────────────────────────────────────────────────────
-function WhyThisPriceSection() {
+function PrinciplesSection() {
   return (
-    <Section roman="III" title="왜 이 가격인가">
+    <Section roman="III" title="견적은 이렇게 정합니다">
       <ul className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
-        {trustPoints.map((p) => (
+        {principles.map((p) => (
           <li
             key={p}
             className="rounded-xl border border-gray-200 bg-gray-50/60 p-5 text-sm leading-relaxed text-gray-700 sm:text-base"
@@ -384,23 +256,20 @@ function CtaSection() {
           </p>
           <h2
             className="mt-3 font-extrabold"
-            style={{
-              fontSize: 'clamp(22px, 4vw, 32px)',
-              lineHeight: 1.25,
-              letterSpacing: '-0.015em',
-            }}
+            style={{ fontSize: 'clamp(22px, 4vw, 32px)', lineHeight: 1.25, letterSpacing: '-0.015em' }}
           >
-            1분 안에, 미리보기까지
+            프로젝트를 들려주세요
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-gray-300 sm:text-base">
-            6개 질문에 답하시면 영업일 24시간 안에 시안과 함께 견적을 보내드려요.
+            예산·일정만 알려주시면, 영업일 24시간 안에 안홍준 대표가 직접 검토해 견적과 함께
+            연락드려요.
           </p>
           <div className="mt-7 flex flex-col items-stretch justify-center gap-2 sm:flex-row sm:items-center">
             <Link
-              href="/wizard"
+              href="/#contact"
               className="inline-flex h-12 items-center justify-center rounded-lg bg-indigo-600 px-6 text-base font-semibold text-white transition hover:bg-indigo-700"
             >
-              1분 위저드 받기
+              프로젝트 문의하기
               <Arrow />
             </Link>
             <a
@@ -411,6 +280,13 @@ function CtaSection() {
               010-3782-5418 전화 상담
             </a>
           </div>
+          <p className="mt-5 text-xs text-gray-400">
+            웹사이트라면{' '}
+            <Link href="/wizard" className="font-semibold text-indigo-300 underline underline-offset-2 hover:text-indigo-200">
+              1분 위저드
+            </Link>
+            로 예상 견적을 먼저 받아볼 수도 있어요.
+          </p>
         </div>
       </div>
     </section>

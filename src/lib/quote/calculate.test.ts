@@ -8,10 +8,13 @@ import {
   EVENT_ACTIVE,
 } from './calculate.ts'
 
-test('이벤트 진행 중 플래그', () => {
-  assert.equal(EVENT_ACTIVE, true)
+test('이벤트 비활성 — 정가만 노출', () => {
+  assert.equal(EVENT_ACTIVE, false)
   const q = calculateQuote({ siteType: 'company', pageCount: 'small' })
-  assert.equal(q.eventActive, true)
+  assert.equal(q.eventActive, false)
+  // 이벤트 비활성이면 화면 적용가(priceMin/Max)는 정가(list)와 일치
+  assert.equal(q.priceMinManwon, q.list.min)
+  assert.equal(q.priceMaxManwon, q.list.max)
 })
 
 test('★ 핵심 예시 — 쇼핑몰·5~10개·결제·관리자·한달: 정가 425 / 이벤트가 255', () => {

@@ -89,15 +89,15 @@ export default function LpAppPage() {
               앱 제작 비용, 미리 가늠해 보세요
             </h2>
             <p className="mt-3 text-[15px] text-gray-600">
-              런칭 이벤트가 기준 시작가. 앱은 범위에 따라 차이가 커요 — 1분 견적·상담에서 정확히 잡아드려요.
+              앱은 범위에 따라 차이가 커요 — 1분 견적·상담에서 정확히 잡아드려요.
             </p>
           </div>
           <div className="mt-9">
             <PriceTable
               rows={[
-                { label: '기본형 앱', price: '400만원~', note: '핵심 기능 위주' },
-                { label: '기능형 앱', price: '520만원~', note: '로그인·결제·알림' },
-                { label: '플랫폼·대형', price: '680만원~', note: '관리자·고도화' },
+                { label: '기본형 앱', price: '600만원~', note: '핵심 기능 위주' },
+                { label: '기능형 앱', price: '800만원~', note: '로그인·결제·알림' },
+                { label: '플랫폼·대형', price: '1,000만원~', note: '관리자·고도화' },
                 { label: '맞춤 견적', price: '상담', note: '복잡한 요구사항' },
               ]}
             />

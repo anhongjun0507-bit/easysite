@@ -88,16 +88,16 @@ export default function LpWebPage() {
               가격, 미리 투명하게
             </h2>
             <p className="mt-3 text-[15px] text-gray-600">
-              런칭 이벤트가 · 5페이지 기준 시작가. 정확한 금액은 1분 견적에서 확인하세요.
+              5페이지 기준 시작가. 정확한 금액은 1분 견적에서 확인하세요.
             </p>
           </div>
           <div className="mt-9">
             <PriceTable
               rows={[
-                { label: '랜딩페이지', price: '50만원~', note: '한 페이지 캠페인' },
-                { label: '회사·가게 소개', price: '100만원~', note: '기본 정보·문의' },
-                { label: '예약·회원제', price: '130만원~', note: '예약·회원가입' },
-                { label: '쇼핑몰', price: '150만원~', note: '상품·결제까지' },
+                { label: '랜딩페이지', price: '80만원~', note: '한 페이지 캠페인' },
+                { label: '회사·가게 소개', price: '150만원~', note: '기본 정보·문의' },
+                { label: '예약·회원제', price: '200만원~', note: '예약·회원가입' },
+                { label: '쇼핑몰', price: '250만원~', note: '상품·결제까지' },
               ]}
             />
           </div>
