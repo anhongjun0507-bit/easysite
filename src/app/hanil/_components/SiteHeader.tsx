@@ -108,10 +108,10 @@ export function SiteHeader({ variant, base }: { variant: Variant; base: string }
       className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${solid ? t.solidShell : 'bg-transparent'}`}
       onMouseLeave={() => setMega(false)}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8 lg:h-[76px]">
+      <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:h-[88px]">
         {/* 로고 */}
         <Link href={base} className="flex flex-col leading-none" onMouseEnter={() => setMega(false)}>
-          <span className={`text-[17px] font-extrabold tracking-tight sm:text-lg ${solid ? t.logoSolid : t.logoTop}`}>
+          <span className={`text-[20px] font-extrabold tracking-tight sm:text-[22px] ${solid ? t.logoSolid : t.logoTop}`}>
             {COMPANY.nameKo}
           </span>
           <span
@@ -122,7 +122,7 @@ export function SiteHeader({ variant, base }: { variant: Variant; base: string }
         </Link>
 
         {/* 데스크톱 네비 */}
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-1.5 lg:flex">
           {nav.map((item) =>
             item.hasMega ? (
               <button
@@ -131,7 +131,7 @@ export function SiteHeader({ variant, base }: { variant: Variant; base: string }
                 onMouseEnter={() => setMega(true)}
                 onFocus={() => setMega(true)}
                 aria-expanded={mega}
-                className={`px-3.5 py-2 text-[13.5px] font-semibold tracking-wide transition-colors ${solid ? t.solidText : t.topText} ${solid ? 'hover:opacity-100' : 'hover:text-white'}`}
+                className={`px-4 py-2 text-[15px] font-semibold tracking-wide transition-colors ${solid ? t.solidText : t.topText} ${solid ? 'hover:opacity-100' : 'hover:text-white'}`}
               >
                 {item.label}
               </button>
@@ -140,7 +140,7 @@ export function SiteHeader({ variant, base }: { variant: Variant; base: string }
                 key={item.label}
                 href={item.href}
                 onMouseEnter={() => setMega(false)}
-                className={`px-3.5 py-2 text-[13.5px] font-semibold tracking-wide transition-colors ${solid ? t.solidText : t.topText} ${solid ? 'hover:opacity-100' : 'hover:text-white'}`}
+                className={`px-4 py-2 text-[15px] font-semibold tracking-wide transition-colors ${solid ? t.solidText : t.topText} ${solid ? 'hover:opacity-100' : 'hover:text-white'}`}
               >
                 {item.label}
               </Link>
@@ -187,7 +187,7 @@ export function SiteHeader({ variant, base }: { variant: Variant; base: string }
                   onClick={() => setMega(false)}
                   className={`group flex items-baseline gap-2 rounded px-3 py-2.5 transition-colors ${t.megaItem}`}
                 >
-                  <span className={`text-[13px] font-bold tabular-nums ${t.megaCode}`}>{p.name}</span>
+                  <span className={`text-[14px] font-bold tabular-nums ${t.megaCode}`}>{p.name}</span>
                 </Link>
               </li>
             ))}
@@ -198,8 +198,8 @@ export function SiteHeader({ variant, base }: { variant: Variant; base: string }
       {/* 모바일 풀스크린 메뉴 */}
       {mobile ? (
         <div className={`fixed inset-0 z-[60] flex flex-col ${t.mobilePanel} lg:hidden`}>
-          <div className="flex h-16 items-center justify-between px-5">
-            <span className="text-[17px] font-extrabold tracking-tight">{COMPANY.nameKo}</span>
+          <div className="flex h-[72px] items-center justify-between px-5">
+            <span className="text-[20px] font-extrabold tracking-tight">{COMPANY.nameKo}</span>
             <button type="button" aria-label="메뉴 닫기" onClick={() => setMobile(false)} className="flex h-10 w-10 items-center justify-center">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
                 <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

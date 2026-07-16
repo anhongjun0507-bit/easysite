@@ -18,12 +18,12 @@ export default function HomeA() {
             <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#8fb0da]">{COMPANY.slogan}</p>
           </Reveal>
           <Reveal delay={90}>
-            <h1 className="mt-6 max-w-4xl text-[2rem] font-extrabold leading-[1.18] tracking-tight text-white sm:text-5xl lg:text-[3.4rem]">
+            <h1 className="mt-6 max-w-4xl text-[2.3rem] font-extrabold leading-[1.18] tracking-tight text-white sm:text-[3.25rem] lg:text-[3.8rem]">
               {HERO.main}
             </h1>
           </Reveal>
           <Reveal delay={180}>
-            <p className="mt-7 max-w-2xl text-base leading-relaxed text-neutral-300 sm:text-lg">{HERO.sub}</p>
+            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-neutral-300 sm:text-xl">{HERO.sub}</p>
           </Reveal>
           <Reveal delay={260}>
             <div className="mt-9 flex flex-wrap gap-3">

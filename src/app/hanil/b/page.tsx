@@ -6,9 +6,9 @@ export default function HomeB() {
   return (
     <>
       {/* ① 히어로 — 정적 1장 + 얇은 라인, 위계는 타이포로만 */}
-      <section className="relative flex min-h-[100svh] items-center">
+      <section className="relative flex min-h-[100svh] items-center overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={IMG.autoline} alt="한일금속공업 표면처리 생산 라인" className="absolute inset-0 h-full w-full object-cover" loading="eager" decoding="async" />
+        <img src={IMG.autoline} alt="한일금속공업 표면처리 생산 라인" className="absolute inset-0 h-full w-full scale-[1.05] object-cover blur-[4px]" loading="eager" decoding="async" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0e1f38]/88 via-[#0e1f38]/60 to-[#0e1f38]/25" aria-hidden />
         <div className="relative mx-auto w-full max-w-7xl px-6 py-28 sm:px-8">
           <Reveal>
@@ -16,12 +16,12 @@ export default function HomeB() {
             <div className="mt-6 h-px w-16 bg-white/40" />
           </Reveal>
           <Reveal delay={90}>
-            <h1 className="mt-8 max-w-4xl text-[2rem] font-bold leading-[1.22] tracking-tight text-white sm:text-5xl lg:text-[3.3rem]">
+            <h1 className="mt-8 max-w-4xl text-[2.3rem] font-bold leading-[1.22] tracking-tight text-white sm:text-[3.25rem] lg:text-[3.7rem]">
               {HERO.main}
             </h1>
           </Reveal>
           <Reveal delay={180}>
-            <p className="mt-7 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">{HERO.sub}</p>
+            <p className="mt-7 max-w-xl text-lg leading-relaxed text-white/80 sm:text-xl">{HERO.sub}</p>
           </Reveal>
           <Reveal delay={260}>
             <div className="mt-9 flex flex-wrap gap-3">

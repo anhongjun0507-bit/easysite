@@ -7,9 +7,9 @@ export default function HomeC() {
   return (
     <>
       {/* ① 다크 히어로 */}
-      <section className="relative flex min-h-[100svh] items-center">
+      <section className="relative flex min-h-[100svh] items-center overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={IMG.refinery} alt="한일금속공업 표면처리 플랜트" className="absolute inset-0 h-full w-full object-cover" loading="eager" decoding="async" />
+        <img src={IMG.refinery} alt="한일금속공업 표면처리 플랜트" className="absolute inset-0 h-full w-full scale-[1.05] object-cover blur-[4px]" loading="eager" decoding="async" />
         <div className="absolute inset-0 bg-gradient-to-br from-neutral-950/92 via-neutral-950/78 to-neutral-950/55" aria-hidden />
         <div className="relative mx-auto w-full max-w-7xl px-6 py-28 sm:px-8">
           <Reveal>
@@ -18,12 +18,12 @@ export default function HomeC() {
             </span>
           </Reveal>
           <Reveal delay={90}>
-            <h1 className="mt-6 max-w-4xl text-[2rem] font-extrabold leading-[1.16] tracking-tight text-white sm:text-5xl lg:text-[3.4rem]">
+            <h1 className="mt-6 max-w-4xl text-[2.3rem] font-extrabold leading-[1.16] tracking-tight text-white sm:text-[3.25rem] lg:text-[3.8rem]">
               {HERO.main}
             </h1>
           </Reveal>
           <Reveal delay={180}>
-            <p className="mt-7 max-w-2xl text-base leading-relaxed text-neutral-300 sm:text-lg">{HERO.sub}</p>
+            <p className="mt-7 max-w-2xl text-lg leading-relaxed text-neutral-300 sm:text-xl">{HERO.sub}</p>
           </Reveal>
           <Reveal delay={260}>
             <div className="mt-9 flex flex-wrap gap-3">

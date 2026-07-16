@@ -43,7 +43,7 @@ export function HeroCrossfade({
           aria-hidden={idx !== 0}
           loading={idx === 0 ? 'eager' : 'lazy'}
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-[1400ms] ease-out"
+          className="absolute inset-0 h-full w-full scale-[1.05] object-cover blur-[4px] transition-opacity duration-[1400ms] ease-out"
           style={{ opacity: idx === i ? 1 : 0 }}
         />
       ))}
