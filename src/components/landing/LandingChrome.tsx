@@ -18,8 +18,8 @@ export function LandingChrome({ children }: { children: React.ReactNode }) {
   // 지으리 랜딩은 공용 헤더를 얹어 통합하고(견적/사전등록 동선 일관), 푸터·플로팅은 랜딩 자체 것을 쓴다.
   const isJieuri = segments[0] === 'jieuri'
 
-  // 광고 전용 랜딩(/lp)은 자체 레이아웃(슬림 헤더·푸터)을 쓰므로 공용 chrome 생략.
-  if (segments[0] === 'lp') {
+  // 광고 전용 랜딩(/lp)·클라 검토용 시안(/hanil)은 자체 레이아웃을 쓰므로 공용 chrome 생략.
+  if (segments[0] === 'lp' || segments[0] === 'hanil') {
     return <>{children}</>
   }
 
