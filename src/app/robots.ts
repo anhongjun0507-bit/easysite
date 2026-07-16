@@ -15,6 +15,8 @@ export default function robots(): MetadataRoute.Robots {
         '/wizard/result',
         '/lp',
         '/lp/*',
+        '/hanil',
+        '/hanil/*',
       ],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
