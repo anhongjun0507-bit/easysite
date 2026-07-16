@@ -24,6 +24,8 @@ const V: Record<
     mobilePanel: string
     mobileItem: string
     accent: string
+    underlineTop: string
+    underlineSolid: string
   }
 > = {
   a: {
@@ -41,6 +43,8 @@ const V: Record<
     mobilePanel: 'bg-[#0B1B33] text-white',
     mobileItem: 'text-white/85',
     accent: 'text-[#8fb0da]',
+    underlineTop: 'bg-white',
+    underlineSolid: 'bg-[#8fb0da]',
   },
   b: {
     topText: 'text-white/90',
@@ -57,6 +61,8 @@ const V: Record<
     mobilePanel: 'bg-white text-neutral-900',
     mobileItem: 'text-neutral-700',
     accent: 'text-[#1e3a63]',
+    underlineTop: 'bg-white',
+    underlineSolid: 'bg-[#1e3a63]',
   },
   c: {
     topText: 'text-white/85',
@@ -73,6 +79,8 @@ const V: Record<
     mobilePanel: 'bg-neutral-950 text-white',
     mobileItem: 'text-white/85',
     accent: 'text-[#6B1F2E]',
+    underlineTop: 'bg-white',
+    underlineSolid: 'bg-[#6B1F2E]',
   },
 }
 
@@ -121,31 +129,35 @@ export function SiteHeader({ variant, base }: { variant: Variant; base: string }
           </span>
         </Link>
 
-        {/* 데스크톱 네비 */}
-        <nav className="hidden items-center gap-1.5 lg:flex">
-          {nav.map((item) =>
-            item.hasMega ? (
+        {/* 데스크톱 네비 — hover 시 언더라인 scaleX(전 시안 통일 이징) */}
+        <nav className="hidden items-center gap-1 lg:flex">
+          {nav.map((item) => {
+            const cls = `group relative px-4 py-2 text-[15px] font-semibold tracking-wide transition-colors ${solid ? t.solidText : t.topText} ${solid ? 'hover:opacity-100' : 'hover:text-white'}`
+            const underline = (
+              <span
+                className={`pointer-events-none absolute inset-x-4 bottom-1.5 h-[2px] origin-left scale-x-0 transition-transform duration-[240ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 ${solid ? t.underlineSolid : t.underlineTop}`}
+                aria-hidden
+              />
+            )
+            return item.hasMega ? (
               <button
                 key={item.label}
                 type="button"
                 onMouseEnter={() => setMega(true)}
                 onFocus={() => setMega(true)}
                 aria-expanded={mega}
-                className={`px-4 py-2 text-[15px] font-semibold tracking-wide transition-colors ${solid ? t.solidText : t.topText} ${solid ? 'hover:opacity-100' : 'hover:text-white'}`}
+                className={cls}
               >
                 {item.label}
+                {underline}
               </button>
             ) : (
-              <Link
-                key={item.label}
-                href={item.href}
-                onMouseEnter={() => setMega(false)}
-                className={`px-4 py-2 text-[15px] font-semibold tracking-wide transition-colors ${solid ? t.solidText : t.topText} ${solid ? 'hover:opacity-100' : 'hover:text-white'}`}
-              >
+              <Link key={item.label} href={item.href} onMouseEnter={() => setMega(false)} className={cls}>
                 {item.label}
+                {underline}
               </Link>
-            ),
-          )}
+            )
+          })}
           <a
             href={COMPANY.telHref}
             className={`ml-3 inline-flex h-10 items-center rounded px-4 text-[13px] font-bold tracking-wide transition-colors ${solid ? t.ctaSolid : t.ctaTop}`}
@@ -172,22 +184,28 @@ export function SiteHeader({ variant, base }: { variant: Variant; base: string }
 
       {/* PRODUCT 메가메뉴 (데스크톱) */}
       <div
-        className={`absolute inset-x-0 top-full hidden origin-top overflow-hidden transition-[max-height,opacity] duration-300 lg:block ${mega ? 'max-h-[520px] opacity-100' : 'pointer-events-none max-h-0 opacity-0'} ${t.mega}`}
+        className={`absolute inset-x-0 top-full hidden origin-top overflow-hidden transition-[max-height,opacity] duration-300 lg:block ${mega ? 'max-h-[620px] opacity-100' : 'pointer-events-none max-h-0 opacity-0'} ${t.mega}`}
         onMouseEnter={() => setMega(true)}
       >
         <div className="mx-auto max-w-7xl px-8 py-9">
           <p className={`mb-5 text-[11px] font-semibold uppercase tracking-[0.22em] ${t.megaHead}`}>
             PRODUCT · 표면처리 공정 12
           </p>
-          <ul className="grid grid-cols-2 gap-x-8 gap-y-1 md:grid-cols-3 xl:grid-cols-4">
-            {PROCESSES.map((p) => (
+          <ul className="grid grid-cols-2 gap-x-6 gap-y-0.5 md:grid-cols-3 xl:grid-cols-4">
+            {PROCESSES.map((p, idx) => (
               <li key={p.code}>
                 <Link
                   href={productHref(p.code)}
                   onClick={() => setMega(false)}
-                  className={`group flex items-baseline gap-2 rounded px-3 py-2.5 transition-colors ${t.megaItem}`}
+                  className={`group flex flex-col rounded px-3 py-2.5 transition-colors ${t.megaItem}`}
                 >
-                  <span className={`text-[14px] font-bold tabular-nums ${t.megaCode}`}>{p.name}</span>
+                  <span className="flex items-baseline gap-2">
+                    <span className={`text-[11px] font-bold tabular-nums ${t.megaCode}`}>{String(idx + 1).padStart(2, '0')}</span>
+                    <span className="text-[14px] font-bold">{p.name}</span>
+                  </span>
+                  {p.en ? (
+                    <span className="mt-0.5 pl-[26px] text-[10.5px] font-medium uppercase tracking-[0.12em] opacity-55">{p.en}</span>
+                  ) : null}
                 </Link>
               </li>
             ))}

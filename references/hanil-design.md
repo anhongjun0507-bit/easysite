@@ -20,6 +20,19 @@
 - **큰 숫자 지표(카운트업)**, hover 반응 카드 그리드.
 - 네온·그라데이션 배제, 대면적 포인트 컬러 금지.
 
+## 2026-07 대기업급 업그레이드 라운드 — 실사이트 재조사 요약 (재조사 금지, 이 절만 참조)
+조사: thyssenkrupp.com/en · home.sandvik · oerlikon.com · skf.com(JS셸, 데이터 미회수). 공통 추출 패턴:
+- **영문 대문자 eyebrow**(tracking 0.2em+)로 섹션 진입, **넉넉한 수직 여백**(≈60~80px+, 실측 py-24~32 상당), 슬로건+주소·연락처 포함 **다컬럼 푸터**.
+- Oerlikon: **번호형 캐러셀 인디케이터("1/4")**, small-cap 섹션 헤더, 4컬럼 푸터(Portfolio/About/Investors/Legal)+주소 블록.
+- thyssenkrupp: 다크→라이트 스토리 카드 모듈, 3그룹 푸터+슬로건("engineering.tomorrow.together"), 킥커 대문자.
+- Sandvik: 단일 강한 primary CTA, 주소 중심 푸터 컬럼(Box 510, Stockholm), 관대한 여백.
+
+적용 매핑(이번 구현):
+- 타입 스케일 토큰화 `_components/_ui.ts`(display/h2/eyebrow/body) + 섹션 패턴 `Section.tsx`(번호 01~ · eyebrow · 타이틀 · 설명).
+- A 히어로 크로스페이드 → **세그먼트 프로그레스바 + "01/03" 카운터**(Oerlikon). B/C 히어로 → **ScrollCue**(animate-softbounce).
+- 홈 공정 그리드 **8종→12종 + 01~12 번호**. GNB **언더라인 hover**(scaleX). 메가메뉴에 번호+영문.
+- 푸터 **슬로건 밴드 + 4컬럼(브랜드/회사정보·연락처/사이트맵/공정)**. isonite **pull-quote + 적용부품 비주얼 카드 3종**. greeting **인용 첫 문단 강조 + 서명 정돈**.
+
 ## 공통 적용 원칙 (frontend-design + design-taste-frontend 룰셋)
 - em-dash 전면 금지, 이모지 금지, 커스텀 커서 금지(격리로 충족), 3-동일카드 디폴트 회피.
 - 액센트 1개/시안(Color Consistency Lock), 히어로 뷰포트 안착·텍스트 4요소 제한, eyebrow 절제.
