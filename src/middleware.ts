@@ -15,6 +15,11 @@ const OLD_HOSTS = new Set([
   'www.easysite-sage.vercel.app',
 ])
 
+// 한일금속 시안 전용 호스트 — 클라이언트에 jieuri.com 을 노출하지 않는 독립 URL.
+// 이 호스트에서만 루트(/)가 시안 선택 랜딩이 되고 /a·/b·/c 가 각 시안이 되도록
+// /hanil 서브트리로 rewrite 한다. jieuri.com 등 다른 호스트는 전혀 영향받지 않는다.
+const DESIGN_HOST = 'hanilmetal.vercel.app'
+
 export function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl
   const host = (
@@ -24,6 +29,23 @@ export function middleware(request: NextRequest) {
   )
     .toLowerCase()
     .split(':')[0]
+
+  // 0) 시안 호스트(hanilmetal.vercel.app) — /hanil 서브트리로 호스트 라우팅.
+  //    다른 호스트(jieuri.com 등)는 이 블록을 건너뛰므로 기존 동작 무영향.
+  if (host === DESIGN_HOST) {
+    // a) 기존에 배포된 /hanil/* 링크(내부 href 포함) → /hanil 을 뗀 깔끔한 주소로 307 정규화.
+    //    예: /hanil → /,  /hanil/a → /a,  /hanil/a/greeting → /a/greeting
+    if (pathname === '/hanil' || pathname.startsWith('/hanil/')) {
+      const url = request.nextUrl.clone()
+      url.pathname = pathname.slice('/hanil'.length) || '/'
+      return NextResponse.redirect(url, 307)
+    }
+    // b) 그 외 모든 경로 → /hanil{경로} 로 내부 rewrite(URL 은 깔끔하게 유지).
+    //    예: / → /hanil,  /a → /hanil/a,  /b/greeting → /hanil/b/greeting
+    const url = request.nextUrl.clone()
+    url.pathname = pathname === '/' ? '/hanil' : `/hanil${pathname}`
+    return NextResponse.rewrite(url)
+  }
 
   // 1) 구 도메인(easysite-sage.vercel.app) → jieuri.com 같은 경로로 301 영구 리다이렉트.
   //    Vercel 배포/프로젝트는 그대로 두고(같은 프로젝트라 지우면 jieuri.com 도 죽음),
@@ -46,6 +68,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+    // _next·api·정적 파일(이미지·폰트·favicon 등)은 제외 → 에셋 로딩이 rewrite 로 깨지지 않게 한다.
+    '/((?!_next/static|_next/image|api/|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|otf|eot|css|js|txt|xml|webmanifest)$).*)',
   ],
 }
