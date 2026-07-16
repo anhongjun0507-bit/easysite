@@ -1,5 +1,10 @@
 # PROGRESS
 
+## 2026-07-16 — 한일 시안 전용 독립 호스트 추가 (배포 완료)
+- Vercel 프로젝트에 `hanilmetal.vercel.app` 추가(후보 1순위). 클라에 jieuri.com 미노출용 독립 URL.
+- `src/middleware.ts`: 시안 호스트에서만 / → /hanil rewrite, /a·/b·/c 등 → /hanil/*, 기존 /hanil/* 링크는 307로 /* 정규화. jieuri.com 등 타 호스트 무영향. matcher에 api·폰트·css/js 제외 추가(에셋 보호).
+- 페이지/콘텐츠/디자인 변경 없음. 라이브 검증: 시안 호스트 / ·/a·/b·/c·/a/isonite-tf1·/b/greeting 전부 200 + CSS/JS/woff2 200 + noindex 유지, /hanil/a→/a 307. 회귀: jieuri.com/ 및 /hanil/a 기존 동작 그대로.
+
 ## 2026-07-16 — /hanil 시안 A/B/C 대기업급 디자인 업그레이드 (배포 예정)
 - 공통 기반 신설: `_components/_ui.ts`(타입 스케일·모션·여백 토큰) + `Section.tsx`(SectionHead 번호 01~ 패턴 · ScrollCue).
 - 공유 컴포넌트 업그레이드(3안 동시): SiteHeader GNB 언더라인 hover + 메가메뉴 번호/영문, SiteFooter 슬로건 밴드+4컬럼(회사정보·연락처 분리), IsoniteBody pull-quote+적용부품 비주얼 카드 3종, GreetingBody 인용 첫 문단 강조+서명 정돈, HeroCrossfade(A) 세그먼트 프로그레스+01/03 카운터.
