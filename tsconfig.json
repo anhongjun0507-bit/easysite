@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    // 타입체크 전용 — scripts/*.ts 에서 Map/matchAll 순회를 쓰려면 es2015+ 가 필요하다.
+    // Next 번들 출력은 이 값과 무관하게 이미 모던 문법이라(빌드 산출물 확인) 페이로드 변화 없음.
+    "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,

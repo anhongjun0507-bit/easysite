@@ -6,7 +6,7 @@ import { gsap, useGSAP, ScrollTrigger } from '@/lib/letters/gsap'
 import { DUR_REVEAL, DUR_STAMP, EASE_REVEAL, EASE_STAMP, REVEAL_START } from '@/lib/letters/motion'
 import { koDate } from '@/lib/letters/format'
 import { playPaper, playStamp } from '@/lib/letters/audio'
-import { blurOf, type LetterEntry, type LetterImage } from '@/content/letters'
+import { blurOf, hasReply, type LetterEntry, type LetterImage } from '@/content/letters'
 import { Lightbox } from './Lightbox'
 import { Postmark } from './svg'
 import { ReplyBlock } from './ReplyBlock'
@@ -143,7 +143,13 @@ export function LetterTimeline({ entries }: { entries: LetterEntry[] }) {
   return (
     <div className="lt-timeline" ref={root}>
       {entries.map((entry, i) => (
-        <article className="lt-entry" key={entry.id} aria-label={`${koDate(entry.date)} ${KIND_LABEL[entry.kind]}`}>
+        <article
+          className="lt-entry"
+          // id 는 우편함·딥링크(#2026-03-14-letter)의 앵커다
+          id={entry.id}
+          key={entry.id}
+          aria-label={`${koDate(entry.date)} ${KIND_LABEL[entry.kind]}`}
+        >
           <header className="lt-entry-head">
             <span className="lt-postmark" data-stamp style={{ rotate: `${TILT[i % TILT.length]}deg` }}>
               <Postmark date={entry.date} className="h-full w-full" />
@@ -190,7 +196,7 @@ export function LetterTimeline({ entries }: { entries: LetterEntry[] }) {
             )}
           </div>
 
-          {entry.reply && <ReplyBlock reply={entry.reply} />}
+          {entry.reply && hasReply(entry) && <ReplyBlock reply={entry.reply} />}
 
           {i < entries.length - 1 && (
             <svg data-link className="lt-link" viewBox="0 0 520 130" aria-hidden>

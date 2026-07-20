@@ -18,7 +18,7 @@ export function Postmark({ date, className }: { date: string; className?: string
         fill="currentColor"
         fontSize="21"
         letterSpacing="1.5"
-        fontFamily="var(--font-display), serif"
+        fontFamily="var(--font-display), sans-serif"
       >
         {Number(m)}.{Number(d)}
       </text>
@@ -31,7 +31,7 @@ export function Postmark({ date, className }: { date: string; className?: string
         fontSize="12"
         letterSpacing="3"
         opacity="0.75"
-        fontFamily="var(--font-display), serif"
+        fontFamily="var(--font-display), sans-serif"
       >
         {y}
       </text>

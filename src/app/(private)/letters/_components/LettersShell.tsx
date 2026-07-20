@@ -119,12 +119,24 @@ export function LettersShell({ children }: { children: ReactNode }) {
   }, [ready, reduced])
 
   // 5) 폰트·이미지가 들어오면 레이아웃 높이가 바뀐다 → 트리거 위치 한 번 재계산
+  //    그 직후에 딥링크(#엔트리-id)를 처리한다. 높이가 확정되기 전에 뛰면 엉뚱한 곳에 선다.
   useEffect(() => {
     let done = false
+    const jumpToHash = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1))
+      if (!id) return
+      // id 가 숫자로 시작해 querySelector('#2026-…') 는 못 쓴다
+      const el = document.getElementById(id)
+      if (!el) return
+      const lenis = lenisRef.current?.lenis
+      if (lenis) lenis.scrollTo(el, { offset: -window.innerHeight * 0.12, immediate: true })
+      else el.scrollIntoView({ behavior: 'auto', block: 'start' })
+    }
     const refresh = () => {
       if (done) return
       done = true
       ScrollTrigger.refresh()
+      jumpToHash()
     }
     const timer = window.setTimeout(refresh, 2500) // 최후 보루
     Promise.all([

@@ -2,18 +2,62 @@ import type { Metadata, Viewport } from 'next'
 import localFont from 'next/font/local'
 import './letters.css'
 
-// 큰 제목 — 나눔명조(OFL). letters-copy.ts 에 실제로 쓰인 글자만 남긴 초경량 서브셋이라
-// 첫 화면(LCP)에 preload 해도 부담이 없다. 문구를 고치면 scripts/subset-display-font.py 재실행.
-const display = localFont({
-  src: [
-    { path: '../../../../public/fonts/display/NanumMyeongjo-Regular.subset.woff2', weight: '400' },
-    { path: '../../../../public/fonts/display/NanumMyeongjo-ExtraBold.subset.woff2', weight: '800' },
-  ],
+/**
+ * 제목·UI 서체 — 동글동글한 한글 무료 폰트 3종 비교 중. (`?font=1|2|3`)
+ *
+ * 한 후보당 두 벌을 쓴다.
+ *  · display — letters-copy.ts 에 쓰인 글자만 남긴 10~18KB 서브셋. 첫 화면(LCP)이라 preload.
+ *  · ui      — 상용 한글 2,350자(118~181KB). 날짜·버튼·우편함처럼 문구가 바뀌는 자리. preload 안 함.
+ *
+ * 문구를 고치면 `python3 scripts/subset-letters-font.py` 재실행.
+ * 후보가 확정되면 고른 1종만 남기고 나머지와 스위처를 지운다.
+ */
+const jua = localFont({
+  src: '../../../../public/fonts/ui/jua.display.subset.woff2',
   display: 'swap',
-  variable: '--font-display',
+  variable: '--font-d1',
   preload: true,
-  fallback: ['Pretendard Variable', 'serif'],
+  fallback: ['Pretendard Variable', 'sans-serif'],
 })
+const juaUi = localFont({
+  src: '../../../../public/fonts/ui/jua.ui.subset.woff2',
+  display: 'swap',
+  variable: '--font-u1',
+  preload: false,
+  fallback: ['Pretendard Variable', 'sans-serif'],
+})
+const ssurround = localFont({
+  src: '../../../../public/fonts/ui/ssurround.display.subset.woff2',
+  display: 'swap',
+  variable: '--font-d2',
+  preload: true,
+  fallback: ['Pretendard Variable', 'sans-serif'],
+})
+const ssurroundUi = localFont({
+  src: '../../../../public/fonts/ui/ssurround.ui.subset.woff2',
+  display: 'swap',
+  variable: '--font-u2',
+  preload: false,
+  fallback: ['Pretendard Variable', 'sans-serif'],
+})
+const dongdong = localFont({
+  src: '../../../../public/fonts/ui/dongdong.display.subset.woff2',
+  display: 'swap',
+  variable: '--font-d3',
+  preload: true,
+  fallback: ['Pretendard Variable', 'sans-serif'],
+})
+const dongdongUi = localFont({
+  src: '../../../../public/fonts/ui/dongdong.ui.subset.woff2',
+  display: 'swap',
+  variable: '--font-u3',
+  preload: false,
+  fallback: ['Pretendard Variable', 'sans-serif'],
+})
+
+const FONT_VARS = [jua, juaUi, ssurround, ssurroundUi, dongdong, dongdongUi]
+  .map((f) => f.variable)
+  .join(' ')
 
 // 편지·답장 본문 — 나눔손글씨 다행체(OFL). KS X 1001 2,350자 서브셋.
 // 딥블랙 위에서도 획이 버티도록 '펜'체가 아니라 굵기가 고른 '다행체'를 쓴다.
@@ -41,5 +85,5 @@ export const viewport: Viewport = {
 }
 
 export default function LettersLayout({ children }: { children: React.ReactNode }) {
-  return <div className={`${display.variable} ${handwriting.variable} letters-root`}>{children}</div>
+  return <div className={`${FONT_VARS} ${handwriting.variable} letters-root`}>{children}</div>
 }
