@@ -6,7 +6,7 @@
  *
  * 하는 일
  *   1) 규칙에 맞는 파일을 (날짜, 종류) 로 묶는다
- *   2) webp 로 변환 — EXIF 회전 반영, 긴 변 1600px 상한.
+ *   2) webp 로 변환 — EXIF 회전 반영, 긴 변 2000px 상한.
  *      결과 파일명에 원본 해시 6자를 붙인다: `2026-03-14_letter_01.a3f9k2.webp`
  *      public/ 은 게이트와 무관하게 URL 만 알면 열리는 자리라, 날짜만으로는 주소를 못 맞추게 한다.
  *   3) blur 미리보기(10×14 JPEG)를 만들어 src/content/letters-blur.ts 를 갱신
@@ -34,7 +34,8 @@ const BLUR_TS = path.join(ROOT, 'src', 'content', 'letters-blur.ts')
 const INPUT = /^(\d{4}-\d{2}-\d{2})_(letter|diary)_(\d{2})\.(jpe?g|png)$/i
 const OUTPUT = /^(\d{4}-\d{2}-\d{2})_(letter|diary)_(\d{2})\.[0-9a-f]{6}\.webp$/i
 
-const MAX_EDGE = 1600
+// 손글씨를 라이트박스에서 읽을 수 있어야 해서 1600 보다 크게 잡는다
+const MAX_EDGE = 2000
 const WEBP_QUALITY = 82
 
 type Kind = LetterEntry['kind']
@@ -122,7 +123,7 @@ function renderEntries(entries: LetterEntry[]): string {
   return lines.join('\n')
 }
 
-/** 기존 맵에서 **파일이 아직 있는 것**만 남기고 새로 만든 것을 얹는다(더미 blur 도 그대로 산다) */
+/** 기존 맵에서 **파일이 아직 있는 것**만 남기고 새로 만든 것을 얹는다 */
 async function writeBlurMap(fresh: Map<string, string>, onDisk: Set<string>) {
   const current = [...(await readFile(BLUR_TS, 'utf8')).matchAll(/'([^']+)':\s*'([^']+)'/g)]
   const merged = new Map<string, string>()
@@ -131,7 +132,7 @@ async function writeBlurMap(fresh: Map<string, string>, onDisk: Set<string>) {
 
   const out = [
     '// 자동 생성 파일 — 수정하지 말 것.',
-    '// 실제 캡쳐는 `npm run sync:letters`, 더미는 `python3 scripts/gen-letter-dummies.py` 가 채운다.',
+    '// `npm run sync:letters` 가 채운다.',
     '// next/image placeholder="blur" 용 저해상도 미리보기.',
     '',
     'export const LETTER_BLUR: Record<string, string> = {',
@@ -210,7 +211,7 @@ async function main(): Promise<number> {
     return 1
   }
   await writeFile(LETTERS_TS, source.replace(marked, `$1${renderEntries(entries)}\n$2`), 'utf8')
-  console.log(`\n· letters.ts AUTO 구간 갱신 (엔트리 ${entries.length}건 — 더미는 자동으로 빠집니다)`)
+  console.log(`\n· letters.ts AUTO 구간 갱신 (엔트리 ${entries.length}건)`)
 
   await writeBlurMap(blur, new Set(names.map((n) => `/letters/${n}`)))
 
