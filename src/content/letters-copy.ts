@@ -23,6 +23,9 @@ export const DISPLAY = {
   /** 에필로그 */
   epilogueLead: '지금까지 오간 것',
   epilogueTail: '다음 편지에 계속',
+
+  /** 우편함 인덱스 */
+  mailboxTitle: '우편함',
 } as const
 
 /** 게이트(패스코드) 화면 */

@@ -16,34 +16,14 @@ import sys
 from pathlib import Path
 from urllib.request import urlopen
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from hangul_charset import ks_x_1001_chars  # noqa: E402
+
 SRC_URL = "https://cdn.jsdelivr.net/gh/projectnoonnu/naverfont_02@1.0/Daheng.woff"
 ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "public" / "fonts" / "handwriting"
 OUT = OUT_DIR / "NanumDaHaeng.subset.woff2"
 TMP = Path("/tmp/NanumDaHaengCe.woff")
-
-
-def target_chars() -> str:
-    # KS X 1001 상용 한글 2,350자 = euc-kr 로 인코딩 가능한 한글 음절
-    hangul = [
-        chr(cp)
-        for cp in range(0xAC00, 0xD7A4)
-        if _encodable(chr(cp))
-    ]
-    # 라틴·숫자·구두점 + 편지에서 실제로 쓰는 기호
-    ascii_range = [chr(cp) for cp in range(0x20, 0x7F)]
-    extra = list("―—–…·‘’“”「」『』〈〉《》×÷℃※★☆○●△▲□■♥→←↑↓°")
-    return "".join(hangul + ascii_range + extra)
-
-
-def _encodable(ch: str) -> bool:
-    """KS X 1001 상용 한글(2,350자)인지 — 파이썬 euc_kr 코덱은 UHC 확장(11,172자)까지
-    받아주므로, 인코딩 결과 바이트가 KS X 1001 한글 영역(0xB0A1~0xC8FE)인지까지 확인한다."""
-    try:
-        b = ch.encode("euc-kr")
-    except UnicodeEncodeError:
-        return False
-    return len(b) == 2 and 0xB0 <= b[0] <= 0xC8 and 0xA1 <= b[1] <= 0xFE
 
 
 def main() -> int:
@@ -52,7 +32,7 @@ def main() -> int:
         TMP.write_bytes(urlopen(SRC_URL, timeout=60).read())
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    chars = target_chars()
+    chars = ks_x_1001_chars()
     print(f"· 서브셋 대상 문자 수: {len(chars)}")
 
     subprocess.run(

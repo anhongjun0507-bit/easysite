@@ -1,15 +1,20 @@
 /**
- * /letters — 손편지 아카이브 데이터 (DB 없이 정적)
+ * /letters — 손편지·일기 아카이브 데이터 (DB 없이 정적)
  *
- * 실제 스캔을 추가하는 방법
- *  1) 스캔 파일을 public/letters/ 에 넣는다 (권장: 긴 변 1400px 내외 jpg, 세로형)
- *  2) python3 scripts/gen-letter-dummies.py 대신, 새 파일용 blurDataURL 이 필요하면
- *     src/content/letters-blur.ts 에 '/letters/파일명.jpg': 'data:image/jpeg;base64,…' 를 추가한다
- *     (없어도 동작한다 — placeholder 없이 그냥 뜬다)
- *  3) 아래 LETTERS 배열에 항목을 시간순으로 추가한다
+ * 새 캡쳐를 넣는 법 — 3단계면 끝난다
+ *  1) `public/letters/` 에 규칙대로 파일을 넣는다
+ *     `YYYY-MM-DD_letter_01.jpg` (편지) · `YYYY-MM-DD_diary_01.png` (일기) · 여러 장이면 _02, _03…
+ *  2) `npm run sync:letters`
+ *     webp 변환(추측 못 하도록 파일명에 해시를 붙인다) · blur 미리보기 · 아래 AUTO 구간 갱신까지 한 번에.
+ *     원본 jpg/png 는 `public/letters/_src/` 로 옮겨진다(git 에 올라가지 않는다).
+ *  3) 아래 엔트리의 `reply.body` 에 답장을 쓴다. 줄바꿈(\n)은 화면에 그대로 나온다.
+ *     sync 를 다시 돌려도 직접 쓴 `reply`·`transcript`·`alt` 는 지워지지 않는다.
+ *
+ * 실제 캡쳐가 한 장이라도 들어오면 맨 아래 더미 3건은 자동으로 빠진다.
  */
 
-import { LETTER_BLUR } from './letters-blur'
+// 확장자를 붙여 둔다 — scripts/sync-letters.ts 가 이 파일을 node 로 그대로 실행해서 읽기 때문
+import { LETTER_BLUR } from './letters-blur.ts'
 
 export type LetterImage = {
   src: string
@@ -28,6 +33,7 @@ export type LetterReply = {
 }
 
 export type LetterEntry = {
+  /** 딥링크 앵커이기도 하다 — `YYYY-MM-DD-letter` / `YYYY-MM-DD-diary` */
   id: string
   /** YYYY-MM-DD */
   date: string
@@ -47,10 +53,15 @@ export function blurOf(src: string): string | undefined {
   return LETTER_BLUR[src]
 }
 
-// TODO: 실제 스캔이 도착하면 아래 더미 3건을 교체한다 (날짜·본문·사진 전부)
-export const LETTERS: LetterEntry[] = [
+// <<< AUTO — `npm run sync:letters` 가 생성한다. 이 구간을 손으로 고쳐도 되지만
+//            reply·transcript·alt 를 뺀 나머지는 다음 sync 때 파일 기준으로 덮어써진다.
+const REAL: LetterEntry[] = []
+// >>> AUTO
+
+/** 실제 캡쳐가 도착하기 전까지 전체 스크롤 플로우를 돌리기 위한 더미 (python3 scripts/gen-letter-dummies.py) */
+const DUMMY: LetterEntry[] = [
   {
-    id: '2026-03-14',
+    id: '2026-03-14-letter',
     date: '2026-03-14',
     kind: 'letter',
     images: [
@@ -69,7 +80,7 @@ export const LETTERS: LetterEntry[] = [
     },
   },
   {
-    id: '2026-04-02',
+    id: '2026-04-02-diary',
     date: '2026-04-02',
     kind: 'diary',
     images: [scan('/letters/dummy-02a.jpg', '2026년 4월 2일 일기 스캔')],
@@ -85,7 +96,7 @@ export const LETTERS: LetterEntry[] = [
     },
   },
   {
-    id: '2026-05-21',
+    id: '2026-05-21-letter',
     date: '2026-05-21',
     kind: 'letter',
     images: [
@@ -104,7 +115,14 @@ export const LETTERS: LetterEntry[] = [
   },
 ]
 
+export const LETTERS: LetterEntry[] = REAL.length ? REAL : DUMMY
+
+/** 답장을 실제로 쓴 엔트리인지 — sync 스크립트가 채울 자리로 빈 reply 를 만들어 두기 때문 */
+export function hasReply(entry: LetterEntry): boolean {
+  return Boolean(entry.reply?.body.trim())
+}
+
 /** 에필로그 카운트업용 — 주고받은 통수 */
 export const LETTER_COUNT = LETTERS.length
-export const REPLY_COUNT = LETTERS.filter((l) => l.reply).length
+export const REPLY_COUNT = LETTERS.filter(hasReply).length
 export const TOTAL_COUNT = LETTER_COUNT + REPLY_COUNT

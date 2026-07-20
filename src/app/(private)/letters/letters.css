@@ -24,6 +24,8 @@
   min-height: 100dvh;
   background: var(--bg);
   color: var(--text);
+  /* 이 페이지의 기본 서체는 동글동글한 UI 체다. 손글씨 본문(.lt-hand)과 큰 제목(.lt-display)만 예외 */
+  font-family: var(--font-ui), 'Pretendard Variable', sans-serif;
   overflow-x: clip;
   word-break: keep-all;
   letter-spacing: -0.005em;
@@ -42,11 +44,21 @@
 
 /* ── 서체 ─────────────────────────────────────────────────── */
 
-/* 큰 제목 — 명조. 시처럼 읽히는 자리에만 쓴다 */
+/* 기본은 1번 후보. ?font=2|3 이면 FontSwitch 가 이 두 변수만 다시 묶는다.
+   (확정되면 이 블록을 고른 폰트 하나로 고정하고 FontSwitch 를 지운다)
+   d = 제목용 초경량 서브셋, u = 상용 한글 2,350자 */
+.letters-root {
+  --font-display: var(--font-d1);
+  --font-ui: var(--font-u1);
+}
+
+/* 큰 제목 — 시처럼 읽히는 자리에만 쓴다.
+   후보 셋 다 굵기가 1종뿐이라 font-weight 를 올리면 브라우저가 합성 볼드로 획을 뭉갠다.
+   위계는 크기와 여백으로만 잡는다. 라운드체는 자간을 조이면 글자가 서로 붙어 보여 -0.01em 까지만. */
 .letters-root .lt-display {
-  font-family: var(--font-display), 'Pretendard Variable', serif;
-  font-weight: 800;
-  letter-spacing: -0.025em;
+  font-family: var(--font-display), 'Pretendard Variable', sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 /* 편지·답장 본문 — 손글씨. 딥블랙 위라 줄간격을 넉넉히 준다 */
@@ -59,10 +71,10 @@
   color: var(--text-dim);
 }
 
-/* 라벨·날짜 — 레포 공용 Pretendard 그대로 */
+/* 라벨·날짜 — .letters-root 의 UI 체를 그대로 물려받는다 */
 .letters-root .lt-label {
-  font-size: 11px;
-  letter-spacing: 0.26em; /* 한글은 자간을 라틴만큼 벌리면 단어가 흩어져 읽힌다 */
+  font-size: 11.5px;
+  letter-spacing: 0.2em; /* 한글은 자간을 라틴만큼 벌리면 단어가 흩어져 읽힌다. 라운드체는 더 조인다 */
   color: var(--text-faint);
 }
 .letters-root .lt-date {
@@ -130,7 +142,7 @@
   display: none;
 }
 .lt-preloader-line {
-  font-family: var(--font-display), serif;
+  font-family: var(--font-display), 'Pretendard Variable', sans-serif;
   font-size: clamp(1.05rem, 2.4vw, 1.5rem);
   letter-spacing: 0.02em;
   color: var(--text-dim);
@@ -560,6 +572,138 @@
   height: auto;
   margin: 0 auto;
   max-width: 900px;
+}
+
+/* ── 우편함 인덱스 ────────────────────────────────────────── */
+
+/* 사운드 토글과 짝을 이루는 알약. 항로(.lt-progress) 아래로 내려 겹치지 않게 둔다 */
+.lt-mailbox-btn {
+  position: fixed;
+  top: clamp(58px, 7.5vh, 78px);
+  left: clamp(16px, 4vw, 40px);
+  z-index: 58;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 15px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  /* 밝은 캡쳐 위를 지나갈 때도 글자가 뭉개지지 않게 사운드 토글보다 조금 더 덮는다 */
+  background: rgba(10, 10, 11, 0.86);
+  color: var(--text-faint);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  transition: color 0.3s, border-color 0.3s;
+}
+.lt-mailbox-btn:hover {
+  color: var(--text);
+  border-color: rgba(236, 230, 226, 0.3);
+}
+
+.lt-mailbox {
+  position: fixed;
+  inset: 0;
+  z-index: 92; /* 리더(90)보다 위 — 리더가 열린 채로는 우편함을 열 수 없지만 순서는 명시해 둔다 */
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(14px, 3vh, 28px);
+  padding: clamp(16px, 3vw, 30px) clamp(16px, 4vw, 44px) 0;
+  /* 반투명으로 두면 뒤의 밝은 종이 캡쳐가 그대로 비쳐 목록이 안 읽힌다 — 아예 덮는다 */
+  background: var(--bg-deep);
+}
+.lt-mailbox-bar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+}
+.lt-mailbox-title {
+  font-size: clamp(1.7rem, 5vw, 2.6rem);
+  line-height: 1;
+}
+.lt-mailbox-scroll {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-bottom: clamp(40px, 10vh, 90px);
+}
+
+.lt-mb-month + .lt-mb-month {
+  margin-top: clamp(26px, 5vh, 46px);
+}
+.lt-mb-list {
+  position: relative;
+  margin-top: 12px;
+}
+/* 달마다 한 줄기 흐르는 항로 — 진행 인디케이터의 점선 문법을 그대로 쓴다 */
+.lt-mb-rail {
+  position: absolute;
+  left: 5px;
+  top: 14px;
+  bottom: 14px;
+  border-left: 1px dashed var(--line);
+  transform-origin: top;
+  will-change: transform;
+}
+
+.lt-mb-row {
+  position: relative;
+  display: grid;
+  width: 100%;
+  grid-template-columns: 11px max-content minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 2px;
+  text-align: left;
+  font-size: 14.5px;
+  color: var(--text-dim);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s;
+}
+.lt-mb-row:hover {
+  color: var(--text);
+  transform: translateX(3px);
+}
+.lt-mb-dot {
+  width: 9px;
+  height: 9px;
+  justify-self: center;
+  border: 1px solid var(--text-faint);
+  border-radius: 999px;
+  background: var(--bg-deep);
+  transition: border-color 0.3s, background 0.3s;
+}
+/* 답장을 쓴 날에만 소인이 찍혀 있다 */
+.lt-mb-dot[data-replied] {
+  border-color: var(--rose);
+  background: var(--rose);
+  box-shadow: 0 0 0 3px rgba(255, 147, 152, 0.14);
+}
+.lt-mb-day {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+.lt-mb-kind {
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+.lt-mb-sep {
+  display: inline-block;
+  width: 2px;
+  height: 2px;
+  margin: 0 7px;
+  border-radius: 999px;
+  background: currentColor;
+  vertical-align: middle;
+  opacity: 0.7;
+}
+.lt-mb-mark {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--rose-dim);
+}
+
+/* 우편함에서 건너뛴 항목이 화면 맨 위에 딱 붙지 않게 */
+.lt-entry {
+  scroll-margin-top: 12vh;
 }
 
 /* ── 게이트 ───────────────────────────────────────────────── */

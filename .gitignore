@@ -156,4 +156,10 @@ next-env.d.ts
 
 # Portfolio source assets (GIFs → processed into public/portfolio/*.png)
 /images/
+
+# /letters 캡쳐 원본 (npm run sync:letters 가 webp 로 바꾼 뒤 여기로 옮긴다)
+/public/letters/_src/
 .env*
+
+# python 캐시
+__pycache__/
