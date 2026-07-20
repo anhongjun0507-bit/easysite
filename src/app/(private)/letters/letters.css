@@ -1,0 +1,415 @@
+/* ──────────────────────────────────────────────────────────────
+   /letters — 빈티지 항공우편(Par Avion)
+   전부 .letters-root 하위로 스코프. globals.css 의 사이트 톤과 섞이지 않는다.
+   ────────────────────────────────────────────────────────────── */
+
+.letters-root {
+  --paper: #f2e8d5;
+  --paper-2: #efe4cf;
+  --paper-deep: #e3d5b8;
+  --ink: #1b2a4a;
+  --ink-60: rgba(27, 42, 74, 0.6);
+  --ink-40: rgba(27, 42, 74, 0.4);
+  --ink-16: rgba(27, 42, 74, 0.16);
+  --stamp: #b3312c;
+  --shell: min(1120px, 92vw);
+
+  position: relative;
+  min-height: 100dvh;
+  color: var(--ink);
+  background:
+    radial-gradient(120% 80% at 50% -10%, #f7efdd 0%, transparent 60%),
+    radial-gradient(90% 60% at 100% 110%, #e8dcc2 0%, transparent 55%),
+    var(--paper);
+  overflow-x: clip;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+}
+
+/* 손글씨는 편지·답장 본문에만 */
+.letters-root .hand {
+  font-family: var(--font-hand), 'Pretendard Variable', sans-serif;
+  letter-spacing: 0.01em;
+  line-height: 1.62;
+}
+
+/* 종이 위 그레인 — feTurbulence SVG 를 화면 전체에 아주 옅게 */
+.lt-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.14'/%3E%3C/svg%3E");
+}
+
+/* 항공우편 사선 스트라이프 */
+.lt-airmail {
+  height: 10px;
+  width: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--stamp) 0 10px,
+    transparent 10px 20px,
+    var(--ink) 20px 30px,
+    transparent 30px 40px
+  );
+  opacity: 0.55;
+}
+
+/* 레이아웃 */
+.lt-shell {
+  width: var(--shell);
+  margin: 0 auto;
+}
+.lt-section {
+  position: relative;
+  padding-block: clamp(96px, 16vh, 220px);
+}
+.lt-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ink-40);
+}
+.lt-meta {
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--ink-60);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 히어로: 봉투 + 밀랍 씰 ───────────────────────────────── */
+.lt-hero {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  perspective: 1400px;
+}
+.lt-envelope {
+  position: relative;
+  width: min(560px, 84vw);
+  aspect-ratio: 3 / 2;
+  transform-style: preserve-3d;
+}
+.lt-envelope-body {
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  background: linear-gradient(168deg, #f6eeda 0%, #ece0c6 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 253, 245, 0.8) inset,
+    0 18px 40px -22px rgba(27, 42, 74, 0.45),
+    0 2px 6px rgba(27, 42, 74, 0.08);
+  border: 1px solid rgba(27, 42, 74, 0.1);
+  overflow: hidden;
+}
+.lt-envelope-body::after {
+  /* 봉투 테두리 항공우편 사선 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 9px solid transparent;
+  border-image: repeating-linear-gradient(
+      -45deg,
+      #b3312c 0 9px,
+      transparent 9px 18px,
+      #1b2a4a 18px 27px,
+      transparent 27px 36px
+    )
+    9;
+  opacity: 0.5;
+}
+.lt-envelope-flap {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 58%;
+  transform-origin: top center;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  background: linear-gradient(180deg, #f8f1de 0%, #e6d9bd 100%);
+  border: 1px solid rgba(27, 42, 74, 0.08);
+  box-shadow: 0 10px 18px -14px rgba(27, 42, 74, 0.5);
+  will-change: transform;
+}
+.lt-seal {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 84px;
+  height: 84px;
+  margin: -42px 0 0 -42px;
+  z-index: 2;
+}
+.lt-hero-title {
+  margin-top: clamp(40px, 7vh, 90px);
+  text-align: center;
+  font-size: clamp(34px, 6.4vw, 76px);
+  line-height: 1.12;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+.lt-hero-line {
+  overflow: hidden;
+}
+.lt-scroll-hint {
+  position: absolute;
+  bottom: 34px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ── 항로 프롤로그 ───────────────────────────────────────── */
+.lt-route {
+  position: relative;
+  height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.lt-route svg {
+  width: min(1100px, 94vw);
+  height: auto;
+}
+/* 모바일에선 항로가 너무 작아 화면이 비어 보인다 — 같은 도형을 키워 채운다 */
+@media (max-width: 767px) {
+  .lt-route svg {
+    transform: scale(1.75);
+  }
+}
+.lt-route-path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-dasharray: 7 11;
+  stroke-linecap: round;
+  opacity: 0.55;
+}
+.lt-route-land {
+  fill: rgba(27, 42, 74, 0.07);
+  stroke: rgba(27, 42, 74, 0.28);
+  stroke-width: 1.2;
+}
+.lt-route-label {
+  font-size: 12px;
+  letter-spacing: 0.24em;
+  fill: var(--ink-60);
+  text-transform: uppercase;
+}
+
+/* ── 타임라인 ────────────────────────────────────────────── */
+.lt-entry {
+  position: relative;
+  padding-block: clamp(72px, 12vh, 160px);
+}
+.lt-postmark {
+  width: clamp(112px, 22vw, 168px);
+  height: clamp(112px, 22vw, 168px);
+  color: var(--stamp);
+  opacity: 0.85;
+}
+.lt-scan {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transform-style: preserve-3d;
+}
+.lt-scan-inner {
+  position: relative;
+  overflow: hidden;
+  background: var(--paper-2);
+  box-shadow:
+    0 2px 3px rgba(27, 42, 74, 0.1),
+    0 26px 50px -30px rgba(27, 42, 74, 0.55);
+  /* 찢긴 가장자리 — 위·아래를 불규칙 폴리곤으로 잘라낸다 */
+  clip-path: polygon(
+    0 1.1%, 6% 0.3%, 13% 1.4%, 21% 0.4%, 29% 1.6%, 38% 0.5%, 47% 1.5%, 56% 0.4%,
+    64% 1.6%, 73% 0.6%, 82% 1.5%, 90% 0.5%, 100% 1.2%,
+    100% 98.8%, 92% 99.6%, 84% 98.5%, 75% 99.5%, 66% 98.4%, 57% 99.6%, 48% 98.5%,
+    39% 99.5%, 30% 98.4%, 21% 99.6%, 12% 98.5%, 5% 99.4%, 0 98.7%
+  );
+}
+.lt-scan img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.lt-scan-more {
+  margin-top: 10px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--ink-40);
+}
+.lt-transcript {
+  align-self: start;
+  font-size: clamp(19px, 2.1vw, 24px);
+  color: rgba(27, 42, 74, 0.86);
+  white-space: pre-line;
+}
+
+/* 답장 — 다른 질감의 종이(살짝 푸른 기, 괘선 없음) */
+.lt-reply {
+  position: relative;
+  padding: clamp(28px, 4.4vw, 52px);
+  background: linear-gradient(172deg, #eef0e9 0%, #e5e7de 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 24px 44px -30px rgba(27, 42, 74, 0.5);
+  border: 1px solid rgba(27, 42, 74, 0.08);
+}
+.lt-reply-body {
+  font-size: clamp(20px, 2.3vw, 26px);
+  white-space: pre-line;
+}
+.lt-reply-line {
+  overflow: hidden;
+}
+.lt-stamp {
+  width: 78px;
+  height: 96px;
+}
+
+/* 항목 사이 짧은 곡선 — 종이비행기 이음새 */
+.lt-link-path {
+  fill: none;
+  stroke: rgba(27, 42, 74, 0.3);
+  stroke-width: 1.6;
+  stroke-dasharray: 5 9;
+}
+
+/* ── 진행 인디케이터 ─────────────────────────────────────── */
+.lt-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  padding: 14px clamp(16px, 4vw, 40px) 12px;
+  background: linear-gradient(180deg, rgba(242, 232, 213, 0.94) 0%, rgba(242, 232, 213, 0) 100%);
+  pointer-events: none;
+}
+.lt-progress svg {
+  width: 100%;
+  height: 26px;
+  overflow: visible;
+}
+.lt-progress-track {
+  fill: none;
+  stroke: rgba(27, 42, 74, 0.22);
+  stroke-width: 1.4;
+  stroke-dasharray: 4 8;
+}
+
+/* ── 라이트박스 ──────────────────────────────────────────── */
+.lt-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(23, 21, 16, 0.965);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+.lt-lightbox-stage {
+  overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pinch-zoom;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+}
+.lt-lightbox-stage img {
+  max-width: min(1100px, 96vw);
+  width: 100%;
+  height: auto;
+}
+.lt-lightbox-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px clamp(12px, 3vw, 24px);
+  color: #efe4cf;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+.lt-lightbox-btn {
+  padding: 10px 16px;
+  border: 1px solid rgba(239, 228, 207, 0.35);
+  color: #efe4cf;
+  background: transparent;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.lt-lightbox-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ── 프리로더 ────────────────────────────────────────────── */
+.lt-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+}
+
+/* ── 게이트 ──────────────────────────────────────────────── */
+.lt-gate {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.lt-gate-input {
+  width: min(320px, 78vw);
+  padding: 14px 16px;
+  font-size: 17px;
+  text-align: center;
+  letter-spacing: 0.3em;
+  color: var(--ink);
+  background: rgba(255, 253, 246, 0.72);
+  border: 1px solid var(--ink-16);
+  border-radius: 2px;
+  outline-offset: 3px;
+}
+.lt-gate-submit {
+  margin-top: 14px;
+  padding: 13px 30px;
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  color: var(--paper);
+  background: var(--ink);
+  border: 0;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.lt-gate-submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* 포커스 — 사이트 인디고 대신 잉크 네이비 */
+.letters-root *:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* 모션 최소화 — 모든 연출을 단순 표시로 폴백 */
+@media (prefers-reduced-motion: reduce) {
+  /* transform 만 되돌린다 — clip-path 는 봉투 플랩·씰의 "모양" 자체라 유지해야 닫힌 봉투로 보인다 */
+  .letters-root [data-anim] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .lt-preloader {
+    display: none;
+  }
+}

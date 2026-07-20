@@ -2,7 +2,7 @@
 
 import { ReactLenis, type LenisRef } from 'lenis/react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { useSelectedLayoutSegments } from 'next/navigation'
+import { usePathname, useSelectedLayoutSegments } from 'next/navigation'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
@@ -29,17 +29,19 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
   const lenisRef = useRef<LenisRef>(null)
   const [enabled, setEnabled] = useState(false)
   // 클라 검토용 시안(/hanil)은 전역 스무스스크롤에서 격리 — 네이티브 스크롤 유지.
+  // 프라이빗 아카이브(/letters)도 자체 Lenis 인스턴스를 쓰므로 전역에서 제외(이중 적용 방지).
   const segments = useSelectedLayoutSegments()
-  const isHanil = segments[0] === 'hanil'
+  const pathname = usePathname()
+  const isIsolated = segments[0] === 'hanil' || (pathname?.startsWith('/letters') ?? false)
 
   useEffect(() => {
-    if (isHanil) return
+    if (isIsolated) return
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     setEnabled(true)
-  }, [isHanil])
+  }, [isIsolated])
 
   useEffect(() => {
-    if (!enabled || isHanil) return
+    if (!enabled || isIsolated) return
     const update = (time: number) => {
       lenisRef.current?.lenis?.raf(time * 1000)
     }
@@ -64,9 +66,9 @@ export function SmoothScrollProvider({ children }: { children: ReactNode }) {
       window.clearTimeout(t2)
       window.removeEventListener('load', refresh)
     }
-  }, [enabled, isHanil])
+  }, [enabled, isIsolated])
 
-  if (!enabled || isHanil) return <>{children}</>
+  if (!enabled || isIsolated) return <>{children}</>
 
   return (
     <ReactLenis root options={LENIS_OPTIONS} ref={lenisRef}>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useSelectedLayoutSegments } from 'next/navigation'
+import { usePathname, useSelectedLayoutSegments } from 'next/navigation'
 import { gsap } from 'gsap'
 import { EASE_HOVER, DUR_HOVER } from '@/lib/motion'
 
@@ -14,12 +14,13 @@ import { EASE_HOVER, DUR_HOVER } from '@/lib/motion'
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null)
   const ringRef = useRef<HTMLDivElement>(null)
-  // 클라 검토용 시안(/hanil)은 전역 커스텀 커서에서 격리 — 네이티브 커서 유지.
+  // 클라 검토용 시안(/hanil)·프라이빗 아카이브(/letters)는 전역 커스텀 커서에서 격리 — 네이티브 커서 유지.
   const segments = useSelectedLayoutSegments()
-  const isHanil = segments[0] === 'hanil'
+  const pathname = usePathname()
+  const isIsolated = segments[0] === 'hanil' || (pathname?.startsWith('/letters') ?? false)
 
   useEffect(() => {
-    if (isHanil) return
+    if (isIsolated) return
     const fine = window.matchMedia('(pointer: fine)').matches
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const dot = dotRef.current
@@ -74,9 +75,9 @@ export function CustomCursor() {
       ring.classList.remove('is-view')
       document.documentElement.classList.remove('has-custom-cursor')
     }
-  }, [isHanil])
+  }, [isIsolated])
 
-  if (isHanil) return null
+  if (isIsolated) return null
 
   return (
     <>

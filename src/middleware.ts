@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { SITE_URL } from '@/lib/site'
+import { LETTERS_COOKIE_NAME, verifyLettersToken } from '@/lib/letters/auth'
 
 // ⚠️ 이 프로젝트는 src/ 디렉터리를 쓰므로 미들웨어는 반드시 src/middleware.ts 에 있어야 한다.
 //    (루트 middleware.ts 는 Next 가 무시 → 기존 root 미들웨어는 그동안 동작하지 않았음)
@@ -20,7 +21,7 @@ const OLD_HOSTS = new Set([
 // /hanil 서브트리로 rewrite 한다. jieuri.com 등 다른 호스트는 전혀 영향받지 않는다.
 const DESIGN_HOST = 'hanilmetal.vercel.app'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl
   const host = (
     request.headers.get('x-forwarded-host') ??
@@ -45,6 +46,20 @@ export function middleware(request: NextRequest) {
     const url = request.nextUrl.clone()
     url.pathname = pathname === '/' ? '/hanil' : `/hanil${pathname}`
     return NextResponse.rewrite(url)
+  }
+
+  // 0-1) 프라이빗 아카이브(/letters) — 패스코드 쿠키가 없으면 게이트 화면으로 rewrite.
+  //      redirect 가 아니라 rewrite 라 주소는 /letters 그대로 유지된다(존재 자체를 덜 드러냄).
+  //      /letters/gate 직접 접근은 항상 통과. /api/letters/* 는 matcher 에서 제외되어 무관.
+  if (pathname === '/letters' || pathname.startsWith('/letters/')) {
+    if (pathname.startsWith('/letters/gate')) return NextResponse.next()
+    const token = request.cookies.get(LETTERS_COOKIE_NAME)?.value
+    if (!(await verifyLettersToken(token))) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/letters/gate'
+      return NextResponse.rewrite(url)
+    }
+    return NextResponse.next()
   }
 
   // 1) 구 도메인(easysite-sage.vercel.app) → jieuri.com 같은 경로로 301 영구 리다이렉트.
