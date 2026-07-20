@@ -2,57 +2,63 @@
 
 import { useRef } from 'react'
 import { gsap, useGSAP } from '@/lib/letters/gsap'
-import { EASE_IN_VIEW, REVEAL_START } from '@/lib/letters/motion'
+import { DISPLAY } from '@/content/letters-copy'
+import { EASE_REVEAL, REVEAL_START } from '@/lib/letters/motion'
+import { useLettersEnv } from './LettersShell'
 
 /**
- * 에필로그 — 지금까지 주고받은 통수를 세고, 다음 편지를 위한 여백을 남긴다.
- * (PDF 내보내기 자리는 아직 만들지 않는다 — 아래 주석 참고)
+ * 에필로그 — 숫자 하나와 여백.
+ * 주고받은 통수가 올라가고, 마지막 문장 뒤로는 아무것도 두지 않는다.
  */
+// TODO: PDF 내보내기(연도별 묶음) 자리 — 실제 캡쳐가 다 모인 뒤에 붙인다.
 export function Epilogue({ total }: { total: number }) {
   const root = useRef<HTMLElement>(null)
-  const numRef = useRef<HTMLSpanElement>(null)
+  const { ready, reduced } = useLettersEnv()
 
   useGSAP(
     () => {
-      const mm = gsap.matchMedia()
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        const el = numRef.current
-        if (!el) return
-        const counter = { v: 0 }
-        gsap.to(counter, {
-          v: total,
-          duration: 1.6,
-          ease: EASE_IN_VIEW,
-          snap: { v: 1 },
-          onUpdate: () => {
-            el.textContent = String(Math.round(counter.v))
-          },
-          scrollTrigger: { trigger: root.current, start: REVEAL_START, once: true },
-        })
+      const counter = root.current?.querySelector<HTMLElement>('[data-count]')
+      if (!ready || !counter) return
+      if (reduced) {
+        counter.textContent = String(total)
+        return
+      }
+
+      const value = { n: 0 }
+      gsap.to(value, {
+        n: total,
+        duration: 1.9,
+        ease: 'power2.out',
+        snap: { n: 1 },
+        onUpdate: () => {
+          counter.textContent = String(Math.round(value.n))
+        },
+        scrollTrigger: { trigger: counter, start: REVEAL_START, once: true },
+      })
+
+      gsap.from('[data-epilogue-tail]', {
+        opacity: 0,
+        y: 22,
+        duration: 1.2,
+        ease: EASE_REVEAL,
+        scrollTrigger: { trigger: '[data-epilogue-tail]', start: REVEAL_START, once: true },
       })
     },
-    { scope: root },
+    { scope: root, dependencies: [ready, reduced, total] },
   )
 
   return (
-    <section className="lt-section text-center" ref={root}>
-      <div className="lt-shell">
-        <p className="lt-eyebrow">EPILOGUE</p>
-        <p className="mt-10 text-[clamp(64px,14vw,180px)] font-medium leading-none tracking-[-0.05em]">
-          <span ref={numRef}>{total}</span>
-          <span className="ml-3 align-middle text-[0.18em] tracking-[0.3em] text-[color:var(--ink-40)]">
-            통
-          </span>
-        </p>
-        <p className="lt-meta mt-8">여기까지 주고받았다</p>
-
-        <p className="hand mt-24 text-[clamp(26px,4.6vw,44px)] text-[color:var(--ink-60)]">
-          다음 편지에 계속
-        </p>
-
-        {/* TODO(나중): 전체를 PDF 로 내보내는 버튼 자리 — 지금은 만들지 않는다. */}
-        <div className="h-[20vh]" aria-hidden />
-      </div>
+    <section className="lt-epilogue" ref={root}>
+      <p className="lt-label">{DISPLAY.epilogueLead}</p>
+      <p className="lt-count">
+        <span className="lt-display" data-count>
+          0
+        </span>
+        <span className="lt-count-unit">통</span>
+      </p>
+      <p className="lt-display lt-epilogue-tail" data-epilogue-tail>
+        {DISPLAY.epilogueTail}
+      </p>
     </section>
   )
 }

@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""손글씨 폰트 서브셋 — /letters 전용 (나눔손글씨 펜, OFL).
+"""손글씨 폰트 서브셋 — /letters 전용 (나눔손글씨 다행체, OFL).
 
-원본(Google Fonts, Open Font License → 재배포·임베딩 허용)을 받아
+원본(NAVER CLOVA 나눔손글씨 109종, SIL Open Font License → 수정·재배포·임베딩 허용)을 받아
 KS X 1001 상용 한글 2,350자 + 라틴·숫자·구두점만 남긴 woff2 로 줄인다.
-(3.2MB ttf → 수백 KB woff2)
+(3.3MB woff → 수백 KB woff2)
+
+딥블랙 배경에 얹는 본문이라 획이 가는 '펜'체 대신 획 굵기가 고른 '다행체'를 쓴다.
 
 사용:  python3 scripts/subset-handwriting-font.py
-출력:  public/fonts/handwriting/NanumPen.subset.woff2
+출력:  public/fonts/handwriting/NanumDaHaeng.subset.woff2
 """
 
 import subprocess
@@ -14,11 +16,11 @@ import sys
 from pathlib import Path
 from urllib.request import urlopen
 
-SRC_URL = "https://fonts.gstatic.com/s/nanumpenscript/v25/daaDSSYiLGqEal3MvdA_FOL_3FkN2z4.ttf"
+SRC_URL = "https://cdn.jsdelivr.net/gh/projectnoonnu/naverfont_02@1.0/Daheng.woff"
 ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "public" / "fonts" / "handwriting"
-OUT = OUT_DIR / "NanumPen.subset.woff2"
-TMP = Path("/tmp/NanumPenScript.ttf")
+OUT = OUT_DIR / "NanumDaHaeng.subset.woff2"
+TMP = Path("/tmp/NanumDaHaengCe.woff")
 
 
 def target_chars() -> str:

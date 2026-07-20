@@ -1,14 +1,15 @@
 'use client'
 
 import Image from 'next/image'
+import { createPortal } from 'react-dom'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLenis } from 'lenis/react'
-import type { LetterImage } from '@/content/letters'
-import { blurOf } from '@/content/letters'
+import { blurOf, type LetterImage } from '@/content/letters'
 
 /**
- * 스캔 라이트박스 — 새 라이브러리 없이 구현.
- * 키보드(←/→/ESC)·스와이프·핀치줌(touch-action: pinch-zoom)·포커스 트랩 지원.
+ * 캡쳐 리더 — 원본 비율 그대로 크게 본다. 새 라이브러리 없이 구현.
+ * 세로로 긴 캡쳐라 스테이지 안에서 세로 스크롤되고, 두 손가락 확대(pinch-zoom)를 허용한다.
+ * 키보드(← → ESC)·스와이프·포커스 트랩 지원.
  */
 export function Lightbox({
   images,
@@ -22,6 +23,7 @@ export function Lightbox({
   onClose: () => void
 }) {
   const root = useRef<HTMLDivElement>(null)
+  const stage = useRef<HTMLDivElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const [drag, setDrag] = useState<number | null>(null)
   const lenis = useLenis()
@@ -41,13 +43,18 @@ export function Lightbox({
     }
   }, [lenis])
 
+  // 다른 캡쳐로 넘어가면 위에서부터 다시 읽는다
+  useEffect(() => {
+    stage.current?.scrollTo({ top: 0 })
+  }, [index])
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
       else if (e.key === 'ArrowLeft') prev()
       else if (e.key === 'ArrowRight') next()
       else if (e.key === 'Tab') {
-        // 포커스 트랩 — 라이트박스 안에서만 순환
+        // 포커스 트랩 — 리더 안에서만 순환
         const focusables = root.current?.querySelectorAll<HTMLElement>('button:not(:disabled)')
         if (!focusables?.length) return
         const list = Array.from(focusables)
@@ -62,60 +69,64 @@ export function Lightbox({
   }, [onClose, prev, next])
 
   const img = images[index]
-  if (!img) return null
+  const host = typeof document === 'undefined' ? null : document.querySelector('.letters-root')
+  if (!img || !host) return null
 
-  return (
+  // .letters-root 로 포털 — main(z-index:1) 안에 있으면 사운드 토글 같은 고정 UI 위로 올라가지 못한다.
+  // body 가 아니라 letters-root 인 이유: 색·폰트 변수가 거기 정의돼 있다.
+  return createPortal(
     <div
-      className="lt-lightbox"
+      className="lt-reader"
       ref={root}
       role="dialog"
       aria-modal="true"
-      aria-label="편지 스캔 크게 보기"
+      aria-label="캡쳐 크게 보기"
       onPointerDown={(e) => setDrag(e.clientX)}
       onPointerUp={(e) => {
         if (drag === null) return
         const dx = e.clientX - drag
-        if (dx > 60) prev()
-        else if (dx < -60) next()
+        if (dx > 70) prev()
+        else if (dx < -70) next()
         setDrag(null)
       }}
     >
-      <div className="lt-lightbox-bar">
-        <span>
+      <div className="lt-reader-bar">
+        <span className="lt-date">
           {index + 1} / {images.length}
         </span>
-        <button type="button" className="lt-lightbox-btn" onClick={onClose} ref={closeRef}>
+        <button type="button" className="lt-btn lt-btn-sm" onClick={onClose} ref={closeRef}>
           닫기
         </button>
       </div>
 
-      <div className="lt-lightbox-stage">
+      <div className="lt-reader-stage" ref={stage}>
         <Image
           src={img.src}
           alt={img.alt}
           width={img.width}
           height={img.height}
-          sizes="(max-width: 900px) 96vw, 1100px"
+          sizes="(max-width: 900px) 100vw, 900px"
           placeholder={blurOf(img.src) ? 'blur' : 'empty'}
           blurDataURL={blurOf(img.src)}
-          quality={82}
+          quality={88}
         />
       </div>
 
-      <div className="lt-lightbox-bar">
-        <button type="button" className="lt-lightbox-btn" onClick={prev} disabled={index === 0}>
-          ← 이전
+      <div className="lt-reader-bar">
+        <button type="button" className="lt-btn lt-btn-sm" onClick={prev} disabled={index === 0}>
+          이전
         </button>
-        <span className="opacity-70">두 손가락으로 확대할 수 있어요</span>
+        <span className="lt-date">두 손가락으로 확대할 수 있어요</span>
         <button
           type="button"
-          className="lt-lightbox-btn"
+          className="lt-btn lt-btn-sm"
           onClick={next}
           disabled={index === images.length - 1}
         >
-          다음 →
+          다음
         </button>
       </div>
-    </div>
+    </div>,
+    host,
   )
 }

@@ -1,415 +1,640 @@
 /* ──────────────────────────────────────────────────────────────
-   /letters — 빈티지 항공우편(Par Avion)
+   /letters — 밤을 건너온 편지 (딥블랙 + WebGL)
    전부 .letters-root 하위로 스코프. globals.css 의 사이트 톤과 섞이지 않는다.
+
+   규칙
+    · 색: 딥블랙 배경 / 따뜻한 오프화이트 본문 / 로즈 포인트 하나. 그 외 색 금지.
+    · 모서리: 사진·카드는 각지게(2px), 버튼만 알약형. 둘 사이 중간값 금지.
+    · 애니메이션은 transform·opacity·filter 만. width/height/top/left 금지.
    ────────────────────────────────────────────────────────────── */
 
 .letters-root {
-  --paper: #f2e8d5;
-  --paper-2: #efe4cf;
-  --paper-deep: #e3d5b8;
-  --ink: #1b2a4a;
-  --ink-60: rgba(27, 42, 74, 0.6);
-  --ink-40: rgba(27, 42, 74, 0.4);
-  --ink-16: rgba(27, 42, 74, 0.16);
-  --stamp: #b3312c;
-  --shell: min(1120px, 92vw);
+  --bg: #0a0a0b;
+  --bg-deep: #060607;
+  --text: #ece6e2;
+  --text-dim: rgba(236, 230, 226, 0.64);
+  --text-faint: rgba(236, 230, 226, 0.4);
+  --rose: #ff9398;
+  --rose-dim: rgba(255, 147, 152, 0.5);
+  --line: rgba(236, 230, 226, 0.13);
+  --shell: min(1080px, 90vw);
+  --radius-card: 2px;
 
   position: relative;
   min-height: 100dvh;
-  color: var(--ink);
-  background:
-    radial-gradient(120% 80% at 50% -10%, #f7efdd 0%, transparent 60%),
-    radial-gradient(90% 60% at 100% 110%, #e8dcc2 0%, transparent 55%),
-    var(--paper);
+  background: var(--bg);
+  color: var(--text);
   overflow-x: clip;
-  letter-spacing: -0.01em;
   word-break: keep-all;
+  letter-spacing: -0.005em;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* 손글씨는 편지·답장 본문에만 */
-.letters-root .hand {
+.letters-root ::selection {
+  background: var(--rose);
+  color: #0a0a0b;
+}
+
+.letters-root :focus-visible {
+  outline: 2px solid var(--rose);
+  outline-offset: 4px;
+}
+
+/* ── 서체 ─────────────────────────────────────────────────── */
+
+/* 큰 제목 — 명조. 시처럼 읽히는 자리에만 쓴다 */
+.letters-root .lt-display {
+  font-family: var(--font-display), 'Pretendard Variable', serif;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+/* 편지·답장 본문 — 손글씨. 딥블랙 위라 줄간격을 넉넉히 준다 */
+.letters-root .lt-hand {
   font-family: var(--font-hand), 'Pretendard Variable', sans-serif;
-  letter-spacing: 0.01em;
-  line-height: 1.62;
+  font-size: clamp(1.12rem, 1.6vw, 1.35rem);
+  line-height: 1.95;
+  letter-spacing: 0.015em;
+  white-space: pre-line;
+  color: var(--text-dim);
 }
 
-/* 종이 위 그레인 — feTurbulence SVG 를 화면 전체에 아주 옅게 */
+/* 라벨·날짜 — 레포 공용 Pretendard 그대로 */
+.letters-root .lt-label {
+  font-size: 11px;
+  letter-spacing: 0.26em; /* 한글은 자간을 라틴만큼 벌리면 단어가 흩어져 읽힌다 */
+  color: var(--text-faint);
+}
+.letters-root .lt-date {
+  margin-top: 10px;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 화면 전체에 깔리는 것들 ───────────────────────────────── */
+
+/* WebGL 레이어 — 항상 콘텐츠 뒤 */
+.lt-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 필름 그레인 — 고정 레이어에만 건다(스크롤 컨테이너에 걸면 GPU 가 계속 다시 그린다) */
 .lt-grain {
   position: fixed;
   inset: 0;
   z-index: 60;
   pointer-events: none;
   opacity: 0.5;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.14'/%3E%3C/svg%3E");
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
 }
 
-/* 항공우편 사선 스트라이프 */
-.lt-airmail {
-  height: 10px;
-  width: 100%;
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--stamp) 0 10px,
-    transparent 10px 20px,
-    var(--ink) 20px 30px,
-    transparent 30px 40px
+/* 비네트 — WebGL 이 꺼진 환경에서도 가장자리가 어둡게 남도록 HTML 에도 둔다 */
+.lt-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+  /* 한 번에 꺾이면 어두운 화면에서 띠(banding)가 눈에 띈다 → 여러 단계로 완만하게 */
+  background: radial-gradient(
+    125% 95% at 50% 45%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.18) 58%,
+    rgba(0, 0, 0, 0.45) 78%,
+    rgba(0, 0, 0, 0.74) 100%
   );
-  opacity: 0.55;
 }
 
-/* 레이아웃 */
-.lt-shell {
-  width: var(--shell);
-  margin: 0 auto;
-}
-.lt-section {
+.letters-root main {
   position: relative;
-  padding-block: clamp(96px, 16vh, 220px);
-}
-.lt-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.42em;
-  text-transform: uppercase;
-  color: var(--ink-40);
-}
-.lt-meta {
-  font-size: 13px;
-  letter-spacing: 0.06em;
-  color: var(--ink-60);
-  font-variant-numeric: tabular-nums;
+  z-index: 1;
 }
 
-/* ── 히어로: 봉투 + 밀랍 씰 ───────────────────────────────── */
-.lt-hero {
-  min-height: 100dvh;
+/* ── 프리로더 ─────────────────────────────────────────────── */
+.lt-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
   display: grid;
   place-items: center;
-  perspective: 1400px;
+  background: var(--bg-deep);
+  padding: 24px;
 }
-.lt-envelope {
-  position: relative;
-  width: min(560px, 84vw);
-  aspect-ratio: 3 / 2;
-  transform-style: preserve-3d;
+/* display:grid 가 [hidden] 을 이기므로 명시적으로 꺼 준다 (안 그러면 걷힌 뒤에도 클릭을 가로챈다) */
+.lt-preloader[hidden] {
+  display: none;
 }
-.lt-envelope-body {
-  position: absolute;
-  inset: 0;
-  border-radius: 3px;
-  background: linear-gradient(168deg, #f6eeda 0%, #ece0c6 100%);
-  box-shadow:
-    0 1px 0 rgba(255, 253, 245, 0.8) inset,
-    0 18px 40px -22px rgba(27, 42, 74, 0.45),
-    0 2px 6px rgba(27, 42, 74, 0.08);
-  border: 1px solid rgba(27, 42, 74, 0.1);
-  overflow: hidden;
-}
-.lt-envelope-body::after {
-  /* 봉투 테두리 항공우편 사선 */
-  content: '';
-  position: absolute;
-  inset: 0;
-  border: 9px solid transparent;
-  border-image: repeating-linear-gradient(
-      -45deg,
-      #b3312c 0 9px,
-      transparent 9px 18px,
-      #1b2a4a 18px 27px,
-      transparent 27px 36px
-    )
-    9;
-  opacity: 0.5;
-}
-.lt-envelope-flap {
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 58%;
-  transform-origin: top center;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
-  background: linear-gradient(180deg, #f8f1de 0%, #e6d9bd 100%);
-  border: 1px solid rgba(27, 42, 74, 0.08);
-  box-shadow: 0 10px 18px -14px rgba(27, 42, 74, 0.5);
-  will-change: transform;
-}
-.lt-seal {
-  position: absolute;
-  left: 50%;
-  top: 52%;
-  width: 84px;
-  height: 84px;
-  margin: -42px 0 0 -42px;
-  z-index: 2;
-}
-.lt-hero-title {
-  margin-top: clamp(40px, 7vh, 90px);
+.lt-preloader-line {
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.05rem, 2.4vw, 1.5rem);
+  letter-spacing: 0.02em;
+  color: var(--text-dim);
   text-align: center;
-  font-size: clamp(34px, 6.4vw, 76px);
-  line-height: 1.12;
-  font-weight: 500;
-  letter-spacing: -0.035em;
+  animation: lt-emerge 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.lt-hero-line {
-  overflow: hidden;
-}
-.lt-scroll-hint {
-  position: absolute;
-  bottom: 34px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* ── 항로 프롤로그 ───────────────────────────────────────── */
-.lt-route {
-  position: relative;
-  height: 100dvh;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-.lt-route svg {
-  width: min(1100px, 94vw);
-  height: auto;
-}
-/* 모바일에선 항로가 너무 작아 화면이 비어 보인다 — 같은 도형을 키워 채운다 */
-@media (max-width: 767px) {
-  .lt-route svg {
-    transform: scale(1.75);
+@keyframes lt-emerge {
+  from {
+    opacity: 0.001;
+    filter: blur(14px);
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
   }
 }
-.lt-route-path {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 2;
-  stroke-dasharray: 7 11;
-  stroke-linecap: round;
-  opacity: 0.55;
-}
-.lt-route-land {
-  fill: rgba(27, 42, 74, 0.07);
-  stroke: rgba(27, 42, 74, 0.28);
-  stroke-width: 1.2;
-}
-.lt-route-label {
-  font-size: 12px;
-  letter-spacing: 0.24em;
-  fill: var(--ink-60);
-  text-transform: uppercase;
-}
 
-/* ── 타임라인 ────────────────────────────────────────────── */
-.lt-entry {
-  position: relative;
-  padding-block: clamp(72px, 12vh, 160px);
-}
-.lt-postmark {
-  width: clamp(112px, 22vw, 168px);
-  height: clamp(112px, 22vw, 168px);
-  color: var(--stamp);
-  opacity: 0.85;
-}
-.lt-scan {
-  position: relative;
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-  transform-style: preserve-3d;
-}
-.lt-scan-inner {
-  position: relative;
-  overflow: hidden;
-  background: var(--paper-2);
-  box-shadow:
-    0 2px 3px rgba(27, 42, 74, 0.1),
-    0 26px 50px -30px rgba(27, 42, 74, 0.55);
-  /* 찢긴 가장자리 — 위·아래를 불규칙 폴리곤으로 잘라낸다 */
-  clip-path: polygon(
-    0 1.1%, 6% 0.3%, 13% 1.4%, 21% 0.4%, 29% 1.6%, 38% 0.5%, 47% 1.5%, 56% 0.4%,
-    64% 1.6%, 73% 0.6%, 82% 1.5%, 90% 0.5%, 100% 1.2%,
-    100% 98.8%, 92% 99.6%, 84% 98.5%, 75% 99.5%, 66% 98.4%, 57% 99.6%, 48% 98.5%,
-    39% 99.5%, 30% 98.4%, 21% 99.6%, 12% 98.5%, 5% 99.4%, 0 98.7%
-  );
-}
-.lt-scan img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.lt-scan-more {
-  margin-top: 10px;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  color: var(--ink-40);
-}
-.lt-transcript {
-  align-self: start;
-  font-size: clamp(19px, 2.1vw, 24px);
-  color: rgba(27, 42, 74, 0.86);
-  white-space: pre-line;
-}
-
-/* 답장 — 다른 질감의 종이(살짝 푸른 기, 괘선 없음) */
-.lt-reply {
-  position: relative;
-  padding: clamp(28px, 4.4vw, 52px);
-  background: linear-gradient(172deg, #eef0e9 0%, #e5e7de 100%);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.6) inset,
-    0 24px 44px -30px rgba(27, 42, 74, 0.5);
-  border: 1px solid rgba(27, 42, 74, 0.08);
-}
-.lt-reply-body {
-  font-size: clamp(20px, 2.3vw, 26px);
-  white-space: pre-line;
-}
-.lt-reply-line {
-  overflow: hidden;
-}
-.lt-stamp {
-  width: 78px;
-  height: 96px;
-}
-
-/* 항목 사이 짧은 곡선 — 종이비행기 이음새 */
-.lt-link-path {
-  fill: none;
-  stroke: rgba(27, 42, 74, 0.3);
-  stroke-width: 1.6;
-  stroke-dasharray: 5 9;
-}
-
-/* ── 진행 인디케이터 ─────────────────────────────────────── */
+/* ── 진행 인디케이터 ──────────────────────────────────────── */
 .lt-progress {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 40;
-  padding: 14px clamp(16px, 4vw, 40px) 12px;
-  background: linear-gradient(180deg, rgba(242, 232, 213, 0.94) 0%, rgba(242, 232, 213, 0) 100%);
+  z-index: 50;
+  padding: 22px clamp(18px, 4vw, 44px) 0;
   pointer-events: none;
 }
+.lt-progress-inner {
+  position: relative;
+}
 .lt-progress svg {
+  display: block;
   width: 100%;
   height: 26px;
   overflow: visible;
 }
 .lt-progress-track {
   fill: none;
-  stroke: rgba(27, 42, 74, 0.22);
-  stroke-width: 1.4;
-  stroke-dasharray: 4 8;
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+}
+.lt-progress-trail {
+  fill: none;
+  stroke: var(--rose-dim);
+  stroke-width: 1.2;
+}
+.lt-progress-plane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  color: var(--rose);
+  margin-left: -9px;
+  margin-top: -6px;
+  will-change: transform;
 }
 
-/* ── 라이트박스 ──────────────────────────────────────────── */
-.lt-lightbox {
+/* ── 인트로 ───────────────────────────────────────────────── */
+.lt-intro {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: var(--shell);
+  margin: 0 auto;
+  padding-block: 18vh 12vh;
+}
+.lt-intro-title {
+  font-size: clamp(3.1rem, 11.5vw, 8.5rem);
+  line-height: 0.98;
+}
+.lt-intro-line {
+  display: block;
+  opacity: 0; /* SplitText 가 잡은 뒤 GSAP 이 켠다 */
+}
+.lt-intro-line:nth-child(2) {
+  padding-left: clamp(0px, 8vw, 140px); /* 두 번째 행만 흘려 놓는다 */
+  color: var(--rose);
+}
+.lt-intro-sub {
+  margin-top: clamp(28px, 5vh, 56px);
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--text-faint);
+  max-width: 30ch;
+}
+
+/* SplitText mask 라인 */
+.lt-mask-line {
+  display: block;
+  will-change: transform;
+}
+
+/* ── 사운드 선택 / 토글 ───────────────────────────────────── */
+.lt-ask {
+  margin-top: clamp(46px, 9vh, 96px);
+  border-top: 1px solid var(--line);
+  padding-top: 26px;
+}
+.lt-ask-title {
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--text-dim);
+}
+.lt-ask-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.lt-btn {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
+  color: var(--text-dim);
+  background: transparent;
+  transition:
+    color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lt-btn:hover {
+  color: var(--text);
+  border-color: rgba(236, 230, 226, 0.34);
+}
+.lt-btn:active {
+  transform: scale(0.98);
+}
+.lt-btn:disabled {
+  opacity: 0.4;
+}
+.lt-btn-primary {
+  color: #0a0a0b;
+  background: var(--rose);
+  border-color: var(--rose);
+}
+.lt-btn-primary:hover {
+  color: #0a0a0b;
+  background: #ffa9ad;
+  border-color: #ffa9ad;
+}
+.lt-btn-sm {
+  padding: 9px 18px;
+  font-size: 12.5px;
+}
+
+.lt-sound {
   position: fixed;
-  inset: 0;
-  z-index: 80;
-  background: rgba(23, 21, 16, 0.965);
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-}
-.lt-lightbox-stage {
-  overflow: auto;
-  overscroll-behavior: contain;
-  touch-action: pinch-zoom;
-  display: grid;
-  place-items: center;
-  padding: 12px;
-}
-.lt-lightbox-stage img {
-  max-width: min(1100px, 96vw);
-  width: 100%;
-  height: auto;
-}
-.lt-lightbox-bar {
+  right: clamp(16px, 4vw, 40px);
+  bottom: clamp(16px, 4vw, 36px);
+  z-index: 58;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px clamp(12px, 3vw, 24px);
-  color: #efe4cf;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-}
-.lt-lightbox-btn {
+  gap: 10px;
   padding: 10px 16px;
-  border: 1px solid rgba(239, 228, 207, 0.35);
-  color: #efe4cf;
-  background: transparent;
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(10, 10, 11, 0.7);
+  color: var(--text-faint);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  transition: color 0.3s, border-color 0.3s;
 }
-.lt-lightbox-btn:disabled {
-  opacity: 0.35;
-  cursor: default;
+.lt-sound:hover {
+  color: var(--text);
+  border-color: rgba(236, 230, 226, 0.3);
+}
+.lt-sound-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+.lt-sound-bars i {
+  display: block;
+  width: 2px;
+  height: 4px;
+  background: currentColor;
+}
+.lt-sound-bars[data-on] i {
+  background: var(--rose);
+  animation: lt-bar 1.1s ease-in-out infinite;
+}
+.lt-sound-bars[data-on] i:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.lt-sound-bars[data-on] i:nth-child(3) {
+  animation-delay: 0.36s;
+}
+@keyframes lt-bar {
+  0%,
+  100% {
+    height: 4px;
+  }
+  50% {
+    height: 12px;
+  }
 }
 
-/* ── 프리로더 ────────────────────────────────────────────── */
-.lt-preloader {
+/* ── 항로 프롤로그 ────────────────────────────────────────── */
+.lt-prologue {
+  position: relative;
+}
+.lt-prologue-inner {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 0 6vw;
+}
+.lt-prologue-copy {
+  font-size: clamp(1.5rem, 4.2vw, 3.1rem);
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--text);
+}
+.lt-prologue-copy span {
+  display: block;
+}
+
+/* ── 엔트리 루프 ──────────────────────────────────────────── */
+.lt-timeline {
+  width: var(--shell);
+  margin: 0 auto;
+}
+.lt-entry {
+  padding-block: clamp(96px, 16vh, 200px);
+}
+.lt-entry-head {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(20px, 4vw, 44px);
+}
+.lt-postmark {
+  flex-shrink: 0;
+  display: block;
+  width: clamp(76px, 11vw, 104px);
+  aspect-ratio: 1;
+  color: var(--rose);
+  opacity: 0.9;
+}
+.lt-entry-head > div {
+  padding-top: clamp(8px, 2vw, 22px);
+}
+
+.lt-entry-body {
+  margin-top: clamp(46px, 8vh, 90px);
+  display: grid;
+  gap: clamp(36px, 6vw, 72px);
+}
+@media (min-width: 900px) {
+  .lt-entry-body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    align-items: start;
+  }
+}
+
+.lt-cards {
+  display: grid;
+  gap: clamp(28px, 5vh, 56px);
+  perspective: 1400px;
+}
+
+/* 캡쳐 카드 — 세로로 긴 폰 캡쳐라 상단만 보여 주고 아래를 어둠으로 흘린다 */
+.lt-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  text-align: left;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.lt-card-frame {
+  display: block;
+  position: relative;
+  aspect-ratio: 3 / 4; /* 비율 고정 → CLS 0 */
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: #101012;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+.lt-card-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+  /* 상단부 프리뷰 — 아래로 갈수록 어둠에 잠긴다 */
+  mask-image: linear-gradient(180deg, #000 58%, transparent 96%);
+  -webkit-mask-image: linear-gradient(180deg, #000 58%, transparent 96%);
+  /* 카드에서는 종이가 밤빛을 받은 정도로만 밝힌다(원본 밝기는 리더에서 본다) */
+  filter: brightness(0.78) contrast(1.04) saturate(0.92);
+  transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lt-card:hover .lt-card-frame img,
+.lt-card:focus-visible .lt-card-frame img {
+  filter: brightness(0.94) contrast(1.02) saturate(0.98);
+}
+.lt-card-hint {
+  display: block;
+  margin-top: 14px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--text-faint);
+  transition: color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lt-card:hover .lt-card-hint {
+  color: var(--rose);
+}
+
+.lt-transcript {
+  font-size: clamp(1.02rem, 1.3vw, 1.16rem);
+  line-height: 2;
+  color: var(--text-faint);
+  border-left: 1px solid var(--line);
+  padding-left: clamp(18px, 3vw, 32px);
+}
+@media (min-width: 900px) {
+  .lt-transcript {
+    position: sticky;
+    top: 16vh;
+  }
+}
+
+/* 답장 — 오른쪽으로 밀어 두고, 위아래로 크게 비운다 */
+.lt-reply {
+  margin: clamp(80px, 14vh, 170px) 0 0 auto;
+  max-width: 46rem;
+  border-top: 1px solid var(--line);
+  padding-top: clamp(28px, 4vh, 48px);
+}
+.lt-reply-body {
+  margin-top: clamp(26px, 4vh, 44px);
+  opacity: 0; /* SplitText 준비 뒤 GSAP 이 켠다 */
+  color: var(--text);
+}
+.lt-reply .lt-label {
+  color: var(--rose-dim);
+}
+
+/* 다음 항목으로 잇는 비행 */
+.lt-link {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  margin: clamp(64px, 12vh, 140px) auto 0;
+  overflow: visible;
+}
+.lt-link-path {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1;
+  stroke-dasharray: 2 7;
+}
+.lt-link-plane {
+  fill: var(--rose);
+}
+
+/* ── 에필로그 ─────────────────────────────────────────────── */
+.lt-epilogue {
+  width: var(--shell);
+  margin: 0 auto;
+  padding-block: clamp(120px, 22vh, 280px) clamp(180px, 34vh, 420px);
+  text-align: center;
+}
+.lt-count {
+  margin-top: 22px;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 10px;
+}
+.lt-count .lt-display {
+  font-size: clamp(4rem, 14vw, 9rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.lt-count-unit {
+  font-size: 15px;
+  color: var(--text-faint);
+}
+.lt-epilogue-tail {
+  margin-top: clamp(60px, 12vh, 140px);
+  font-size: clamp(1.2rem, 2.6vw, 1.9rem);
+  font-weight: 400;
+  color: var(--text-dim);
+}
+
+/* ── 캡쳐 리더(라이트박스) ────────────────────────────────── */
+.lt-reader {
   position: fixed;
   inset: 0;
   z-index: 90;
   display: grid;
-  place-items: center;
-  background: var(--paper);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: rgba(6, 6, 7, 0.97);
+  padding: clamp(12px, 2vw, 22px);
+  gap: 12px;
+}
+.lt-reader-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.lt-reader-bar .lt-date {
+  margin-top: 0;
+  font-size: 12px;
+  color: var(--text-faint);
+}
+.lt-reader-stage {
+  overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pinch-zoom; /* 두 손가락 확대 허용 */
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  background: #0d0d0f;
+}
+.lt-reader-stage img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  max-width: 900px;
 }
 
-/* ── 게이트 ──────────────────────────────────────────────── */
+/* ── 게이트 ───────────────────────────────────────────────── */
 .lt-gate {
+  position: relative;
   min-height: 100dvh;
   display: grid;
   place-items: center;
+  background: var(--bg);
+  padding: 24px;
+}
+.lt-gate-inner {
+  width: min(420px, 92vw);
   text-align: center;
+}
+.lt-gate-title {
+  font-size: clamp(2.4rem, 8vw, 3.6rem);
+  line-height: 1;
+}
+.lt-gate-hint {
+  margin-top: 20px;
+  font-size: 13.5px;
+  line-height: 1.9;
+  color: var(--text-faint);
+}
+.lt-gate-form {
+  margin-top: clamp(36px, 7vh, 60px);
+  text-align: left;
 }
 .lt-gate-input {
-  width: min(320px, 78vw);
-  padding: 14px 16px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px 4px;
   font-size: 17px;
-  text-align: center;
   letter-spacing: 0.3em;
-  color: var(--ink);
-  background: rgba(255, 253, 246, 0.72);
-  border: 1px solid var(--ink-16);
-  border-radius: 2px;
-  outline-offset: 3px;
-}
-.lt-gate-submit {
-  margin-top: 14px;
-  padding: 13px 30px;
-  font-size: 14px;
-  letter-spacing: 0.16em;
-  color: var(--paper);
-  background: var(--ink);
+  color: var(--text);
+  background: transparent;
   border: 0;
-  border-radius: 2px;
-  cursor: pointer;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  transition: border-color 0.3s;
 }
-.lt-gate-submit:disabled {
-  opacity: 0.5;
-  cursor: default;
+.lt-gate-input:focus {
+  outline: none;
+  border-bottom-color: var(--rose);
+}
+.lt-gate-actions {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.lt-gate-error {
+  min-height: 1.3em;
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  color: var(--rose);
 }
 
-/* 포커스 — 사이트 인디고 대신 잉크 네이비 */
-.letters-root *:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
-
-/* 모션 최소화 — 모든 연출을 단순 표시로 폴백 */
+/* ── 모션을 줄여 달라고 한 사람에게 ───────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  /* transform 만 되돌린다 — clip-path 는 봉투 플랩·씰의 "모양" 자체라 유지해야 닫힌 봉투로 보인다 */
-  .letters-root [data-anim] {
-    opacity: 1 !important;
-    transform: none !important;
+  .letters-root *,
+  .letters-root *::before,
+  .letters-root *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
-  .lt-preloader {
-    display: none;
+  /* GSAP 가 아예 붙지 않으므로(reduced 분기) 숨겨 둔 요소들을 CSS 로 되돌린다 */
+  .letters-root .lt-intro-line,
+  .letters-root .lt-reply-body {
+    opacity: 1;
+  }
+  /* 카메라 유영 대신 조용한 세로 흐름 — pin 구간도 한 화면으로 줄인다 */
+  .lt-prologue-inner {
+    min-height: 62vh;
   }
 }

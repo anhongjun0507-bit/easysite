@@ -1,16 +1,17 @@
 /**
  * /letters 모션 팔레트 — 이 페이지만의 리듬. (사이트 전역 lib/motion.ts 와 의도적으로 분리)
- * 편지는 급하지 않다: 등장은 길고 느리게, 도착(스탬프)만 짧고 단호하게.
+ * 어둠 속에서 무언가 드러나는 페이지다: 등장은 길고 느리게, 도착(소인)만 짧고 단호하게.
  */
 
-export const EASE_IN_VIEW = 'power3.out' // 종이·본문 등장
-export const EASE_STAMP = 'back.out(2.2)' // 소인이 찍히는 순간
+export const EASE_REVEAL = 'power3.out' // 어둠에서 드러남
+export const EASE_STAMP = 'back.out(2.1)' // 소인이 찍히는 순간
 export const EASE_SCRUB = 'none' // scrub 타임라인
 
-export const DUR_PAPER = 1.0 // 종이 한 장이 떠오르는 시간
-export const DUR_LINE = 0.9 // 본문 한 줄
-export const DUR_STAMP = 0.5
+export const DUR_REVEAL = 1.1
+export const DUR_LINE = 0.95
+export const DUR_STAMP = 0.45
 
-export const STAGGER_LINE = 0.09 // 손글씨가 지금 쓰이는 듯한 줄 간격
+export const STAGGER_LINE = 0.085 // 지금 쓰이는 듯한 줄 간격
 
-export const REVEAL_START = 'top 78%'
+/** 뷰포트 어디쯤에서 드러나기 시작할지 — 어두운 페이지라 조금 늦게 잡는다 */
+export const REVEAL_START = 'top 82%'

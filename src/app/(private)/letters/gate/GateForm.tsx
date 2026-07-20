@@ -2,42 +2,29 @@
 
 import { useRef, useState } from 'react'
 import { gsap, useGSAP } from '@/lib/letters/gsap'
-import { WaxSeal } from '../_components/svg'
+import { GATE } from '@/content/letters-copy'
 
 /**
- * 패스코드 게이트 — 밀랍 씰을 눌러 뜯고 코드를 넣는다.
+ * 패스코드 게이트 — 본문과 같은 어둠에서 제목 한 줄과 입력칸 하나만 떠오른다.
  * 검증은 전적으로 서버(/api/letters/unlock + 미들웨어 쿠키)에서 한다. 클라 검증 없음.
  */
 export function GateForm() {
   const root = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [opened, setOpened] = useState(false)
   const [code, setCode] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
 
-  const { contextSafe } = useGSAP({ scope: root })
-
-  const crack = contextSafe(() => {
-    if (opened) return
-    setOpened(true)
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const focus = () => inputRef.current?.focus()
-
-    if (reduce) {
-      gsap.set('[data-anim="gate-seal"]', { opacity: 0 })
-      gsap.set('[data-anim="gate-form"]', { opacity: 1, y: 0 })
-      focus()
-      return
-    }
-
-    gsap
-      .timeline({ onComplete: focus })
-      .to('[data-anim="gate-seal-l"]', { xPercent: -38, rotate: -18, duration: 0.5, ease: 'power3.out' })
-      .to('[data-anim="gate-seal-r"]', { xPercent: 38, rotate: 20, duration: 0.5, ease: 'power3.out' }, '<')
-      .to('[data-anim="gate-seal"]', { opacity: 0, duration: 0.35 }, '-=0.15')
-      .to('[data-anim="gate-form"]', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.2')
-  })
+  useGSAP(
+    () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+      gsap
+        .timeline()
+        .from('[data-gate-title]', { opacity: 0, y: 18, filter: 'blur(12px)', duration: 1.4, ease: 'power3.out' })
+        .from('[data-gate-hint]', { opacity: 0, y: 12, duration: 1, ease: 'power3.out' }, '-=0.9')
+        .from('[data-gate-form]', { opacity: 0, y: 14, duration: 1, ease: 'power3.out' }, '-=0.75')
+    },
+    { scope: root },
+  )
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -55,9 +42,9 @@ export function GateForm() {
         return
       }
       const data = (await res.json().catch(() => null)) as { error?: string } | null
-      setError(data?.error ?? '조금 뒤에 다시 시도해 주세요')
+      setError(data?.error ?? GATE.error)
     } catch {
-      setError('연결이 불안정해요. 다시 시도해 주세요')
+      setError(GATE.network)
     } finally {
       setBusy(false)
     }
@@ -66,65 +53,40 @@ export function GateForm() {
   return (
     <div className="lt-gate" ref={root}>
       <div className="lt-grain" aria-hidden />
-      <div className="lt-shell">
-        <p className="lt-eyebrow">PAR AVION</p>
+      <div className="lt-vignette" aria-hidden />
 
-        {!opened && (
-          <button
-            type="button"
-            onClick={crack}
-            className="mx-auto mt-14 grid place-items-center"
-            aria-label="밀랍 씰을 눌러 편지 열기"
-          >
-            <span data-anim="gate-seal" className="relative block h-28 w-28">
-              <span
-                data-anim="gate-seal-l"
-                className="absolute inset-0 block"
-                style={{ clipPath: 'inset(0 50% 0 0)' }}
-              >
-                <WaxSeal className="h-full w-full" id="gate-l" />
-              </span>
-              <span
-                data-anim="gate-seal-r"
-                className="absolute inset-0 block"
-                style={{ clipPath: 'inset(0 0 0 50%)' }}
-              >
-                <WaxSeal className="h-full w-full" id="gate-r" />
-              </span>
-            </span>
-            <span className="lt-meta mt-8 block">눌러서 뜯기</span>
-          </button>
-        )}
+      <div className="lt-gate-inner">
+        <h1 className="lt-display lt-gate-title" data-gate-title>
+          {GATE.title}
+        </h1>
+        <p className="lt-gate-hint" data-gate-hint>
+          {GATE.hint}
+        </p>
 
-        <form
-          onSubmit={submit}
-          data-anim="gate-form"
-          className={opened ? 'mt-14 opacity-0' : 'pointer-events-none absolute opacity-0'}
-          style={{ transform: 'translateY(18px)' }}
-          aria-hidden={!opened}
-        >
-          <label htmlFor="letters-code" className="lt-meta block">
-            우리만 아는 코드
+        <form onSubmit={submit} className="lt-gate-form" data-gate-form>
+          <label htmlFor="letters-code" className="lt-label">
+            {GATE.label}
           </label>
           <input
             id="letters-code"
-            ref={inputRef}
-            className="lt-gate-input mt-5"
+            className="lt-gate-input"
             type="password"
             inputMode="text"
             autoComplete="off"
+            autoFocus
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            disabled={!opened || busy}
+            disabled={busy}
+            aria-describedby="letters-code-error"
           />
-          <div>
-            <button type="submit" className="lt-gate-submit" disabled={busy || !code.trim()}>
-              {busy ? '여는 중…' : '열기'}
+          <div className="lt-gate-actions">
+            <button type="submit" className="lt-btn lt-btn-primary" disabled={busy || !code.trim()}>
+              {busy ? GATE.submitting : GATE.submit}
             </button>
+            <p className="lt-gate-error" id="letters-code-error" role="status">
+              {error}
+            </p>
           </div>
-          <p className="lt-meta mt-6 min-h-[1.2em] text-[color:var(--stamp)]" role="status">
-            {error}
-          </p>
         </form>
       </div>
     </div>
