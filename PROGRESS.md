@@ -1,9 +1,9 @@
 # PROGRESS
 
-## 2026-07-20 — /letters 후속 3종: 서체 비교·캡쳐 sync·우편함 (배포 완료, 서체 선택 대기)
+## 2026-07-20 — /letters 후속 3종: 서체 교체·캡쳐 sync·우편함 (배포 완료)
 - 서체: 제목·UI 전부 동글동글 계열로 교체(손글씨 본문은 유지). 후보 3종 전부 OFL — 배민 주아/카페24 써라운드/카페24 동동.
-  넥슨 배찌체는 "폰트 파일 수정·복제·배포 금지"라 서브셋 불가로 제외. `?font=1|2|3` 스위처로 라이브 비교 중(선택 후 정리 커밋 예정).
-  `scripts/subset-letters-font.py` 가 후보당 display(10~18KB, preload) + ui(2,350자 118~181KB, swap) 두 벌을 굽는다.
+  넥슨 배찌체는 "폰트 파일 수정·복제·배포 금지"라 서브셋 불가로 제외. `?font=` 스위처로 라이브 비교 후 **카페24 써라운드 확정**,
+  나머지 2종·스위처·나눔명조 삭제(정리 커밋). `scripts/subset-letters-font.py` 가 display(10KB, preload) + ui(2,350자 125KB, swap) 두 벌을 굽는다.
 - 캡쳐 파이프라인: `npm run sync:letters` — 파일 스캔 → webp(해시 파일명으로 URL 추측 차단) → blur → letters.ts AUTO 구간 생성.
   reply·transcript·alt 는 보존되고, 실제 캡쳐가 1장이라도 들어오면 더미 3세트가 자동으로 빠진다. 원본은 `_src/`(gitignore).
 - 우편함 인덱스: 좌상단 버튼 → 풀스크린 오버레이(월별 항로·답장한 날만 로즈 점). 클릭 이동 + `#entry-id` 딥링크,
