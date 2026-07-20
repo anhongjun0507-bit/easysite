@@ -2,8 +2,8 @@
  * /letters 화면 문구 — 명조(디스플레이) 서체로 그려지는 문장만 여기 모은다.
  *
  * 왜 한 파일에 모으나: 디스플레이 폰트를 **여기 등장하는 글자만** 남긴 초경량 서브셋으로 만들기 때문.
- * 문구를 고치면 반드시 `python3 scripts/subset-display-font.py` 를 다시 돌려야 한다.
- * (UI 라벨·날짜처럼 Pretendard 로 그리는 문구는 여기 두지 않는다.)
+ * 문구를 고치면 반드시 `python3 scripts/subset-letters-font.py` 를 다시 돌려야 한다.
+ * (날짜·버튼처럼 상용 한글 2,350자 서브셋으로 그리는 문구는 여기 두지 않는다.)
  */
 
 export const DISPLAY = {
