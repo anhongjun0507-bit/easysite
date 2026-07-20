@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""/letters 제목·UI 서체 서브셋 — 동글동글한 한글 무료 폰트 3종 (전부 OFL).
+"""/letters 제목·UI 서체 서브셋 — 카페24 써라운드 (OFL).
 
-한 폰트당 두 개를 굽는다.
+두 개를 굽는다.
 
   · display — src/content/letters-copy.ts 에 **실제로 쓰인 글자만**. 100자 안팎 → 10KB 안팎.
               첫 화면(LCP)에 preload 하는 파일이라 여기에 2,350자를 넣으면 그대로 손해다.
@@ -10,15 +10,12 @@
 
 ⚠️ letters-copy.ts 의 문구를 고치면 이 스크립트를 다시 돌려야 한다(빠진 글자는 대체 서체로 그려진다).
 
-라이선스 (2026-07 확인)
-  · 배민 주아(Jua)        SIL OFL 1.1 — Google Fonts 수록
-  · 카페24 써라운드        OFL — 수정·복제·배포 가능, 폰트 자체의 유료 판매만 금지
-  · 카페24 동동            OFL — 위와 동일
-  (넥슨 배찌체는 "폰트 파일의 수정·복제·배포 금지"라 서브셋 자체가 불가 → 후보에서 제외했다)
+라이선스 (2026-07 확인): OFL — 수정·복제·배포 가능, 폰트 자체의 유료 판매만 금지.
+  후보였던 배민 주아(OFL)·카페24 동동(OFL)은 채택되지 않아 뺐고,
+  넥슨 배찌체는 "폰트 파일의 수정·복제·배포 금지"라 서브셋 자체가 불가해 후보에서 제외했다.
 
-사용:  python3 scripts/subset-letters-font.py            # 3종 전부
-       python3 scripts/subset-letters-font.py jua        # 하나만
-출력:  public/fonts/ui/{key}.{display,ui}.subset.woff2 + LICENSE.md
+사용:  python3 scripts/subset-letters-font.py
+출력:  public/fonts/ui/ssurround.{display,ui}.subset.woff2 + LICENSE.md
 """
 
 import re
@@ -35,19 +32,9 @@ COPY = ROOT / "src" / "content" / "letters-copy.ts"
 OUT_DIR = ROOT / "public" / "fonts" / "ui"
 
 FONTS = {
-    "jua": {
-        "label": "배민 주아 (Jua)",
-        "url": "https://raw.githubusercontent.com/google/fonts/main/ofl/jua/Jua-Regular.ttf",
-        "license": "SIL Open Font License 1.1 — https://fonts.google.com/specimen/Jua",
-    },
     "ssurround": {
         "label": "카페24 써라운드",
         "url": "https://raw.githubusercontent.com/fonts-archive/Cafe24Ssurround/main/Cafe24Ssurround.ttf",
-        "license": "OFL (수정·재배포 가능, 폰트 유료 판매 금지) — https://fonts.cafe24.com",
-    },
-    "dongdong": {
-        "label": "카페24 동동",
-        "url": "https://raw.githubusercontent.com/fonts-archive/Cafe24Dongdong/main/Cafe24Dongdong.ttf",
         "license": "OFL (수정·재배포 가능, 폰트 유료 판매 금지) — https://fonts.cafe24.com",
     },
 }
@@ -95,8 +82,9 @@ def write_license():
     for key, f in FONTS.items():
         lines += [f"## {f['label']} (`{key}`)", "", f"- 원본: {f['url']}", f"- 라이선스: {f['license']}", ""]
     lines += [
-        "## 제외한 후보",
+        "## 검토했지만 채택하지 않은 후보",
         "",
+        "- 배민 주아(Jua, SIL OFL 1.1) · 카페24 동동(OFL) — 라이선스는 문제없으나 최종 선택에서 빠졌다.",
         "- 넥슨 배찌체 — \"폰트 파일의 수정·복제·배포 금지, 배포된 형태 그대로 사용\" 조항이라",
         "  서브셋(수정 + 재배포) 파이프라인에 쓸 수 없다.",
         "",
