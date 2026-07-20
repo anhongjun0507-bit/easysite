@@ -1,5 +1,15 @@
 # PROGRESS
 
+## 2026-07-20 — /letters 프라이빗 편지 아카이브 딥블랙 버전 (배포 완료)
+- 아트 디렉션 교체: 빈티지 항공우편(크림) → 딥블랙 #0a0a0b + 오프화이트 + 로즈 #FF9398 (Love Lost 문법 계승).
+  씬: 프리로더 → 인트로(사운드 선택) → 항로 프롤로그(pin+scrub) → 엔트리 루프(소인·캡쳐·리더·답장) → 에필로그.
+- 엔진: gsap.ticker 단일 RAF + Lenis, ScrollTrigger 1개가 `lib/letters/scroll.ts` 단일 진행도에 기록 → HTML·WebGL 공유.
+  R3F 풀스크린 캔버스는 밤하늘·항로만 그리고 캡쳐는 HTML(next/image) 유지(alt·키보드·CLS 0). 성능 티어 high/low/none(`?perf=`).
+- 서체: 제목 나눔명조 98자 서브셋(12/14KB, preload), 본문 나눔손글씨 다행체(OFL) 교체. 사운드는 Web Audio 런타임 합성(파일 0KB).
+- 성능: three 동적 분리+idle 마운트로 first load 398→167KB, LCP 7.7→2.3s, TBT 2.2→1.2s, CLS 0 (로컬 Lighthouse 모바일 Perf 71).
+- 라이브 검증(jieuri.com/letters): 게이트 오답/정답, 사운드 AudioContext running, 리더 키보드 조작, 캔버스 마운트, 페이지 에러 0.
+  Vercel prod/preview 에 LETTERS_PASSCODE·LETTERS_SECRET 추가. robots Disallow·sitemap 제외·타 라우트 회귀 정상.
+
 ## 2026-07-16 — 한일 시안 전용 독립 호스트 추가 (배포 완료)
 - Vercel 프로젝트에 `hanilmetal.vercel.app` 추가(후보 1순위). 클라에 jieuri.com 미노출용 독립 URL.
 - `src/middleware.ts`: 시안 호스트에서만 / → /hanil rewrite, /a·/b·/c 등 → /hanil/*, 기존 /hanil/* 링크는 307로 /* 정규화. jieuri.com 등 타 호스트 무영향. matcher에 api·폰트·css/js 제외 추가(에셋 보호).
