@@ -20,14 +20,18 @@ export function Analytics() {
   const pathname = usePathname()
   const first = useRef(true)
 
+  // 프라이빗 아카이브(/letters)는 분석 대상이 아니다 — 페이지뷰·이벤트를 보내지 않는다.
+  const isPrivate = pathname?.startsWith('/letters') ?? false
+
   // 라우트 변경 시 페이지뷰 — 최초 로드는 gtag config / 네이버 onLoad 가 이미 보냄
   useEffect(() => {
     if (first.current) {
       first.current = false
       return
     }
+    if (isPrivate) return
     pageview(window.location.href)
-  }, [pathname])
+  }, [pathname, isPrivate])
 
   // tel: 링크 클릭을 '전화 문의' 이벤트로 기록 (위임 리스너 — 위치 무관하게 잡힘)
   useEffect(() => {
@@ -42,7 +46,7 @@ export function Analytics() {
 
   return (
     <>
-      {HAS_NAVER && (
+      {HAS_NAVER && !isPrivate && (
         <Script
           id="naver-wcs"
           strategy="afterInteractive"

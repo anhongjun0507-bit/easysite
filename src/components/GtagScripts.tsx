@@ -9,10 +9,14 @@ import { GA_ID, GOOGLE_ADS_ID, GA_GTAG_ID, HAS_GTAG } from '@/lib/tracking/analy
  */
 export function GtagScripts() {
   if (!HAS_GTAG) return null
+  // 프라이빗 아카이브(/letters)에선 config 를 아예 실행하지 않는다 → 페이지뷰·전환 전송 0.
+  // (레이아웃은 서버 컴포넌트라 경로를 알 수 없으므로 브라우저에서 pathname 으로 가드한다.
+  //  headers() 를 쓰면 전 페이지가 동적 렌더가 되어 성능 손해가 크다.)
   const config = [
     GA_ID ? `gtag('config','${GA_ID}');` : '',
     GOOGLE_ADS_ID ? `gtag('config','${GOOGLE_ADS_ID}');` : '',
   ].join('')
+  const guardedConfig = `if(!location.pathname.startsWith('/letters')){${config}}`
   return (
     <>
       <script
@@ -21,7 +25,7 @@ export function GtagScripts() {
       />
       <script
         dangerouslySetInnerHTML={{
-          __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());${config}`,
+          __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());${guardedConfig}`,
         }}
       />
     </>

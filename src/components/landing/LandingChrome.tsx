@@ -19,7 +19,8 @@ export function LandingChrome({ children }: { children: React.ReactNode }) {
   const isJieuri = segments[0] === 'jieuri'
 
   // 광고 전용 랜딩(/lp)·클라 검토용 시안(/hanil)은 자체 레이아웃을 쓰므로 공용 chrome 생략.
-  if (segments[0] === 'lp' || segments[0] === 'hanil') {
+  // 프라이빗 아카이브(/letters)도 사이트 UI를 일절 공유하지 않는다.
+  if (segments[0] === 'lp' || segments[0] === 'hanil' || (pathname?.startsWith('/letters') ?? false)) {
     return <>{children}</>
   }
 
